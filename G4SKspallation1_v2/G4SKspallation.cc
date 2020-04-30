@@ -37,7 +37,7 @@
 #endif
 
 #include "G4UImanager.hh"
-#include "FTFP_BERT.hh"
+#include "FTFP_BERT.hh"  //physics list that will be used
 
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"

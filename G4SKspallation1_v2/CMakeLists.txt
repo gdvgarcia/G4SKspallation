@@ -7,7 +7,7 @@ project(G4SKspall)
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
 # You can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
-# to build a batch mode only executable
+# to build a batch mode only executable - use $ cmake -DWITH_GEANT4_UIVIS=OFF .
 #
 option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
 if(WITH_GEANT4_UIVIS)
@@ -59,7 +59,7 @@ endforeach()
 
 #----------------------------------------------------------------------------
 # For internal Geant4 use - but has no effect if you build this
-# example standalone
+# simulation standalone
 #
 add_custom_target(G4SKspall DEPENDS G4SKspallation)
 
