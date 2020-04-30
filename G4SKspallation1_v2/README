@@ -160,4 +160,5 @@ with simple conditions for the geometry.
       (without visualization)
         % ./G4SKspallation run2.mac
 
-	
+
+End.
