@@ -120,9 +120,9 @@ G4VPhysicalVolume* G4SKspallationDetectorConstruction::Construct()
 
   
   // Visualization attributes
-  G4VisAttributes* worldVisAtt = new G4VisAttributes(G4Colour(0.5451,0.2706,0.0745,0.4));
-  G4VisAttributes* tankVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0,0.425));
-  G4VisAttributes* fiduVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0,0.475));
+  G4VisAttributes* worldVisAtt = new G4VisAttributes(G4Colour(0.5451,0.2706,0.0745,0.35));
+  G4VisAttributes* tankVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0,0.36));
+  G4VisAttributes* fiduVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0,0.365));
   worldLV        ->SetVisAttributes(worldVisAtt);
   logicTank      ->SetVisAttributes(tankVisAtt);
   logicFidu      ->SetVisAttributes(fiduVisAtt);
