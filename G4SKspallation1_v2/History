@@ -14,7 +14,7 @@ track of all tags.
      * Reverse chronological order (last date on top), please *
      ----------------------------------------------------------
      
-29/04/20 G. D. V. Garcia (G4SKspallation_v2)
-- Completion of the simulation containing the SK water tank and rock surroundings with muons arriving from the top of the tank uniformly distributed on the tank upper surface. - still missing to remove some unnecessary code from B1 example 
+30/04/20 G. D. V. Garcia (G4SKspallation_v2)
+- Completion of the simulation containing the SK water tank and rock surroundings with muons arriving from the top of the tank uniformly distributed on the tank upper surface. Muon still has a defined single valued energy and not the energy spectrum required.
 
 

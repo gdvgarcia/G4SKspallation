@@ -55,7 +55,7 @@ with simple conditions for the geometry.
  4- PRIMARY GENERATOR
   
    The primary generator is defined in the G4SKspallationPrimaryGeneratorAction class.
-   The default kinematics is a 50 GeV muon ------- update with the spectrum ----- , randomly distributed on the 
+   The default kinematics is a 50 GeV muon xxxx------- update with the spectrum xxxx----- , randomly distributed on the 
    top of the tank across 100%(update if more than the top) of the transverse (X,Y) tank size with a uniform 
    distribution. This default setting can be changed via the Geant4 built-in commands of the G4ParticleGun class.
      

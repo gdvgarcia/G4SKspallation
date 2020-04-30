@@ -29,10 +29,6 @@
 
 #include "G4SKspallationPrimaryGeneratorAction.hh"
 
-#include "G4LogicalVolumeStore.hh"
-#include "G4LogicalVolume.hh"
-#include "G4Box.hh"
-#include "G4Tubs.hh"
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4ParticleGun.hh"
@@ -40,14 +36,13 @@
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
-#include "cmath" // to have the cosine and sine
+#include "cmath" // to have the cosine and sine math functions
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4SKspallationPrimaryGeneratorAction::G4SKspallationPrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(),
-  fParticleGun(0), 
-  fTankTubs(0)
+  fParticleGun(0)
 {
   G4int n_particle = 1;
   fParticleGun  = new G4ParticleGun(n_particle);
@@ -73,35 +68,13 @@ G4SKspallationPrimaryGeneratorAction::~G4SKspallationPrimaryGeneratorAction()
 
 void G4SKspallationPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  //this function is called at the begining of ecah event
+  //this function is called at the begining of each event
   //
-
-  // In order to avoid dependence of PrimaryGeneratorAction
-  // on DetectorConstruction class we get Envelope volume
-  // from G4LogicalVolumeStore.
   
-  G4double TouterRadius = 0;
-  G4double Thz = 0;
 
-  if (!fTankTubs)
-  {
-    G4LogicalVolume* tankLV
-      = G4LogicalVolumeStore::GetInstance()->GetVolume("Tank");
-    if ( tankLV ) fTankTubs = dynamic_cast<G4Tubs*>(tankLV->GetSolid());
-  }
-
-  if ( fTankTubs ) {
-  TouterRadius = 19.5*m;
-  Thz = 42.*m;
-  }  
-  else  {
-    G4ExceptionDescription msg;
-    msg << "Envelope volume of box shape not found.\n"; 
-    msg << "Perhaps you have changed geometry.\n";
-    msg << "The gun will be place at the center.";
-    G4Exception("G4SKspallationPrimaryGeneratorAction::GeneratePrimaries()",
-     "MyCode0002",JustWarning,msg);
-  }
+  //SK tank parameters to set up the gun in the right position and surface
+  G4double TouterRadius = 19.5*m; 
+  G4double Thz = 42.*m;
 
 
   // Here we make the gun shoot inside the SK tank

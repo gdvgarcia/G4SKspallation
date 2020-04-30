@@ -37,8 +37,7 @@
 
 G4SKspallationEventAction::G4SKspallationEventAction(G4SKspallationRunAction* runAction)
 : G4UserEventAction(),
-  fRunAction(runAction),
-  fEdep(0.)
+  fRunAction(runAction)
 {} 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -50,15 +49,12 @@ G4SKspallationEventAction::~G4SKspallationEventAction()
 
 void G4SKspallationEventAction::BeginOfEventAction(const G4Event*)
 {    
-  fEdep = 0.;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void G4SKspallationEventAction::EndOfEventAction(const G4Event*)
 {   
-  // accumulate statistics in run action
-  fRunAction->AddEdep(fEdep);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

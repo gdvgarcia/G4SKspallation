@@ -73,7 +73,7 @@ int main(int argc,char** argv)
 
   // Physics list
   G4VModularPhysicsList* physicsList = new  FTFP_BERT;
-  physicsList->SetVerboseLevel(1);
+  physicsList->SetVerboseLevel(0);
   runManager->SetUserInitialization(physicsList);
     
   // User action initialization
@@ -81,7 +81,7 @@ int main(int argc,char** argv)
   
   // Initialize visualization
   //
-  G4VisManager* visManager = new G4VisExecutive;
+  G4VisManager* visManager = new G4VisExecutive("Quiet");
   // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
   // G4VisManager* visManager = new G4VisExecutive("Quiet");
   visManager->Initialize();

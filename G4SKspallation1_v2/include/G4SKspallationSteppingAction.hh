@@ -35,8 +35,6 @@
 
 class G4SKspallationEventAction;
 
-class G4LogicalVolume;
-
 /// Stepping action class
 /// 
 
@@ -47,11 +45,10 @@ class G4SKspallationSteppingAction : public G4UserSteppingAction
     virtual ~G4SKspallationSteppingAction();
 
     // method from the base class
-    virtual void UserSteppingAction(const G4Step*);
+    virtual void UserSteppingAction();
 
   private:
     G4SKspallationEventAction*  fEventAction;
-    G4LogicalVolume* fScoringVolume;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
