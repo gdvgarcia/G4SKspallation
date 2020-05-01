@@ -1,0 +1,44 @@
+To choose the gcc version that it will be used in the terminal :
+
+$ scl enable devtoolset-7 bash
+
+To activate the geant4 for running G4 applications in the terminal :
+
+$ . /home/gvalle/Programs/geant4.6/geant4.10.06-install/bin/geant4.sh
+
+For my notebook :
+
+$ . /home/ggarcia/Programs/geant4/geant4.10.06-install/bin/geant4.sh
+
+
+Building with cmake :
+
+$ cmake -DCMAKE_PREFIX_PATH=/home/gvalle/Programs/geant4.6/geant4.10.06-install $HOME/G4SKspallation/G4SKspallation1_v2
+
+$ make -j2 && make VERBOSE=1
+
+All in one :
+
+$ cmake -DCMAKE_PREFIX_PATH=/home/gvalle/Programs/geant4.6/geant4.10.06-install $HOME/G4SKspallation/G4SKspallation1_v2 && make -j2 && make VERBOSE=1 && ./G4SKspallation
+
+For the notebook :
+
+$ cmake -DCMAKE_PREFIX_PATH=/home/ggarcia/Programs/geant4/geant4.10.06-install $HOME/G4SKspallation/G4SKspallation1_v2 && make -j2 && make VERBOSE=1 && ./G4SKspallation
+
+Or here in my own pc :
+
+$ cmake -DCMAKE_PREFIX_PATH=/home/gvalle/Programs/geant4.6/geant4.10.06-install $HOME/Programs/geant4.6/spallation_v2
+
+GIT HUB :
+
+Refresh $ git pull
+
+Add things $ git add -A
+
+And then commit it with $ git commit -m "text"
+
+Then put it online $ git push
+
+To verify things $ git status
+
+Git committing text example : $ git commit -m "Added the simulation1 version2 - still missing to code the way we retrieve information for analysis and to code the muon energy spectrum for the particle gun"
