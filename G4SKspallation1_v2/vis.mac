@@ -56,7 +56,10 @@
 #
 # Draw hits at end of event:
 #/vis/scene/add/hits
-#
+#To draw only very energetic particles:
+/vis/filtering/trajectories/create/attributeFilter
+/vis/filtering/trajectories/attributeFilter-0/setAttribute IKE
+/vis/filtering/trajectories/attributeFilter-0/addInterval 0.5 MeV 100 GeV
 # To draw only gammas:
 #/vis/filtering/trajectories/create/particleFilter
 #/vis/filtering/trajectories/particleFilter-0/add gamma

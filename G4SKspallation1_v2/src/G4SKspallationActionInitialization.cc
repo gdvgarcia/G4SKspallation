@@ -29,9 +29,6 @@
 
 #include "G4SKspallationActionInitialization.hh"
 #include "G4SKspallationPrimaryGeneratorAction.hh"
-#include "G4SKspallationRunAction.hh"
-#include "G4SKspallationEventAction.hh"
-#include "G4SKspallationSteppingAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -48,8 +45,6 @@ G4SKspallationActionInitialization::~G4SKspallationActionInitialization()
 
 void G4SKspallationActionInitialization::BuildForMaster() const
 {
-  G4SKspallationRunAction* runAction = new G4SKspallationRunAction;
-  SetUserAction(runAction);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -57,14 +52,6 @@ void G4SKspallationActionInitialization::BuildForMaster() const
 void G4SKspallationActionInitialization::Build() const
 {
   SetUserAction(new G4SKspallationPrimaryGeneratorAction);
-
-  G4SKspallationRunAction* runAction = new G4SKspallationRunAction;
-  SetUserAction(runAction);
-  
-  G4SKspallationEventAction* eventAction = new G4SKspallationEventAction(runAction);
-  SetUserAction(eventAction);
-  
-  SetUserAction(new G4SKspallationSteppingAction(eventAction));
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
