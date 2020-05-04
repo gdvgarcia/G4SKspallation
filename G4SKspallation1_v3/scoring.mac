@@ -1,0 +1,25 @@
+# Macro file for the scoring setting in the initialization phase 
+# of the G4SKspallation
+#
+# define scoring mesh
+/score/create/boxMesh boxMesh_1
+/score/mesh/boxSize 21. 21. 21. m
+/score/mesh/nBin 84 84 84
+# define quantities to be scored
+/score/quantity/energyDeposit eDep MeV
+/score/quantity/nOfTerminatedTrack nOfTerminatedTrackEminus
+/score/filter/particle eMinusFilter e-
+#/score/quantity/nOfTerminatedTrack nOfTerminatedTrackEplus
+#/score/filter/particle ePlusFilter e+
+#/score/quantity/nOfSecondary nOfSecondaryEMinus
+#/score/filter/particle eMinusFilter e-
+#/score/quantity/nOfSecondary nOfSecondaryEplus
+#/score/filter/particle ePlusFilter e+
+/score/close
+# Save results of scoring in a file - use it in the UI interface and do not uncomment here
+#/score/dumpQuantityToFile boxMesh_1 <scorer_name> <file_name>
+# Drawing the scoring mesh full projection
+#/score/drawProjection boxMesh_1 eDep
+# Drawing the scoring mesh per columns
+#/score/drawColumn boxMesh_1 eDep <plane> <column>
+

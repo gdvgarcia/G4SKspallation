@@ -1,0 +1,20 @@
+-------------------------------------------------------------------
+
+     =========================================================
+     Geant4 - an Object-Oriented Toolkit for Simulation in HEP
+     =========================================================
+
+                    G4SKspallation History file
+                    -----------------------
+This file should be used by the GKSKspallation coordinators to briefly
+summarize all major modifications introduced in the code and keep
+track of all tags.
+
+     ----------------------------------------------------------
+     * Reverse chronological order (last date on top), please *
+     ----------------------------------------------------------
+     
+30/04/20 G. D. V. Garcia (G4SKspallation_v2)
+- Completion of the simulation containing the SK water tank and rock surroundings with muons arriving from the top of the tank uniformly distributed on the tank upper surface. Muon still has a defined single valued energy and not the energy spectrum required.
+
+
