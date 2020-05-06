@@ -12,14 +12,6 @@
 /score/mesh/nBin 1 1 4200
 # define quantities to be scored
 /score/quantity/energyDeposit eDep MeV
-#/score/quantity/nOfTerminatedTrack nOfTerminatedTrackEminus
-#/score/filter/particle eMinusFilter e-
-#/score/quantity/nOfTerminatedTrack nOfTerminatedTrackEplus
-#/score/filter/particle ePlusFilter e+
-#/score/quantity/nOfSecondary nOfSecondaryEMinus
-#/score/filter/particle eMinusFilter e-
-#/score/quantity/nOfSecondary nOfSecondaryEplus
-#/score/filter/particle ePlusFilter e+
 /score/close
 #
 # Initialize kernel

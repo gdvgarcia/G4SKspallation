@@ -1,25 +1,84 @@
 # Macro file for the scoring setting in the initialization phase 
 # of the G4SKspallation
 #
-# define scoring mesh
+# define scoring mesh_1 for quantities that we want spatial distribution
 /score/create/boxMesh boxMesh_1
 /score/mesh/boxSize 21. 21. 21. m
 /score/mesh/nBin 84 84 84
+#precision only in longitudinal (z or tank axis)
+#/score/mesh/nBin 1 1 4200
 # define quantities to be scored
 /score/quantity/energyDeposit eDep MeV
-/score/quantity/nOfTerminatedTrack nOfTerminatedTrackEminus
+/score/close
+#
+#
+#
+# --- Save results of scoring in a file - use it in the UI interface and do not uncomment here
+#/score/dumpQuantityToFile boxMesh_1 <scorer_name> <file_name>
+#---- Drawing the scoring mesh full projection
+#/score/drawProjection boxMesh_1 eDep
+#---- Drawing the scoring mesh per columns
+#/score/drawColumn boxMesh_1 eDep <plane> <column>
+#
+#
+#
+# define scoring mesh_2 for quantities that we only want energy distribution
+/score/create/boxMesh boxMesh_2
+/score/mesh/boxSize 21. 21. 21. m
+/score/mesh/nBin 1 1 1
+#precision only in longitudinal (z or tank axis)
+#/score/mesh/nBin 1 1 4200
+# define quantities to be scored
+# total of electrons still have issues about total getting in or appearing inside
+# to solve this issue, one can create a mesh over the tank taking the initial vertex in and then compute
+# the number of secondaries - the number of therminated track , so we find the number that arrived in the sk
+# from outside colision vertex
+# /score/quantity/nOfTerminatedTrack nOfTerminatedTrackEminus
+# /score/filter/particle eMinusFilter e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus
 /score/filter/particle eMinusFilter e-
+# electron energy distribution score
+/score/quantity/nOfSecondary nOfSecondaryEMinus_0.05005
+/score/filter/particleWithKineticEnergy range0 0.0001 0.1 MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_0.55
+/score/filter/particleWithKineticEnergy range1 0.1 1. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_5.5
+/score/filter/particleWithKineticEnergy range2 1. 10. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_15
+/score/filter/particleWithKineticEnergy range3 10. 20. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_25
+/score/filter/particleWithKineticEnergy range4 20. 30. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_35
+/score/filter/particleWithKineticEnergy range5 30. 40. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_45
+/score/filter/particleWithKineticEnergy range6 40. 50. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_55
+/score/filter/particleWithKineticEnergy range7 50. 60. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_65
+/score/filter/particleWithKineticEnergy range8 60. 70. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_75
+/score/filter/particleWithKineticEnergy range9 70. 80. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_85
+/score/filter/particleWithKineticEnergy range10 80. 90. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_95
+/score/filter/particleWithKineticEnergy range11 90. 100. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_125
+/score/filter/particleWithKineticEnergy range12 100. 150. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_250
+/score/filter/particleWithKineticEnergy range13 200. 300. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_400
+/score/filter/particleWithKineticEnergy range14 300. 500. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_750
+/score/filter/particleWithKineticEnergy range15 500. 1000. MeV e-
+# change last one to higher energies
+/score/quantity/nOfSecondary nOfSecondaryEMinus_55000
+/score/filter/particleWithKineticEnergy range0 1. 100. GeV e-
+/score/close
+# we can do it for other particles
 #/score/quantity/nOfTerminatedTrack nOfTerminatedTrackEplus
 #/score/filter/particle ePlusFilter e+
 #/score/quantity/nOfSecondary nOfSecondaryEMinus
 #/score/filter/particle eMinusFilter e-
 #/score/quantity/nOfSecondary nOfSecondaryEplus
 #/score/filter/particle ePlusFilter e+
-/score/close
-# Save results of scoring in a file - use it in the UI interface and do not uncomment here
-#/score/dumpQuantityToFile boxMesh_1 <scorer_name> <file_name>
-# Drawing the scoring mesh full projection
-#/score/drawProjection boxMesh_1 eDep
-# Drawing the scoring mesh per columns
-#/score/drawColumn boxMesh_1 eDep <plane> <column>
 

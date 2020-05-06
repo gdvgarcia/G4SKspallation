@@ -27,3 +27,6 @@ source /home/gvalle/Programs/root6/root/bin/thisroot.sh
 source /home/gvalle/Programs/geant4.6/geant4.10.06-install/bin/geant4.sh
 
 
+Figures : the energy lost is per cm along Z axis 
+
+
