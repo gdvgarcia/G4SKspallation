@@ -35,6 +35,11 @@
 # to solve this issue, one can create a mesh over the tank taking the initial vertex in and then compute
 # the number of secondaries - the number of therminated track , so we find the number that arrived in the sk
 # from outside colision vertex
+#
+#
+#
+#
+#
 # electron total
 # /score/quantity/nOfTerminatedTrack nOfTerminatedTrackEminus
 # /score/filter/particle eMinusFilter e-
@@ -177,54 +182,5 @@
 /score/filter/particleWithKineticEnergy range18 450. 475. MeV gamma
 /score/quantity/nOfSecondary nOfSecondaryGamma_487.5
 /score/filter/particleWithKineticEnergy range19 475. 500. MeV gamma
-#
-#
-#
-#
-#
-# neutron total
-/score/quantity/nOfSecondary nOfSecondaryNeutron
-/score/filter/particle eMinusFilter neutron
-# neutron energy distribution score
-/score/quantity/nOfSecondary nOfSecondaryNeutron_12.5
-/score/filter/particleWithKineticEnergy range0 0. 25. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_37.5
-/score/filter/particleWithKineticEnergy range1 25. 50. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_62.5
-/score/filter/particleWithKineticEnergy range2 50. 75. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_87.5
-/score/filter/particleWithKineticEnergy range3 75. 100. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_112.5
-/score/filter/particleWithKineticEnergy range4 100. 125. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_137.5
-/score/filter/particleWithKineticEnergy range5 125. 150. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_162.5
-/score/filter/particleWithKineticEnergy range6 150. 175. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_187.5
-/score/filter/particleWithKineticEnergy range7 175. 200. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_212.5
-/score/filter/particleWithKineticEnergy range8 200. 225. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_237.5
-/score/filter/particleWithKineticEnergy range9 225. 250. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_262.5
-/score/filter/particleWithKineticEnergy range10 250. 275. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_287.5
-/score/filter/particleWithKineticEnergy range11 275. 300. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_312.5
-/score/filter/particleWithKineticEnergy range12 300. 325. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_337.5
-/score/filter/particleWithKineticEnergy range13 325. 350. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_362.5
-/score/filter/particleWithKineticEnergy range14 350. 375. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_387.5
-/score/filter/particleWithKineticEnergy range15 375. 400. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_412.5
-/score/filter/particleWithKineticEnergy range16 400. 425. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_437.5
-/score/filter/particleWithKineticEnergy range17 425. 450. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_462.5
-/score/filter/particleWithKineticEnergy range18 450. 475. MeV neutron
-/score/quantity/nOfSecondary nOfSecondaryNeutron_487.5
-/score/filter/particleWithKineticEnergy range19 475. 500. MeV neutron
 /score/close
 #
