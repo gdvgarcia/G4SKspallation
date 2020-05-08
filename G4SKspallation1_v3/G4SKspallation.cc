@@ -38,7 +38,9 @@
 
 #include "G4UImanager.hh"
 #include "G4ScoringManager.hh"
-#include "FTFP_BERT.hh"  //physics list that will be used
+#include "QGSP_BERT_HP.hh"  //physics list that will be used
+#include "G4PhysListFactory.hh"
+#include "G4VUserPhysicsList.hh"
 
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
@@ -78,7 +80,8 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(new G4SKspallationDetectorConstruction());
 
   // Physics list
-  G4VModularPhysicsList* physicsList = new  FTFP_BERT;
+  G4PhysListFactory *physListFactory = new G4PhysListFactory(); 
+  G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP"); 
   physicsList->SetVerboseLevel(0);
   runManager->SetUserInitialization(physicsList);
     
