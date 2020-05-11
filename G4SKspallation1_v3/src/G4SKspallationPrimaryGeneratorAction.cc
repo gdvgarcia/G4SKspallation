@@ -54,7 +54,7 @@ G4SKspallationPrimaryGeneratorAction::G4SKspallationPrimaryGeneratorAction()
     = particleTable->FindParticle(particleName="mu-");
   fParticleGun->SetParticleDefinition(particle);
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,-1.));
-  fParticleGun->SetParticleEnergy(50.*GeV);
+  fParticleGun->SetParticleEnergy(271.*GeV);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -89,43 +89,6 @@ void G4SKspallationPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
-
-	//randon energy following the muon spectrum
-	//creating the spectrum 
-	const int n_points=10;
-	double x_vals[n_points]={0.1,1,2,3,10,100,200,1000,2000,4000};
-	double y_vals[n_points]={2e-09,1e-09,1e-09,1e-09,1e-09,4e-10,2.25e-10,1e-11,1.5e-12,1.75e-13};
-
-	double rnd = 1.;
-	double y_r, x_r;
-	int pos;
-
-	//generate a random pair
-	rnd = G4UniformRand();
-	y_r = (1e-08 - 1e-14)*rnd+1e-14;
-	rnd = G4UniformRand();
-	pos = int(10*rnd);
-
-	//to find a good pair
-	bool stop = TRUE;
-	
-	while(stop){
-		if(y_r < y_vals[pos]){
-		// create a random smearing
-		rnd = G4UniformRand();
-		if (pos==0){
-			rnd = 0.1*G4UniformRand();
-			}
-		x_r = rnd + x_vals[pos];
-		fParticleGun->SetParticleEnergy(x_r *GeV);
-		stop = FALSE;
-		}
-	//generate a random pair
-	rnd = G4UniformRand();
-	y_r = (1e-08 - 1e-14)*rnd+1e-14;
-	rnd = G4UniformRand();
-	pos = int(10*rnd);
-	}
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

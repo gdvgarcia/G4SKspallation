@@ -48,8 +48,6 @@ set(G4SKspallation_SCRIPTS
   run2.mac
   vis.mac
   scoring.mac
-  ntuple_maker.C
-  read_ntuple_from_file.C
   )
 
 foreach(_script ${G4SKspallation_SCRIPTS})
