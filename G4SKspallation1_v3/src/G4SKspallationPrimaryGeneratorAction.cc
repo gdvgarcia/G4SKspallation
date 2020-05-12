@@ -23,6 +23,8 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// HERE WE GENERATE A MUON WITH A GIVEN ENERGY(MEAN MUON ENERGY AT SK) AND POSITION( IN THE TANK AXIS AND
+// ON THE UPPER PART OF THE TANK 
 //
 /// \file G4SKspallationPrimaryGeneratorAction.cc
 /// \brief Implementation of the G4SKspallationPrimaryGeneratorAction class
@@ -35,8 +37,6 @@
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
-#include "Randomize.hh"
-#include "cmath" // to have the cosine and sine math functions
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -72,18 +72,12 @@ void G4SKspallationPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   //
   
 
-  //SK tank parameters to set up the gun in the right position and surface
-  G4double TouterRadius = 19.5*m; 
+  //SK tank parameters to set up the gun in the right position
   G4double Thz = 42.*m;
 
 
-  // Here we make the gun shoot inside the SK tank
-  const G4double 	pi = 3.14159265358979323846264338328;
-  G4double 	theta =  2* pi * G4UniformRand();
-  G4double 	r =  TouterRadius * G4UniformRand();
-
-  G4double x0 = cos( theta ) * r;
-  G4double y0 = sin( theta ) * r;
+  G4double x0 = 0;//centered
+  G4double y0 = 0;//centered
   G4double z0 = 0.5 * Thz+ 2.*m;//2 meters of water to describe the rock
   
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));

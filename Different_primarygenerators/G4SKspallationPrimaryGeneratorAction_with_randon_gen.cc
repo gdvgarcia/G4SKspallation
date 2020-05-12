@@ -23,8 +23,10 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// HERE WE GENERATE A MUON WITH A RANDOM ENERGY(FOLLOWING THE MUON SK SPECTRUM) AND POSITION(UNIFORM
+// ON THE UPPER PART OF THE TANK - RANDOMIZE GENERATOR IS USED
 //
-/// \file G4SKspallationPrimaryGeneratorAction.cc
+/// \file G4SKspallationPrimaryGeneratorAction.cc 
 /// \brief Implementation of the G4SKspallationPrimaryGeneratorAction class
 
 #include "G4SKspallationPrimaryGeneratorAction.hh"
@@ -91,6 +93,7 @@ void G4SKspallationPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   fParticleGun->GeneratePrimaryVertex(anEvent);
 
 	//randon energy following the muon spectrum
+
 	//creating the spectrum 
 	const int n_points=10;
 	double x_vals[n_points]={0.1,1,2,3,10,100,200,1000,2000,4000};
@@ -117,6 +120,7 @@ void G4SKspallationPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 			rnd = 0.1*G4UniformRand();
 			}
 		x_r = rnd + x_vals[pos];
+		//energy follows the muon spectrum so we can use it
 		fParticleGun->SetParticleEnergy(x_r *GeV);
 		stop = FALSE;
 		}
