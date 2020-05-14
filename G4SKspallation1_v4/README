@@ -17,6 +17,24 @@ with simple conditions for the geometry.
    The setup consists of a an envelope(world) of box shape containing two volumes: 
    the water tank cylinder and the fiducial volume of the tank which is also a cylinder.
 
+   
+        |<---------- 42 m------------->|
+        |                              |                       
+        ================================ _ _
+        ||water tank       	      ||   ^
+        ||                   	      ||   |  
+        ||  ========================  ||   |
+        ||  |fiducial volume       |  ||   |
+ muon   ||  |       	  	   |  ||   | 39 m
+=======>||  |                      |  ||   |
+        ||  |                	   |  ||   |
+	||  ========================  ||   |
+	||                     	      ||   v
+	||                            || _ _
+        ================================
+    
+
+
    The envelope(world) is made of water (2.7 m water ~ 1 m rock) and the two inner volumes
    are also made of water.  
    The materials are created with the help of the G4NistManager class,
@@ -27,10 +45,16 @@ with simple conditions for the geometry.
  2- PHYSICS LIST
  
    The particle's type and the physics processes which will be available
-   in this example are set in the 00000---------XXXXXXXXx------0000 physics list. This physics list 
-   requires data files for ____update____ electromagnetic and hadronic processes.
-
-   This physics list is .................
+   in this simulation are set in the QGSP_BERT_HP physics list(or QGSP_BIC_HP or
+   FTFP_BERT_HP or QGSP_INCLXX_HP - for later comparison of results of these 
+   different lists). This physics list requires data files for electromagnetic 
+   and hadronic processes.
+   See more on installation of the datasets in Geant4 Installation Guide,
+   Chapter 3.3: Note On Geant4 Datasets:
+   http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides
+                                           /InstallationGuide/html/ch03s03.html
+   The following datasets: G4LEDATA, G4LEVELGAMMADATA, G4NEUTRONXSDATA,
+   G4SAIDXSDATA and G4ENSDFSTATEDATA are mandatory for this simulation.
 
    In addition the build-in interactive command:
                /process/(in)activate processName
@@ -55,13 +79,14 @@ with simple conditions for the geometry.
  4- PRIMARY GENERATOR
   
    The primary generator is defined in the G4SKspallationPrimaryGeneratorAction class.
-   The default kinematics is a 50 GeV muon xxxx------- update with the spectrum xxxx----- , randomly distributed on the 
-   top of the tank across 100%(update if more than the top) of the transverse (X,Y) tank size with a uniform 
-   distribution. This default setting can be changed via the Geant4 built-in commands of the G4ParticleGun class.
+   The default kinematics is a 271 GeV muon(which is average muon energy for Super-Kamiokande) 
+   with downward momentum along the cylinder axis located on top of the tank's water in the center
+   of the tank surface.
+   This default setting can be changed via the Geant4 built-in commands of the G4ParticleGun class.
      
  5- DETECTOR RESPONSE
 
-  xxxx This example demonstrates a simple scoring implemented directly
+   xxxx This example demonstrates a simple scoring implemented directly
    in the user action classes.  Alternative ways of scoring via Geant4 classes 
    can be found in the other examples. xxxxxx
    xxxxx

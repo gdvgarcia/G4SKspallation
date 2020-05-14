@@ -23,8 +23,8 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// HERE WE GENERATE A MUON WITH A GIVEN ENERGY(MEAN MUON ENERGY AT SK) AND POSITION( IN THE TANK AXIS AND
-// ON THE UPPER PART OF THE TANK 
+// HERE WE GENERATE A MUON WITH A GIVEN ENERGY(AVERAGE MUON ENERGY FOR SK) AND 
+// POSITION( IN THE TANK AXIS AND ON THE UPPER PART OF THE TANK )
 //
 /// \file G4SKspallationPrimaryGeneratorAction.cc
 /// \brief Implementation of the G4SKspallationPrimaryGeneratorAction class
@@ -78,7 +78,7 @@ void G4SKspallationPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   G4double x0 = 0;//centered
   G4double y0 = 0;//centered
-  G4double z0 = 0.5 * Thz+ 2.*m;//2 meters of water to describe the rock
+  G4double z0 = 0.5 * Thz;//on top of the tank
   
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 

@@ -20,4 +20,6 @@ track of all tags.
 - Addition of a scoring macro to set up a scoring mesh which returns the dE/dx profile and the quantity of certain particles produced.
 07/05/20 G. D. V. Garcia (G4SKspallation1)
 - Updated the physics list to a more accurate one for spallation studies(QGSP_BERT_HP).
+13/05/20 G. D. V. Garcia (G4SKspallation1)
+- Primary generator simplified for muons on top of the tank, centered and with w fixed energy of 271 GeV which is the average muon energy for SK 
 
