@@ -28,7 +28,7 @@
 /// \brief Implementation of the G4SKspallationDetectorConstruction class
 
 #include "G4SKspallationDetectorConstruction.hh"
-
+#include "G4SKspallationTankSD.hh"
 #include "G4RunManager.hh"
 #include "G4NistManager.hh"
 #include "G4Box.hh"
@@ -37,6 +37,9 @@
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
 
+#include "G4PhysicalConstants.hh"
+#include "G4SDManager.hh"
+#include "G4AutoDelete.hh"
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
 
@@ -87,8 +90,8 @@ G4VPhysicalVolume* G4SKspallationDetectorConstruction::Construct()
   //
   // World
   //
-  G4Box* worldS = new G4Box("world", worldLength/2,worldLength/2,worldLength/2); 
-  G4LogicalVolume* worldLV = new G4LogicalVolume(worldS, world_mat,"World"); 
+  G4Box* worldS = new G4Box("WorldS", worldLength/2,worldLength/2,worldLength/2); 
+  G4LogicalVolume* worldLV = new G4LogicalVolume(worldS, world_mat,"WorldLV"); 
 
   //  Must place the World Physical volume unrotated at (0,0,0). 
   G4VPhysicalVolume* worldPV
@@ -105,16 +108,16 @@ G4VPhysicalVolume* G4SKspallationDetectorConstruction::Construct()
   //     
   // SK tank
   //  
-  G4Tubs* solidTank = new G4Tubs("Tank", SKinnerRadius, SKouterRadius, 0.5*SKhz, SKstartAngle, SKspanningAngle);
-  G4LogicalVolume* logicTank = new G4LogicalVolume(solidTank, tank_mat, "Tank");
+  G4Tubs* solidTank = new G4Tubs("TankS", SKinnerRadius, SKouterRadius, 0.5*SKhz, SKstartAngle, SKspanningAngle);
+  G4LogicalVolume* logicTank = new G4LogicalVolume(solidTank, tank_mat, "TankLV");
                
   new G4PVPlacement(0, G4ThreeVector(), logicTank, "Tank",worldLV, false, 0, checkOverlaps);
 
   //     
   // Fiducial volume
   //        
-  G4Tubs* solidFidu = new G4Tubs("Fiducial", FinnerRadius, FouterRadius,0.5* Fhz, FstartAngle, FspanningAngle);         
-  G4LogicalVolume* logicFidu = new G4LogicalVolume(solidFidu, fidu_mat, "Fiducial");
+  G4Tubs* solidFidu = new G4Tubs("FiducialS", FinnerRadius, FouterRadius,0.5* Fhz, FstartAngle, FspanningAngle);         
+  G4LogicalVolume* logicFidu = new G4LogicalVolume(solidFidu, fidu_mat, "FiducialLV");
                
   new G4PVPlacement(0, G4ThreeVector(), logicFidu, "Fiducial", logicTank, false, 0, checkOverlaps);
 
@@ -132,6 +135,22 @@ G4VPhysicalVolume* G4SKspallationDetectorConstruction::Construct()
   //always return the physical World
   //
   return worldPV;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void G4SKspallationDetectorConstruction::ConstructSDandField()
+{
+  // G4SDManager::GetSDMpointer()->SetVerboseLevel(1);
+
+  // 
+  // Sensitive detectors
+  //
+  auto tankSD 
+    = new G4SKspallationTankSD("TankSD", "TankHitsCollection");
+  G4SDManager::GetSDMpointer()->AddNewDetector(tankSD);
+  SetSensitiveDetector("TankLV",tankSD);
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -36,7 +36,19 @@
 class G4VPhysicalVolume;
 class G4LogicalVolume;
 
+
 /// Detector construction class to define materials and geometry.
+/// The tank is a cylinder cointaining another cylinder inside which is the fiducial volume.
+///
+/// Four parameters define the geometry of the water tank :
+///
+/// - the radius of the tank container,
+/// - the height of the tank container,
+/// - the radius of the fiducial volume,
+/// - the height of the fiducial volume.
+///
+/// In ConstructSDandField() sensitive detectors of G4SKspallationTankSD type
+/// are created and associated with the water tank.
 
 class G4SKspallationDetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -44,7 +56,10 @@ class G4SKspallationDetectorConstruction : public G4VUserDetectorConstruction
     G4SKspallationDetectorConstruction();
     virtual ~G4SKspallationDetectorConstruction();
 
+  public:
     virtual G4VPhysicalVolume* Construct();
+    virtual void ConstructSDandField();
+     
     
 };
 

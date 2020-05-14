@@ -82,6 +82,9 @@ int main(int argc,char** argv)
   // Physics list
   G4PhysListFactory *physListFactory = new G4PhysListFactory(); 
   G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP"); 
+  //G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("QGSP_BIC_HP"); 
+  //G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("FTFP_BERT_HP"); 
+  //G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("QGSP_INCLXX_HP"); //still have to check if the _HP of this list exists 
   physicsList->SetVerboseLevel(0);
   runManager->SetUserInitialization(physicsList);
     

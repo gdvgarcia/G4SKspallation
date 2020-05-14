@@ -7,12 +7,12 @@
 #/run/numberOfThreads 4
 #
 # define scoring mesh
-/score/create/boxMesh boxMesh_1
-/score/mesh/boxSize 21. 21. 21. m
-/score/mesh/nBin 1 1 4200
+#/score/create/boxMesh boxMesh_1
+#/score/mesh/boxSize 21. 21. 21. m
+#/score/mesh/nBin 1 1 4200
 # define quantities to be scored
-/score/quantity/energyDeposit eDep MeV
-/score/close
+#/score/quantity/energyDeposit eDep MeV
+#/score/close
 #
 # Initialize kernel
 /run/initialize
@@ -28,5 +28,5 @@
 #
 # Dump scorers to a file
 #
-/score/dumpQuantityToFile boxMesh_1 eDep eDep_run1.txt
+#/score/dumpQuantityToFile boxMesh_1 eDep eDep_run1.txt
 

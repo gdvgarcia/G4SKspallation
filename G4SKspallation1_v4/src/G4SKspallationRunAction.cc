@@ -51,8 +51,8 @@ G4SKspallationRunAction::G4SKspallationRunAction()
   G4cout << "Using " << analysisManager->GetType() << G4endl;
 
   // Create directories 
-  //analysisManager->SetHistoDirectoryName("histograms");
-  //analysisManager->SetNtupleDirectoryName("ntuple");
+  analysisManager->SetHistoDirectoryName("histograms");
+  analysisManager->SetNtupleDirectoryName("ntuple");
   analysisManager->SetVerboseLevel(1);
   analysisManager->SetNtupleMerging(true);
     // Note: merging ntuples is available only with Root output
@@ -61,21 +61,24 @@ G4SKspallationRunAction::G4SKspallationRunAction()
   //
   
   // Creating histograms
-  analysisManager->CreateH1("A","Particle atomic mass", 100, 0., 800*MeV);
-  analysisManager->CreateH1("B","Edep in gap", 100, 0., 100*MeV);
-  analysisManager->CreateH1("Labs","trackL in absorber", 100, 0., 1*m);
-  analysisManager->CreateH1("Lgap","trackL in gap", 100, 0., 50*cm);
+  analysisManager->CreateH1("A","Particle atomic mass", 300, 0.5, 300.5  );
+  analysisManager->CreateH1("Z","Particle proton number", 150, 0.5, 150.5);
+  analysisManager->CreateH1("En","Energy of the neutron", 301, -0.5 * MeV, 300.5 * MeV);
+  analysisManager->CreateH1("Ee","Energy of the electron", 301, -0.5 * MeV, 300.5 * MeV);
   // 2D histogram for A and Z quantities
   analysisManager->CreateH2("Particles", "Particles produced; Z values; A values", 150, 0.5, 150.5, 300, 0.5, 300.5);
 
   // Creating ntuple
   //
-  analysisManager->CreateNtuple("G4SKspallation", "Edep and TrackL");
-  analysisManager->CreateNtupleDColumn("Eabs");
-  analysisManager->CreateNtupleDColumn("Egap");
-  analysisManager->CreateNtupleDColumn("Labs");
-  analysisManager->CreateNtupleDColumn("Lgap");
+  analysisManager->CreateNtuple("G4SKspallation", "A, Z, position and type of parent process");
+  analysisManager->CreateNtupleDColumn("A");
+  analysisManager->CreateNtupleDColumn("Z");
+  analysisManager->CreateNtupleDColumn("x");
+  analysisManager->CreateNtupleDColumn("y");
+  analysisManager->CreateNtupleDColumn("z");
+  //analysisManager->CreateNtupleDColumn("Process");
   analysisManager->FinishNtuple();
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -108,7 +111,7 @@ void G4SKspallationRunAction::EndOfRunAction(const G4Run* /*run*/)
   // print histogram statistics
   //
   auto analysisManager = G4AnalysisManager::Instance();
-  if ( analysisManager->GetH1(1) ) {
+  if ( analysisManager->GetH1(0) ) {
     G4cout << G4endl << " ----> print histograms statistic ";
     if(isMaster) {
       G4cout << "for the entire run " << G4endl << G4endl; 
@@ -117,25 +120,20 @@ void G4SKspallationRunAction::EndOfRunAction(const G4Run* /*run*/)
       G4cout << "for the local thread " << G4endl << G4endl; 
     }
     
-    G4cout << " EAbs : mean = " 
-       << G4BestUnit(analysisManager->GetH1(0)->mean(), "Energy") 
+    G4cout << " A : mean = " 
+       << analysisManager->GetH1(0)->mean() 
        << " rms = " 
-       << G4BestUnit(analysisManager->GetH1(0)->rms(),  "Energy") << G4endl;
+       << analysisManager->GetH1(0)->rms() << G4endl;
     
-    G4cout << " EGap : mean = " 
+    G4cout << " Z : mean = " 
+       << analysisManager->GetH1(1)->mean()
+       << " rms = " 
+       << analysisManager->GetH1(1)->rms() << G4endl;
+
+       G4cout << " E neutron : mean = " 
        << G4BestUnit(analysisManager->GetH1(1)->mean(), "Energy") 
        << " rms = " 
        << G4BestUnit(analysisManager->GetH1(1)->rms(),  "Energy") << G4endl;
-    
-    G4cout << " LAbs : mean = " 
-      << G4BestUnit(analysisManager->GetH1(2)->mean(), "Length") 
-      << " rms = " 
-      << G4BestUnit(analysisManager->GetH1(2)->rms(),  "Length") << G4endl;
-
-    G4cout << " LGap : mean = " 
-      << G4BestUnit(analysisManager->GetH1(3)->mean(), "Length") 
-      << " rms = " 
-      << G4BestUnit(analysisManager->GetH1(3)->rms(),  "Length") << G4endl;
   }
 
   // save histograms & ntuple
