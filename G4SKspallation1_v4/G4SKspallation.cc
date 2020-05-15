@@ -26,9 +26,10 @@
 //
 /// \file G4SKspallation.cc
 /// \brief Main program of the G4SKspallation
+/// You can choose the physics list by commenting/uncommenting a few lines 
 
-#include "G4SKspallationDetectorConstruction.hh"
-#include "G4SKspallationActionInitialization.hh"
+#include "SKDetectorConstruction.hh"
+#include "SKActionInitialization.hh"
 
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
@@ -39,6 +40,9 @@
 #include "G4UImanager.hh"
 #include "G4ScoringManager.hh"
 #include "QGSP_BERT_HP.hh"  //physics list that will be used
+//#include "QGSP_BIC_HP.hh"  //physics list that will be used
+//#include "FTFP_BERT_HP.hh"  //physics list that will be used
+//#include "QGSP_INCLXX_HP.hh"  //physics list that will be used
 #include "G4PhysListFactory.hh"
 #include "G4VUserPhysicsList.hh"
 
@@ -69,15 +73,15 @@ int main(int argc,char** argv)
   G4RunManager* runManager = new G4RunManager;
 #endif
 
- // Activate UI-command base scorer
- G4ScoringManager * scManager = G4ScoringManager::GetScoringManager();
- scManager->SetVerboseLevel(0);
+  // Activate UI-command base scorer
+  G4ScoringManager * scManager = G4ScoringManager::GetScoringManager();
+  scManager->SetVerboseLevel(0);
 
 
   // Set mandatory initialization classes
   //
   // Detector construction
-  runManager->SetUserInitialization(new G4SKspallationDetectorConstruction());
+  runManager->SetUserInitialization(new SKDetectorConstruction());
 
   // Physics list
   G4PhysListFactory *physListFactory = new G4PhysListFactory(); 
@@ -89,13 +93,12 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(physicsList);
     
   // User action initialization
-  runManager->SetUserInitialization(new G4SKspallationActionInitialization());
+  runManager->SetUserInitialization(new SKActionInitialization());
   
   // Initialize visualization
   //
   G4VisManager* visManager = new G4VisExecutive("Quiet");
   // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
-  // G4VisManager* visManager = new G4VisExecutive("Quiet");
   visManager->Initialize();
 
   // Get the pointer to the User Interface manager
@@ -120,7 +123,6 @@ int main(int argc,char** argv)
   // Free the store: user actions, physics_list and detector_description are
   // owned and deleted by the run manager, so they should not be deleted 
   // in the main() program !
-  
   delete visManager;
   delete runManager;
 }

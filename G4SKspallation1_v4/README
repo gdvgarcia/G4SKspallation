@@ -16,6 +16,8 @@ with simple conditions for the geometry.
    The geometry is constructed in the G4SKspallationDetectorConstruction class.
    The setup consists of a an envelope(world) of box shape containing two volumes: 
    the water tank cylinder and the fiducial volume of the tank which is also a cylinder.
+   ***Fiducial volume is commented - if you want to measure things only for the physical volume 
+   you have to uncomment lines in the detector construction.***
 
    
         |<---------- 42 m------------->|

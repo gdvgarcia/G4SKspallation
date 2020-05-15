@@ -24,63 +24,40 @@
 // ********************************************************************
 //
 //
-/// \file G4SKspallationTankHit.cc
-/// \brief Implementation of the G4SKspallationTankHit class
+/// \file SKPrimaryGeneratorAction.hh
+/// \brief Definition of the SKPrimaryGeneratorAction class
 
-#include "G4SKspallationTankHit.hh"
-#include "G4UnitsTable.hh"
-#include "G4VVisManager.hh"
-#include "G4Circle.hh"
-#include "G4Colour.hh"
-#include "G4VisAttributes.hh"
+#ifndef SKPrimaryGeneratorAction_h
+#define SKPrimaryGeneratorAction_h 1
 
-#include <iomanip>
+#include "G4VUserPrimaryGeneratorAction.hh"
+#include "G4ParticleGun.hh"
+#include "globals.hh"
 
-G4ThreadLocal G4Allocator<G4SKspallationTankHit>* G4SKspallationTankHitAllocator = 0;
+class G4ParticleGun;
+class G4Event;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+/// The primary generator action class with particle gun.
+///
+/// The default kinematic is a 50 GeV muon xxx change with the spectrum xxx, randomly distribued 
+/// on the top part of the water tank across 100% xxxx (maybe change with a bit more) xxxx of the (X,Y) tank top surface.
 
-G4SKspallationTankHit::G4SKspallationTankHit()
- : G4VHit(),
-   fN(0.)
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-G4SKspallationTankHit::~G4SKspallationTankHit() {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-G4SKspallationTankHit::G4SKspallationTankHit(const G4SKspallationTankHit& right)
-  : G4VHit()
+class SKPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
-  fN        = right.fN;
-}
+  public:
+    SKPrimaryGeneratorAction();    
+    virtual ~SKPrimaryGeneratorAction();
+
+    // method from the base class
+    virtual void GeneratePrimaries(G4Event*);         
+  
+    // method to access particle gun
+    const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
+  
+  private:
+    G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
+};
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-const G4SKspallationTankHit& G4SKspallationTankHit::operator=(const G4SKspallationTankHit& right)
-{
-  fN        = right.fN;
-
-  return *this;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-G4bool G4SKspallationTankHit::operator==(const G4SKspallationTankHit& right) const
-{
-  return ( this == &right ) ? true : false;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void G4SKspallationTankHit::Print()
-{
-  G4cout
-     << "N: " 
-     << std::setw(7) << fN
-     << G4endl;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#endif

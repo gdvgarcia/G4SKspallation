@@ -23,46 +23,58 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// 
-/// \file G4SKspallationRunAction.hh
-/// \brief Definition of the G4SKspallationRunAction class
+//
+/// \file SKTankHit.cc
+/// \brief Implementation of the SKTankHit class
 
-#ifndef G4SKspallationRunAction_h
-#define G4SKspallationRunAction_h 1
+#include "SKTankHit.hh"
+#include "G4UnitsTable.hh"
+#include "G4VVisManager.hh"
+#include "G4Circle.hh"
+#include "G4Colour.hh"
+#include "G4VisAttributes.hh"
 
-#include "G4UserRunAction.hh"
-#include "globals.hh"
+#include <iomanip>
 
-class G4Run;
-
-/// Run action class
-///
-/// It accumulates statistic and computes dispersion of the atomic mass 
-/// and of tge proton number of particles produced  with use of analysis tools:
-/// H1D histograms are created in BeginOfRunAction() for the following 
-/// physics quantities:
-/// - A 
-/// - Z
-/// The same values are also saved in the ntuple with the position of the particle
-/// and its parent process.
-/// The histograms and ntuple are saved in the output file in a format
-/// accoring to a selected technology in G4SKspallationAnalysis.hh.
-///
-/// In EndOfRunAction(), the accumulated statistic and computed 
-/// dispersion is printed.
-///
-
-class G4SKspallationRunAction : public G4UserRunAction
-{
-  public:
-    G4SKspallationRunAction();
-    virtual ~G4SKspallationRunAction();
-
-    virtual void BeginOfRunAction(const G4Run*);
-    virtual void   EndOfRunAction(const G4Run*);
-};
+G4ThreadLocal G4Allocator<SKTankHit>* SKTankHitAllocator = 0;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+SKTankHit::SKTankHit()
+ : G4VHit()
+{}
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+SKTankHit::~SKTankHit() {}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+SKTankHit::SKTankHit(const SKTankHit& right)
+  : G4VHit()
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+const SKTankHit& SKTankHit::operator=(const SKTankHit& right)
+{
+  return *this;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4bool SKTankHit::operator==(const SKTankHit& right) const
+{
+  return ( this == &right ) ? true : false;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void SKTankHit::Print()
+{
+  G4cout
+     << "N: "
+     << G4endl;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

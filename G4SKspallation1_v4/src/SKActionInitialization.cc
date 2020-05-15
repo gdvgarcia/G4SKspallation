@@ -24,28 +24,33 @@
 // ********************************************************************
 //
 //
-/// \file G4SKspallationActionInitialization.hh
-/// \brief Definition of the G4SKspallationActionInitialization class
+/// \file SKActionInitialization.cc
+/// \brief Implementation of the SKActionInitialization class
 
-#ifndef G4SKspallationActionInitialization_h
-#define G4SKspallationActionInitialization_h 1
-
-#include "G4VUserActionInitialization.hh"
-
-/// Action initialization class.
-
-class G4SKspallationActionInitialization : public G4VUserActionInitialization
-{
-  public:
-    G4SKspallationActionInitialization();
-    virtual ~G4SKspallationActionInitialization();
-
-    virtual void BuildForMaster() const;
-    virtual void Build() const;
-};
+#include "SKActionInitialization.hh"
+#include "SKPrimaryGeneratorAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+SKActionInitialization::SKActionInitialization()
+ : G4VUserActionInitialization()
+{}
 
-    
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+SKActionInitialization::~SKActionInitialization()
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void SKActionInitialization::BuildForMaster() const
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void SKActionInitialization::Build() const
+{
+  SetUserAction(new SKPrimaryGeneratorAction);
+}  
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

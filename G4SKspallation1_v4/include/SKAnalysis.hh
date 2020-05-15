@@ -24,46 +24,15 @@
 // ********************************************************************
 //
 //
-/// \file G4SKspallationDetectorConstruction.hh
-/// \brief Definition of the G4SKspallationDetectorConstruction class
+/// \file SKAnalysis.hh
+/// \brief Selection of the analysis technology
 
-#ifndef G4SKspallationDetectorConstruction_h
-#define G4SKspallationDetectorConstruction_h 1
+#ifndef SKAnalysis_h
+#define SKAnalysis_h 1
 
-#include "G4VUserDetectorConstruction.hh"
-#include "globals.hh"
-
-class G4VPhysicalVolume;
-class G4LogicalVolume;
-
-
-/// Detector construction class to define materials and geometry.
-/// The tank is a cylinder cointaining another cylinder inside which is the fiducial volume.
-///
-/// Four parameters define the geometry of the water tank :
-///
-/// - the radius of the tank container,
-/// - the height of the tank container,
-/// - the radius of the fiducial volume,
-/// - the height of the fiducial volume.
-///
-/// In ConstructSDandField() sensitive detectors of G4SKspallationTankSD type
-/// are created and associated with the water tank.
-
-class G4SKspallationDetectorConstruction : public G4VUserDetectorConstruction
-{
-  public:
-    G4SKspallationDetectorConstruction();
-    virtual ~G4SKspallationDetectorConstruction();
-
-  public:
-    virtual G4VPhysicalVolume* Construct();
-    virtual void ConstructSDandField();
-     
-    
-};
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// Select the analysis technology by changing the next lines
+#include "g4root.hh"
+//#include "g4csv.hh"
+//#include "g4xml.hh"
 
 #endif
-

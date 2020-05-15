@@ -24,40 +24,28 @@
 // ********************************************************************
 //
 //
-/// \file G4SKspallationPrimaryGeneratorAction.hh
-/// \brief Definition of the G4SKspallationPrimaryGeneratorAction class
+/// \file SKActionInitialization.hh
+/// \brief Definition of the SKActionInitialization class
 
-#ifndef G4SKspallationPrimaryGeneratorAction_h
-#define G4SKspallationPrimaryGeneratorAction_h 1
+#ifndef SKActionInitialization_h
+#define SKActionInitialization_h 1
 
-#include "G4VUserPrimaryGeneratorAction.hh"
-#include "G4ParticleGun.hh"
-#include "globals.hh"
+#include "G4VUserActionInitialization.hh"
 
-class G4ParticleGun;
-class G4Event;
+/// Action initialization class.
 
-/// The primary generator action class with particle gun.
-///
-/// The default kinematic is a 50 GeV muon xxx change with the spectrum xxx, randomly distribued 
-/// on the top part of the water tank across 100% xxxx (maybe change with a bit more) xxxx of the (X,Y) tank top surface.
-
-class G4SKspallationPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
+class SKActionInitialization : public G4VUserActionInitialization
 {
   public:
-    G4SKspallationPrimaryGeneratorAction();    
-    virtual ~G4SKspallationPrimaryGeneratorAction();
+    SKActionInitialization();
+    virtual ~SKActionInitialization();
 
-    // method from the base class
-    virtual void GeneratePrimaries(G4Event*);         
-  
-    // method to access particle gun
-    const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
-  
-  private:
-    G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
+    virtual void BuildForMaster() const;
+    virtual void Build() const;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
+
+    

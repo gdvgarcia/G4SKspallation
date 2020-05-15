@@ -24,110 +24,125 @@
 // ********************************************************************
 //
 //
-/// \file G4SKspallationTankSD.cc
-/// \brief Implementation of the G4SKspallationTankSD class
+/// \file SKTankSD.cc
+/// \brief Implementation of the SKTankSD class
 
-#include "G4SKspallationTankSD.hh"
-#include "G4HCofThisEvent.hh"
-#include "G4Step.hh"
-#include "G4ThreeVector.hh"
-#include "G4SDManager.hh"
-#include "G4ios.hh"
+#include "SKTankSD.hh"
+#include "SKAnalysis.hh"
 
-//added later
-#include "G4SKspallationAnalysis.hh"
 #include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
 #include "G4SteppingManager.hh"
-#include "G4SystemOfUnits.hh"
+#include "G4SDManager.hh"
+
+#include "G4ios.hh"
+#include "G4HCofThisEvent.hh"
+
+#include "G4Step.hh"
 #include "G4Track.hh"
-#include "G4ParticleDefinition.hh"
+#include "G4ThreeVector.hh"
 #include "G4TrackVector.hh"
-// maybe remove it
-#include "G4DecayTable.hh"
-#include "G4VDecayChannel.hh"
-#include "G4RadioactiveDecay.hh"
+
+#include "G4UnitsTable.hh"
+#include "G4SystemOfUnits.hh"
+
+#include "G4ParticleDefinition.hh"
 #include "G4VProcess.hh"
-#include "G4Tubs.hh"
 #include <map>
+#include <string> 
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4SKspallationTankSD::G4SKspallationTankSD(
+SKTankSD::SKTankSD(
                             const G4String& name, 
                             const G4String& hitsCollectionName)
- : G4VSensitiveDetector(name),
-   fHitsCollection(nullptr)
+ : G4VSensitiveDetector(name)
 {
   collectionName.insert(hitsCollectionName);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4SKspallationTankSD::~G4SKspallationTankSD() 
-{ 
-}
+SKTankSD::~SKTankSD() 
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void G4SKspallationTankSD::Initialize(G4HCofThisEvent* hce)
+void SKTankSD::Initialize(G4HCofThisEvent* hce)
 {
-  // Create hits collection
-  fHitsCollection 
-    = new G4SKspallationTankHitsCollection(SensitiveDetectorName, collectionName[0]); 
 
-  // Add this collection in hce
+  // Generating the Ntuples and histrograms for data collection
+  //
+
+  // Create analysis manager
+  // The choice of analysis technology is done via selectin of a namespace
+  // in SKAnalysis.hh
+  auto analysisManager = G4AnalysisManager::Instance();
+  // PRINTING TYPE OF ANALYSIS TECHNOLOGY
+  G4cout << "Using " << analysisManager->GetType() << G4endl;
+
+  // Create directories 
+  analysisManager->SetHistoDirectoryName("Histograms");
+  analysisManager->SetNtupleDirectoryName("Ntuples");
+  analysisManager->SetVerboseLevel(1);
+  analysisManager->SetNtupleMerging(true);
+    // Note: merging ntuples is available only with Root output
+
+  // Creating histograms
+  // 1D histograms for energy spectra
+  analysisManager->CreateH1("En_spec","Energy of neutrons", 301, -0.5, 300.5, "MeV", "log");
+  analysisManager->CreateH1("Ee_spec","Energy of electrons", 301, -0.5, 300.5,  "MeV", "log");
+  // 2D histogram for A and Z quantities
+  analysisManager->CreateH2("Isotopes", "Ions produced; Z values; A values", 150, 0.5, 150.5, 300, 0.5, 300.5);
+
+  // Creating ntuple
+  //
+  analysisManager->CreateNtuple("isotopes_data", "A, Z, position and type of parent process");
+  analysisManager->CreateNtupleDColumn("A");
+  analysisManager->CreateNtupleDColumn("Z");
+  analysisManager->CreateNtupleDColumn("x");
+  analysisManager->CreateNtupleDColumn("y");
+  analysisManager->CreateNtupleDColumn("z");
+  analysisManager->CreateNtupleSColumn("Process");
+  analysisManager->FinishNtuple();
+
+  // Open an output file
+  //
+  // getting collection ID 
   auto hcID 
     = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-  hce->AddHitsCollection( hcID, fHitsCollection ); 
+  std::string event = std::to_string(hcID);
+  std::string fileName = "G4SKspallation" + event;
+  analysisManager->OpenFile(fileName);
 
-  // Create hits
-  // tank
-  fHitsCollection->insert(new G4SKspallationTankHit());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4bool G4SKspallationTankSD::ProcessHits(G4Step* step, 
+G4bool SKTankSD::ProcessHits(G4Step* step, 
                                      G4TouchableHistory*)
 { 
-
-  //- check for newly produced particle. e.g. first step.
-  if ( step->GetTrack()->GetCurrentStepNumber() != 1) return FALSE;      
-  
-  // Get hit accounting data for the tank
-  auto hit = (*fHitsCollection)[0];
-  if ( ! hit ) {
-    G4ExceptionDescription msg;
-    msg << "Cannot access hit " ; 
-    G4Exception("G4SKspallationTankSD::ProcessHits()",
-      "MyCode0004", FatalException, msg);
-  }         
-
   //----------------------------------------------
   //        Track
   //----------------------------------------------
   // get track to collect the data
   G4Track* Track = step->GetTrack();
 
+  //- check for newly produced particle. e.g. first step.
+  if ( Track->GetCurrentStepNumber() != 1){return false;}
+
   G4ParticleDefinition* thePartDef = Track->GetDefinition();
   G4String partType= thePartDef->GetParticleType();
   G4String name = thePartDef->GetParticleName();
-  //const G4VProcess* process = Track->GetCreatorProcess();
+  const G4VProcess* process = Track->GetCreatorProcess();
 
 
   //----------------------------------------------
-  //  Collect of information for unstable isotopes
-  //  generated from an interaction with the target
+  //  Collect information for isotopes
+  //  generated from an interaction with the water tank
   //----------------------------------------------
-
   //check if it is an ion
-   if ( partType == "nucleus"){
-
-  	
-
-	
+  if ( partType == "nucleus" ){
 	//----------------------------------------------
 	//   isotopes info
 	//----------------------------------------------
@@ -136,14 +151,12 @@ G4bool G4SKspallationTankSD::ProcessHits(G4Step* step,
 	G4double x = Track->GetPosition().getX();
 	G4double y = Track->GetPosition().getY();
 	G4double z = Track->GetPosition().getZ();
-	//G4String Process = process->GetProcessName();
+	G4String Process = process->GetProcessName();
 
   	// get analysis manager
   	auto analysisManager = G4AnalysisManager::Instance();
  
   	// fill histograms
-  	analysisManager->FillH1(0, A);
-  	analysisManager->FillH1(1, Z);
   	analysisManager->FillH2(0, Z, A);
   
   	// fill ntuple
@@ -152,15 +165,20 @@ G4bool G4SKspallationTankSD::ProcessHits(G4Step* step,
   	analysisManager->FillNtupleDColumn(2, x);
   	analysisManager->FillNtupleDColumn(3, y);
   	analysisManager->FillNtupleDColumn(4, z);
+  	analysisManager->FillNtupleSColumn(5, Process);
   	analysisManager->AddNtupleRow(); 
       
   	return true;
-	}
+  }
 
-	//check if it is a new particle and if it is a neutron
-   if ( name == "neutron" ){
 
-	
+  //----------------------------------------------
+  //  Collect information for other particles
+  //  generated from an interaction with the water tank
+  //----------------------------------------------
+
+  //check if it is a neutron
+  if ( name == "neutron" ){
 	//----------------------------------------------
 	//   neutron info
 	//----------------------------------------------
@@ -170,24 +188,15 @@ G4bool G4SKspallationTankSD::ProcessHits(G4Step* step,
   	auto analysisManager = G4AnalysisManager::Instance();
  
   	// fill histogram
-  	analysisManager->FillH1(2, E);
- 
+  	analysisManager->FillH1(0, E);
       
   	return true;
-	}
+  }
 
-   //check if it is a electron
-   if (name == "e-" ){
+  //check if it is a electron
+  if (name == "e-" ){
 	//----------------------------------------------
-	//   isotopes count
-	//----------------------------------------------
-  	auto N = 1.;
-  	// Add values
-  	hit->Add(N);
-  	hitTotal->Add(N); 
-	
-	//----------------------------------------------
-	//   neutron info
+	//   electron info
 	//----------------------------------------------
 	G4double E = Track->GetVertexKineticEnergy();
 
@@ -195,27 +204,23 @@ G4bool G4SKspallationTankSD::ProcessHits(G4Step* step,
   	auto analysisManager = G4AnalysisManager::Instance();
  
   	// fill histogram
-  	analysisManager->FillH1(3, E);
+  	analysisManager->FillH1(1, E);
  
-      
   	return true;
-	}
+   }
 
-	return false;
+   return false;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void G4SKspallationTankSD::EndOfEvent(G4HCofThisEvent*)
+void SKTankSD::EndOfEvent(G4HCofThisEvent*)
 {
-  if ( verboseLevel>1 ) { 
-     auto nofHits = fHitsCollection->entries();
-     G4cout
-       << G4endl 
-       << "-------->Hits Collection: in this event they are " << nofHits 
-       << " hits in the tracker chambers: " << G4endl;
-     for ( std::size_t i=0; i<nofHits; ++i ) (*fHitsCollection)[i]->Print();
-  }
+  // save histograms & ntuple
+  //
+  auto analysisManager = G4AnalysisManager::Instance();
+  analysisManager->Write();
+  analysisManager->CloseFile();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

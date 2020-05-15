@@ -24,39 +24,70 @@
 // ********************************************************************
 //
 //
-/// \file G4SKspallationActionInitialization.cc
-/// \brief Implementation of the G4SKspallationActionInitialization class
+/// \file SKTankHit.hh
+/// \brief Definition of the SKTankHit class
 
-#include "G4SKspallationActionInitialization.hh"
-#include "G4SKspallationPrimaryGeneratorAction.hh"
-#include "G4SKspallationRunAction.hh"
-#include "G4SKspallationEventAction.hh"
+#ifndef SKTankHit_h
+#define SKTankHit_h 1
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#include "G4VHit.hh"
+#include "G4THitsCollection.hh"
+#include "G4Allocator.hh"
+#include "G4ThreeVector.hh"
+#include "G4Threading.hh"
 
-G4SKspallationActionInitialization::G4SKspallationActionInitialization()
- : G4VUserActionInitialization()
-{}
+/// Tank hit class
+///
+/// It defines data members to store the the N number
+/// of produced particles(nucleons) in a selected volume, the tank:
+/// - fN
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-G4SKspallationActionInitialization::~G4SKspallationActionInitialization()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void G4SKspallationActionInitialization::BuildForMaster() const
+class SKTankHit : public G4VHit
 {
-   SetUserAction(new G4SKspallationRunAction);
+  public:
+    SKTankHit();
+    SKTankHit(const SKTankHit&);
+    virtual ~SKTankHit();
+
+    // operators
+    const SKTankHit& operator=(const SKTankHit&);
+    G4bool operator==(const SKTankHit&) const;
+
+    inline void* operator new(size_t);
+    inline void  operator delete(void*);
+
+    // methods from base class
+    virtual void Draw() {}
+    virtual void Print();
+
+};
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+using SKTankHitsCollection = G4THitsCollection<SKTankHit>;
+
+extern G4ThreadLocal G4Allocator<SKTankHit>* SKTankHitAllocator;
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+inline void* SKTankHit::operator new(size_t)
+{
+  if (!SKTankHitAllocator) {
+    SKTankHitAllocator = new G4Allocator<SKTankHit>;
+  }
+  void *hit;
+  hit = (void *) SKTankHitAllocator->MallocSingle();
+  return hit;
+}
+
+inline void SKTankHit::operator delete(void *hit)
+{
+  if (!SKTankHitAllocator) {
+    SKTankHitAllocator = new G4Allocator<SKTankHit>;
+  }
+  SKTankHitAllocator->FreeSingle((SKTankHit*) hit);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void G4SKspallationActionInitialization::Build() const
-{
-  SetUserAction(new G4SKspallationPrimaryGeneratorAction);
-  SetUserAction(new G4SKspallationRunAction);
-  SetUserAction(new G4SKspallationEventAction);
-}  
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#endif

@@ -24,11 +24,13 @@
 // ********************************************************************
 //
 //
-/// \file G4SKspallationDetectorConstruction.cc
-/// \brief Implementation of the G4SKspallationDetectorConstruction class
+/// \file SKDetectorConstruction.cc
+/// \Implementation of the SKDetectorConstruction class
+/// To analyse data only from the fiducial voluçe you have to uncomment lines
+/// that create the fiducial volume and change the Sensitive Detector logical volume.
 
-#include "G4SKspallationDetectorConstruction.hh"
-#include "G4SKspallationTankSD.hh"
+#include "SKDetectorConstruction.hh"
+#include "SKTankSD.hh"
 #include "G4RunManager.hh"
 #include "G4NistManager.hh"
 #include "G4Box.hh"
@@ -37,7 +39,6 @@
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
 
-#include "G4PhysicalConstants.hh"
 #include "G4SDManager.hh"
 #include "G4AutoDelete.hh"
 #include "G4VisAttributes.hh"
@@ -45,25 +46,25 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4SKspallationDetectorConstruction::G4SKspallationDetectorConstruction()
+SKDetectorConstruction::SKDetectorConstruction()
 : G4VUserDetectorConstruction()
 { }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4SKspallationDetectorConstruction::~G4SKspallationDetectorConstruction()
+SKDetectorConstruction::~SKDetectorConstruction()
 { }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4VPhysicalVolume* G4SKspallationDetectorConstruction::Construct()
+G4VPhysicalVolume* SKDetectorConstruction::Construct()
 {  
 
   // Get nist material manager to use G4 materials list
   G4NistManager* nist = G4NistManager::Instance();
 
   // Option to switch on/off checking of volumes overlaps
-  G4bool checkOverlaps = true;
+  G4bool checkOverlaps = false;
 
 
   // Parameters of the SK tank
@@ -75,25 +76,25 @@ G4VPhysicalVolume* G4SKspallationDetectorConstruction::Construct()
   G4Material* tank_mat = nist->FindOrBuildMaterial("G4_WATER");
 
   // Parameters of the fiducial volume
-  G4double FinnerRadius = 0.*m;
-  G4double FouterRadius = 14.9*m;
-  G4double Fhz = 32.*m;
-  G4double FstartAngle = 0.*deg;
-  G4double FspanningAngle = 360.*deg;
-  G4Material* fidu_mat = nist->FindOrBuildMaterial("G4_WATER");
+  //G4double FinnerRadius = 0.*m;
+  //G4double FouterRadius = 14.9*m;
+  //G4double Fhz = 32.*m;
+  //G4double FstartAngle = 0.*deg;
+  //G4double FspanningAngle = 360.*deg;
+  //G4Material* fidu_mat = tank_mat;
 
   // Parameters of the world
   G4double worldLength = 1.2*SKhz; //size
-  G4Material* world_mat = nist->FindOrBuildMaterial("G4_WATER"); //we set water so we can simulate 200cm of water = 74 cm of rock
+  G4Material* world_mat = tank_mat; //we set water because we do not care about the outside material and we have already created water
 
 
   //
   // World
   //
+  // Solid and Logical volumes
   G4Box* worldS = new G4Box("WorldS", worldLength/2,worldLength/2,worldLength/2); 
   G4LogicalVolume* worldLV = new G4LogicalVolume(worldS, world_mat,"WorldLV"); 
-
-  //  Must place the World Physical volume unrotated at (0,0,0). 
+  // Must place the World Physical volume unrotated at (0,0,0). 
   G4VPhysicalVolume* worldPV
     = new G4PVPlacement(
                  0,               // no rotation
@@ -107,49 +108,57 @@ G4VPhysicalVolume* G4SKspallationDetectorConstruction::Construct()
                      
   //     
   // SK tank
-  //  
+  //
+  //Solid and Logical volumes
   G4Tubs* solidTank = new G4Tubs("TankS", SKinnerRadius, SKouterRadius, 0.5*SKhz, SKstartAngle, SKspanningAngle);
   G4LogicalVolume* logicTank = new G4LogicalVolume(solidTank, tank_mat, "TankLV");
-               
+  // Physical volume             
   new G4PVPlacement(0, G4ThreeVector(), logicTank, "Tank",worldLV, false, 0, checkOverlaps);
 
   //     
   // Fiducial volume
-  //        
-  G4Tubs* solidFidu = new G4Tubs("FiducialS", FinnerRadius, FouterRadius,0.5* Fhz, FstartAngle, FspanningAngle);         
-  G4LogicalVolume* logicFidu = new G4LogicalVolume(solidFidu, fidu_mat, "FiducialLV");
-               
-  new G4PVPlacement(0, G4ThreeVector(), logicFidu, "Fiducial", logicTank, false, 0, checkOverlaps);
+  //
+  //Solid and Logical volumes        
+  //G4Tubs* solidFidu = new G4Tubs("FiducialS", FinnerRadius, FouterRadius,0.5* Fhz, FstartAngle, FspanningAngle);         
+  //G4LogicalVolume* logicFidu = new G4LogicalVolume(solidFidu, fidu_mat, "FiducialLV");
+  // Physical volume             
+  //new G4PVPlacement(0, G4ThreeVector(), logicFidu, "Fiducial", logicTank, false, 0, checkOverlaps);
 
   
   // Visualization attributes
   G4VisAttributes* worldVisAtt = new G4VisAttributes(G4Colour(0.5451,0.2706,0.0745,0.35));
   G4VisAttributes* tankVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0,0.36));
-  G4VisAttributes* fiduVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0,0.365));
+  //G4VisAttributes* fiduVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0,0.365));
   worldLV        ->SetVisAttributes(worldVisAtt);
   logicTank      ->SetVisAttributes(tankVisAtt);
-  logicFidu      ->SetVisAttributes(fiduVisAtt);
+  //logicFidu      ->SetVisAttributes(fiduVisAtt);
 
 
   //
-  //always return the physical World
+  //Always return the physical World
   //
   return worldPV;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void G4SKspallationDetectorConstruction::ConstructSDandField()
+void SKDetectorConstruction::ConstructSDandField()
 {
+  // If you want to choose the level of verbosity
   // G4SDManager::GetSDMpointer()->SetVerboseLevel(1);
 
   // 
-  // Sensitive detectors
+  // Creating the sensitive detector for the tank
   //
-  auto tankSD 
-    = new G4SKspallationTankSD("TankSD", "TankHitsCollection");
-  G4SDManager::GetSDMpointer()->AddNewDetector(tankSD);
-  SetSensitiveDetector("TankLV",tankSD);
+  G4SensitiveDetector* tankSD = new SKTankSD("TankSD", "TankHitsCollection");
+  SetSensitiveDetector("TankLV", tankSD);
+
+  // 
+  // Creating the sensitive detector for the fiducial volume - comment the above lines
+  // so we only have one detector
+  //auto fiduSD = new SKTankSD("FiduSD", "TankHitsCollection");
+  //----------------------------------------------------G4SDManager::GetSDMpointer()->AddNewDetector(fiduSD);
+  //SetSensitiveDetector("FiducialLV", fiduSD);
 
 }
 

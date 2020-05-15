@@ -24,12 +24,12 @@
 // ********************************************************************
 //
 // HERE WE GENERATE A MUON WITH A GIVEN ENERGY(AVERAGE MUON ENERGY FOR SK) AND 
-// POSITION( IN THE TANK AXIS AND ON THE UPPER PART OF THE TANK )
+// A GIVEN POSITION( oN THE TANK AXIS AND ON THE UPPER PART OF THE TANK )
 //
-/// \file G4SKspallationPrimaryGeneratorAction.cc
-/// \brief Implementation of the G4SKspallationPrimaryGeneratorAction class
+/// \file SKPrimaryGeneratorAction.cc
+/// \brief Implementation of the SKPrimaryGeneratorAction class
 
-#include "G4SKspallationPrimaryGeneratorAction.hh"
+#include "SKPrimaryGeneratorAction.hh"
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
@@ -40,7 +40,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4SKspallationPrimaryGeneratorAction::G4SKspallationPrimaryGeneratorAction()
+SKPrimaryGeneratorAction::SKPrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(),
   fParticleGun(0)
 {
@@ -59,27 +59,25 @@ G4SKspallationPrimaryGeneratorAction::G4SKspallationPrimaryGeneratorAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4SKspallationPrimaryGeneratorAction::~G4SKspallationPrimaryGeneratorAction()
+SKPrimaryGeneratorAction::~SKPrimaryGeneratorAction()
 {
   delete fParticleGun;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void G4SKspallationPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  //this function is called at the begining of each event
+  //This function is called at the begining of each event
   //
   
-
-  //SK tank parameters to set up the gun in the right position
+  //SK tank parameters to set up the gun in the right height
   G4double Thz = 42.*m;
 
-
+  //setting vertex position
   G4double x0 = 0;//centered
   G4double y0 = 0;//centered
   G4double z0 = 0.5 * Thz;//on top of the tank
-  
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
   fParticleGun->GeneratePrimaryVertex(anEvent);

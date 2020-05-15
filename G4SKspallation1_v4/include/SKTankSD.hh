@@ -23,46 +23,47 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// 
-/// \file G4SKspallationEventAction.hh
-/// \brief Definition of the G4SKspallationEventAction class
+//
+/// \file SKTankSD.hh
+/// \brief Definition of the SKTankSD class
 
-#ifndef G4SKspallationEventAction_h
-#define G4SKspallationEventAction_h 1
+#ifndef SKTankSD_h
+#define SKTankSD_h 1
 
-#include "G4UserEventAction.hh"
+#include "G4VSensitiveDetector.hh"
 
-#include "G4SKspallationTankHit.hh"
-
+#include "SKTankHit.hh"
 #include "globals.hh"
+#include <vector>
 
-/// Event action class
+class G4Step;
+class G4HCofThisEvent;
+class G4Track;
+
+/// Tank sensitive detector class
 ///
-/// In EndOfEventAction(), it prints the accumulated quantities of the number 
-/// N of produced particles in the SK tank  
-/// stored in the hits collections.
+/// In Initialize(), it creates the histograms and the ntuples used for collecting data
+/// 
+/// The values are accounted in hits in ProcessHits() function which is called
+/// by Geant4 kernel at each step.
+///
+/// EndOfEvent(), it saves the histograms and the ntuples used for collecting data
 
-class G4SKspallationEventAction : public G4UserEventAction
+class SKTankSD : public G4VSensitiveDetector
 {
-public:
-  G4SKspallationEventAction();
-  virtual ~G4SKspallationEventAction();
-
-  virtual void  BeginOfEventAction(const G4Event* event);
-  virtual void    EndOfEventAction(const G4Event* event);
-    
-private:
-  // methods
-  G4SKspallationTankHitsCollection* GetHitsCollection(G4int hcID,
-                                            const G4Event* event) const;
-  void PrintEventStatistics(G4double N ) const;
+  public:
+    SKTankSD(const G4String& name, 
+                     const G4String& hitsCollectionName);
+    virtual ~SKTankSD();
   
-  // data members                   
-  G4int  fTankHCID;
+    // methods from base class
+    virtual void   Initialize(G4HCofThisEvent* hitCollection);
+    virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
+    virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
+
 };
-                     
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
 
-    

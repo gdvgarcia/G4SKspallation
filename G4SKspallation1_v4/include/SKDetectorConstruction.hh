@@ -24,48 +24,42 @@
 // ********************************************************************
 //
 //
-/// \file G4SKspallationTankSD.hh
-/// \brief Definition of the G4SKspallationTankSD class
+/// \file SKDetectorConstruction.hh
+/// \brief Definition of the SKDetectorConstruction class
 
-#ifndef G4SKspallationTankSD_h
-#define G4SKspallationTankSD_h 1
+#ifndef SKDetectorConstruction_h
+#define SKDetectorConstruction_h 1
 
-#include "G4VSensitiveDetector.hh"
+#include "G4VUserDetectorConstruction.hh"
+#include "globals.hh"
 
-#include "G4SKspallationTankHit.hh"
+class G4VPhysicalVolume;
+class G4LogicalVolume;
 
-#include <vector>
 
-// added later
-#include "G4SKspallationDetectorConstruction.hh"
-
-class G4Step;
-class G4HCofThisEvent;
-// added later
-class G4Track;
-
-/// Tank sensitive detector class
+/// Detector construction class to define materials and geometry.
+/// The tank is a cylinder cointaining another cylinder inside which is the fiducial volume.
 ///
-/// In Initialize(), it creates one hit for tank
-/// 
+/// Four parameters define the geometry of the water tank :
 ///
-/// The values are accounted in hits in ProcessHits() function which is called
-/// by Geant4 kernel at each step.
+/// - the radius of the tank container,
+/// - the height of the tank container,
+/// - the radius of the fiducial volume,
+/// - the height of the fiducial volume.
+///
+/// In ConstructSDandField() , the sensitive detector of SKTankSD type
+/// is created and associated with the water tank.
 
-class G4SKspallationTankSD : public G4VSensitiveDetector
+class SKDetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
-    G4SKspallationTankSD(const G4String& name, 
-                     const G4String& hitsCollectionName);
-    virtual ~G4SKspallationTankSD();
-  
-    // methods from base class
-    virtual void   Initialize(G4HCofThisEvent* hitCollection);
-    virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
-    virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
+    SKDetectorConstruction();
+    virtual ~SKDetectorConstruction();
 
-  private:
-    G4SKspallationTankHitsCollection* fHitsCollection;
+  public:
+    virtual G4VPhysicalVolume* Construct();
+    virtual void ConstructSDandField();
+         
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
