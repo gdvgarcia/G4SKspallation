@@ -17,9 +17,9 @@
 /event/verbose 0
 /tracking/verbose 0
 #
-# Genereating 1000 muons hit
+# Genereating 1 muons hit
 #
-/run/beamOn 1000
+/run/beamOn 100
 #
 # Dump scorers to a file
 #

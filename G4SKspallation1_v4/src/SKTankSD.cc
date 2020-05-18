@@ -56,7 +56,8 @@
 SKTankSD::SKTankSD(
                             const G4String& name, 
                             const G4String& hitsCollectionName)
- : G4VSensitiveDetector(name)
+ : G4VSensitiveDetector(name),
+   fHitsCollection(nullptr)
 {
   collectionName.insert(hitsCollectionName);
 }
@@ -70,51 +71,22 @@ SKTankSD::~SKTankSD()
 
 void SKTankSD::Initialize(G4HCofThisEvent* hce)
 {
+  // Create hits collection
+  fHitsCollection 
+    = new SKTankHitsCollection(SensitiveDetectorName, collectionName[0]); 
 
-  // Generating the Ntuples and histrograms for data collection
-  //
-
-  // Create analysis manager
-  // The choice of analysis technology is done via selectin of a namespace
-  // in SKAnalysis.hh
-  auto analysisManager = G4AnalysisManager::Instance();
-  // PRINTING TYPE OF ANALYSIS TECHNOLOGY
-  G4cout << "Using " << analysisManager->GetType() << G4endl;
-
-  // Create directories 
-  analysisManager->SetHistoDirectoryName("Histograms");
-  analysisManager->SetNtupleDirectoryName("Ntuples");
-  analysisManager->SetVerboseLevel(1);
-  analysisManager->SetNtupleMerging(true);
-    // Note: merging ntuples is available only with Root output
-
-  // Creating histograms
-  // 1D histograms for energy spectra
-  analysisManager->CreateH1("En_spec","Energy of neutrons", 301, -0.5, 300.5, "MeV", "log");
-  analysisManager->CreateH1("Ee_spec","Energy of electrons", 301, -0.5, 300.5,  "MeV", "log");
-  // 2D histogram for A and Z quantities
-  analysisManager->CreateH2("Isotopes", "Ions produced; Z values; A values", 150, 0.5, 150.5, 300, 0.5, 300.5);
-
-  // Creating ntuple
-  //
-  analysisManager->CreateNtuple("isotopes_data", "A, Z, position and type of parent process");
-  analysisManager->CreateNtupleDColumn("A");
-  analysisManager->CreateNtupleDColumn("Z");
-  analysisManager->CreateNtupleDColumn("x");
-  analysisManager->CreateNtupleDColumn("y");
-  analysisManager->CreateNtupleDColumn("z");
-  analysisManager->CreateNtupleSColumn("Process");
-  analysisManager->FinishNtuple();
-
-  // Open an output file
-  //
-  // getting collection ID 
+  // Add this collection in hce
   auto hcID 
     = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-  std::string event = std::to_string(hcID);
-  std::string fileName = "G4SKspallation" + event;
-  analysisManager->OpenFile(fileName);
+  hce->AddHitsCollection( hcID, fHitsCollection ); 
 
+  // Create hits
+  fHitsCollection->insert(new SKTankHit());
+
+  // Keep event ID
+   // Get hit accounting data
+  auto hit = (*fHitsCollection)[0];
+  hit->Add();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -143,6 +115,12 @@ G4bool SKTankSD::ProcessHits(G4Step* step,
   //----------------------------------------------
   //check if it is an ion
   if ( partType == "nucleus" ){
+
+	// Get event ID
+  	// Get hit accounting data
+  	auto hit = (*fHitsCollection)[0];
+  	G4int eventID = hit->GetEventID();
+
 	//----------------------------------------------
 	//   isotopes info
 	//----------------------------------------------
@@ -166,6 +144,7 @@ G4bool SKTankSD::ProcessHits(G4Step* step,
   	analysisManager->FillNtupleDColumn(3, y);
   	analysisManager->FillNtupleDColumn(4, z);
   	analysisManager->FillNtupleSColumn(5, Process);
+	analysisManager->FillNtupleIColumn(6, eventID);
   	analysisManager->AddNtupleRow(); 
       
   	return true;
@@ -210,17 +189,6 @@ G4bool SKTankSD::ProcessHits(G4Step* step,
    }
 
    return false;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void SKTankSD::EndOfEvent(G4HCofThisEvent*)
-{
-  // save histograms & ntuple
-  //
-  auto analysisManager = G4AnalysisManager::Instance();
-  analysisManager->Write();
-  analysisManager->CloseFile();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

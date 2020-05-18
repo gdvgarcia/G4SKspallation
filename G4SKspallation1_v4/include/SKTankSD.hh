@@ -32,7 +32,6 @@
 
 #include "G4VSensitiveDetector.hh"
 
-#include "SKTankHit.hh"
 #include "globals.hh"
 #include <vector>
 
@@ -42,13 +41,10 @@ class G4Track;
 
 /// Tank sensitive detector class
 ///
-/// In Initialize(), it creates the histograms and the ntuples used for collecting data
 /// 
 /// The values are accounted in hits in ProcessHits() function which is called
 /// by Geant4 kernel at each step.
 ///
-/// EndOfEvent(), it saves the histograms and the ntuples used for collecting data
-
 class SKTankSD : public G4VSensitiveDetector
 {
   public:
@@ -59,7 +55,9 @@ class SKTankSD : public G4VSensitiveDetector
     // methods from base class
     virtual void   Initialize(G4HCofThisEvent* hitCollection);
     virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
-    virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
+
+    private:
+         G4VHitsCollection* fHitsCollection;
 
 };
 

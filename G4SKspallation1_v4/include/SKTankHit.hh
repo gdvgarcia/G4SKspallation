@@ -38,9 +38,8 @@
 
 /// Tank hit class
 ///
-/// It defines data members to store the the N number
-/// of produced particles(nucleons) in a selected volume, the tank:
-/// - fN
+/// It defines data members to store the fEventID:
+/// - fEventID
 
 class SKTankHit : public G4VHit
 {
@@ -60,6 +59,14 @@ class SKTankHit : public G4VHit
     virtual void Draw() {}
     virtual void Print();
 
+    // methods to handle data
+    void Add();
+
+    // get methods
+    G4double GetEventID() const;
+      
+  private:
+    G4int fEventID;        ///< Event ID
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -87,6 +94,15 @@ inline void SKTankHit::operator delete(void *hit)
   }
   SKTankHitAllocator->FreeSingle((SKTankHit*) hit);
 }
+
+inline void SKTankHit::Add() {
+  fEventID += 1;
+}
+
+inline G4double SKTankHit::GetEventID() const { 
+  return fEventID; 
+}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

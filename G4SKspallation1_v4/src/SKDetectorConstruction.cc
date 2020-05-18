@@ -31,6 +31,7 @@
 
 #include "SKDetectorConstruction.hh"
 #include "SKTankSD.hh"
+#include "G4VSensitiveDetector.hh"
 #include "G4RunManager.hh"
 #include "G4NistManager.hh"
 #include "G4Box.hh"
@@ -150,7 +151,7 @@ void SKDetectorConstruction::ConstructSDandField()
   // 
   // Creating the sensitive detector for the tank
   //
-  G4SensitiveDetector* tankSD = new SKTankSD("TankSD", "TankHitsCollection");
+  G4VSensitiveDetector* tankSD = new SKTankSD("TankSD", "TankHitsCollection");
   SetSensitiveDetector("TankLV", tankSD);
 
   // 

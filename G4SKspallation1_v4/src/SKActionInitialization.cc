@@ -29,6 +29,7 @@
 
 #include "SKActionInitialization.hh"
 #include "SKPrimaryGeneratorAction.hh"
+#include "SKRunAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -51,6 +52,9 @@ void SKActionInitialization::BuildForMaster() const
 void SKActionInitialization::Build() const
 {
   SetUserAction(new SKPrimaryGeneratorAction);
+
+  SKRunAction* RunAction = new SKRunAction();
+  SetUserAction(RunAction);
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

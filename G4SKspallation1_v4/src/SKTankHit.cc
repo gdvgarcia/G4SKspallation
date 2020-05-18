@@ -41,7 +41,8 @@ G4ThreadLocal G4Allocator<SKTankHit>* SKTankHitAllocator = 0;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SKTankHit::SKTankHit()
- : G4VHit()
+ : G4VHit(),
+   fEventID(0)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -52,12 +53,16 @@ SKTankHit::~SKTankHit() {}
 
 SKTankHit::SKTankHit(const SKTankHit& right)
   : G4VHit()
-{}
+{
+  fEventID        = right.fEventID;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 const SKTankHit& SKTankHit::operator=(const SKTankHit& right)
 {
+  fEventID        = right.fEventID;
+
   return *this;
 }
 
@@ -73,7 +78,8 @@ G4bool SKTankHit::operator==(const SKTankHit& right) const
 void SKTankHit::Print()
 {
   G4cout
-     << "N: "
+     << "fEventID: " 
+     << fEventID
      << G4endl;
 }
 
