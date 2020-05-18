@@ -98,14 +98,12 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
   // Get hits collections IDs (only once)
   if ( fTankHCID == -1 ) {
     fTankHCID 
-      = G4SDManager::GetSDMpointer()->GetCollectionID("TankHitsCollection");
-  }
+      = G4SDManager::GetSDMpointer()->GetCollectionID("TankHitsCollection"); // use the name of the hits collection chosen in the SKDetectorConstruction
+  }// you might want to construct more than one sensitive detector or hits collection, so you would need to creat more fnameHCID to collect their hit collections IDs
 
   // Get hits collections
   auto tankHC = GetHitsCollection(fTankHCID, event);
-
-  // Get hit with total values
-  auto tankHit = (*tankHC)[tankHC->entries()-1];
+  auto tankHit = (*tankHC)[tankHC->entries()-1]; // if you have repeated copies of a geometrical object, you might associate only one sensitive detector to all of them, so you would have more than one entry, corresponding to each geometrical copy
  
   // Print per event (modulo n)
   //
@@ -118,14 +116,12 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
       tankHit->GetEdep());
   }  
   
-  // Fill histograms, ntuple
+  // Fill the histogram for the total energy deposit per event
   //
-
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
- 
   // fill histograms
-  analysisManager->FillH1(2, tankHit->GetEdep());
+  analysisManager->FillH1(4, tankHit->GetEdep());
    
 }  
 

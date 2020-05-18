@@ -60,7 +60,7 @@ class SKSD : public G4VSensitiveDetector
 
   private:
     SKHitsCollection* fHitsCollection;
-    G4double fEventID;
+    G4int fEventID;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

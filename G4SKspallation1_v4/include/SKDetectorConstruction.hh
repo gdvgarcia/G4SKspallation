@@ -40,14 +40,14 @@ class G4LogicalVolume;
 /// Detector construction class to define materials and geometry.
 /// The tank is a cylinder cointaining another cylinder inside which is the fiducial volume.
 ///
-/// Four parameters define the geometry of the water tank :
+/// Four parameters define the geometry of the this simulation :
 ///
 /// - the radius of the tank container,
 /// - the height of the tank container,
 /// - the radius of the fiducial volume,
 /// - the height of the fiducial volume.
 ///
-/// In ConstructSDandField() , the sensitive detector of SKTankSD type
+/// In ConstructSDandField() , the sensitive detector of SKSD type
 /// is created and associated with the water tank.
 
 class SKDetectorConstruction : public G4VUserDetectorConstruction

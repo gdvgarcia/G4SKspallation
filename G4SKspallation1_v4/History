@@ -23,5 +23,5 @@ track of all tags.
 13/05/20 G. D. V. Garcia (G4SKspallation1)
 - Primary generator simplified for muons on top of the tank, centered and with w fixed energy of 271 GeV which is the average muon energy for SK.
 15/05/20 G. D. V. Garcia (G4SKspallation1)
-- Addition of histograms and ntuples with data from each event simulated and removal (commenting its creation lines) of the fiducial volume. 
+- Addition of histograms and ntuples with data simulated from each run and removal (commenting its creation lines) of the fiducial volume. 
 

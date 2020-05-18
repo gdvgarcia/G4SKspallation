@@ -39,8 +39,7 @@ class G4Event;
 
 /// The primary generator action class with particle gun.
 ///
-/// The default kinematic is a 50 GeV muon xxx change with the spectrum xxx, randomly distribued 
-/// on the top part of the water tank across 100% xxxx (maybe change with a bit more) xxxx of the (X,Y) tank top surface.
+/// The default kinematic is a 271 GeV muon with downward velocity along the cylinder axis.
 
 class SKPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {

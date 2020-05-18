@@ -70,22 +70,22 @@ G4VPhysicalVolume* SKDetectorConstruction::Construct()
 
   // Parameters of the SK tank
   G4double SKinnerRadius = 0.*m;
-  G4double SKouterRadius = 19.5*m;
-  G4double SKhz = 42.*m;
+  G4double SKouterRadius = 19.5*m; //SK radius
+  G4double SKhz = 42.*m; //SK height
   G4double SKstartAngle = 0.*deg;
   G4double SKspanningAngle = 360.*deg;
-  G4Material* tank_mat = nist->FindOrBuildMaterial("G4_WATER");
+  G4Material* tank_mat = nist->FindOrBuildMaterial("G4_WATER"); //taking the material from the G4 materials list
 
   // Parameters of the fiducial volume
   //G4double FinnerRadius = 0.*m;
-  //G4double FouterRadius = 14.9*m;
-  //G4double Fhz = 32.*m;
+  //G4double FouterRadius = 14.9*m; //Fiducial volume radius
+  //G4double Fhz = 32.*m; //Fiducial volume height
   //G4double FstartAngle = 0.*deg;
   //G4double FspanningAngle = 360.*deg;
   //G4Material* fidu_mat = tank_mat;
 
   // Parameters of the world
-  G4double worldLength = 1.2*SKhz; //size
+  G4double worldLength = 1.2*SKhz; //size of the world - just need to be larger than the tank
   G4Material* world_mat = tank_mat; //we set water because we do not care about the outside material and we have already created water
 
 

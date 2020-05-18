@@ -53,8 +53,8 @@ SKSD::SKSD(
                             const G4String& name, 
                             const G4String& hitsCollectionName)
  : G4VSensitiveDetector(name),
-   fHitsCollection(nullptr)//,
-   //fEventID(0)
+   fHitsCollection(nullptr),
+   fEventID(0)
 {
   collectionName.insert(hitsCollectionName);
 }
@@ -169,10 +169,10 @@ G4bool SKSD::ProcessHits(G4Step* step,
   	return true;
   }
 
-  //check if it is a electron
-  if (name == "e-" ){
+  //check if it is a electron or a positron
+  if (name == "e-" || name == "e+" ){
 	//----------------------------------------------
-	//   electron info
+	//   electron/positron info
 	//----------------------------------------------
 	G4double E = Track->GetVertexKineticEnergy();
 
@@ -181,6 +181,38 @@ G4bool SKSD::ProcessHits(G4Step* step,
  
   	// fill histogram
   	analysisManager->FillH1(1, E);
+ 
+  	return true;
+   }
+
+     //check if it is a pion + or a pion -
+  if (name == "pi+" || name == "pi-" ){
+	//----------------------------------------------
+	//   charged pion info
+	//----------------------------------------------
+	G4double E = Track->GetVertexKineticEnergy();
+
+  	// get analysis manager
+  	auto analysisManager = G4AnalysisManager::Instance();
+ 
+  	// fill histogram
+  	analysisManager->FillH1(2, E);
+ 
+  	return true;
+   } 
+
+     //check if it is a neutral pion
+  if (name == "pi0" ){
+	//----------------------------------------------
+	//    neutral pion info
+	//----------------------------------------------
+	G4double E = Track->GetVertexKineticEnergy();
+
+  	// get analysis manager
+  	auto analysisManager = G4AnalysisManager::Instance();
+ 
+  	// fill histogram
+  	analysisManager->FillH1(3, E);
  
   	return true;
    } 

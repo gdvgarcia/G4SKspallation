@@ -63,14 +63,18 @@ SKRunAction::SKRunAction()
   // 1D histograms for energy spectra
   analysisManager->CreateH1("En_spec","Energy of neutrons", 1000, 0.1 , 500.1 , "MeV", "none", "log"
 );
-  analysisManager->CreateH1("Ee_spec","Energy of electrons", 1000, 0.1 , 500.1 ,"MeV", "none", "log"
+  analysisManager->CreateH1("Ee_spec","Energy of electrons + positrons", 1000, 0.1 , 500.1 ,"MeV", "none", "log"
+);
+  analysisManager->CreateH1("Epi_spec","Energy of charged pions", 1000, 0.1 , 500.1 ,"MeV", "none", "log"
+);
+  analysisManager->CreateH1("Epi0_spec","Energy of neutral pion", 1000, 0.1 , 500.1 ,"MeV", "none", "log"
 );
     analysisManager->CreateH1("Edep","Energy of deposited per event", 101, 0.5 , 100.5 * GeV// ,"log"
 );
   // 2D histogram for A and Z quantities
   analysisManager->CreateH2("Isotopes", "Ions produced; Z values; A values", 150, 0.5, 150.5, 300, 0.5, 300.5);
 
-  // Creating ntuple
+  // Creating the ntuple
   //
   analysisManager->CreateNtuple("isotopes_data", "A, Z, position and type of parent process");
   analysisManager->CreateNtupleDColumn("A");
@@ -100,7 +104,7 @@ void SKRunAction::BeginOfRunAction(const G4Run* /*run*/)
   // Get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
 
-  // Open an output file
+  // Open an output file where we save the data collected
   //
   G4String fileName = "SK";
   analysisManager->OpenFile(fileName);
@@ -110,7 +114,7 @@ void SKRunAction::BeginOfRunAction(const G4Run* /*run*/)
 
 void SKRunAction::EndOfRunAction(const G4Run* /*run*/)
 {
-  // print histogram statistics
+  // print some histogram statistics
   //
   auto analysisManager = G4AnalysisManager::Instance();
   if ( analysisManager->GetH1(1) ) {
@@ -127,7 +131,7 @@ void SKRunAction::EndOfRunAction(const G4Run* /*run*/)
        << " rms = " 
        << G4BestUnit(analysisManager->GetH1(0)->rms(),  "Energy") << G4endl;
     
-    G4cout << " Electron energy spectrum : mean = " 
+    G4cout << " Electron + electrons energy spectrum : mean = " 
        << G4BestUnit(analysisManager->GetH1(1)->mean(), "Energy") 
        << " rms = " 
        << G4BestUnit(analysisManager->GetH1(1)->rms(),  "Energy") << G4endl;

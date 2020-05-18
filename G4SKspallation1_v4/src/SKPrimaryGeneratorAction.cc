@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 // HERE WE GENERATE A MUON WITH A GIVEN ENERGY(AVERAGE MUON ENERGY FOR SK) AND 
-// A GIVEN POSITION( oN THE TANK AXIS AND ON THE UPPER PART OF THE TANK )
+// A GIVEN POSITION( ON THE TANK AXIS AND ON THE UPPER PART OF THE TANK )
 //
 /// \file SKPrimaryGeneratorAction.cc
 /// \brief Implementation of the SKPrimaryGeneratorAction class

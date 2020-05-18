@@ -16,7 +16,7 @@ with simple conditions for the geometry.
    The geometry is constructed in the G4SKspallationDetectorConstruction class.
    The setup consists of a an envelope(world) of box shape containing two volumes: 
    the water tank cylinder and the fiducial volume of the tank which is also a cylinder.
-   ***Fiducial volume is commented - if you want to measure things only for the physical volume 
+   ***Fiducial volume is commented - if you want to measure things only for the fiducial volume 
    you have to uncomment lines in the detector construction.***
 
    
@@ -39,6 +39,7 @@ with simple conditions for the geometry.
 
    The envelope(world) is made of water (2.7 m water ~ 1 m rock) and the two inner volumes
    are also made of water.  
+
    The materials are created with the help of the G4NistManager class,
    which allows to build a material from the NIST database using their
    names. All available materials can be found in the Geant4 User's Guide
@@ -84,34 +85,35 @@ with simple conditions for the geometry.
    The default kinematics is a 271 GeV muon(which is average muon energy for Super-Kamiokande) 
    with downward momentum along the cylinder axis located on top of the tank's water in the center
    of the tank surface.
+
    This default setting can be changed via the Geant4 built-in commands of the G4ParticleGun class.
      
  5- DETECTOR RESPONSE
 
-   xxxx This example demonstrates a simple scoring implemented directly
-   in the user action classes.  Alternative ways of scoring via Geant4 classes 
-   can be found in the other examples. xxxxxx
-   xxxxx
-   The energy deposited is collected step by step for a selected volume
-   in G4SKspallationSteppingAction and accumulated event by event in G4SKspallationEventAction.
+   This simulation contains two scoring methods. 
 
-   At end of event, the value acummulated in G4SKspallationEventAction is added in G4SKspallationRunAction
-   and summed over the whole run (see G4SKspallationEventAction::EndOfevent()).
+   One is command-based method implemented in the main function with the line : 
+   G4ScoringManager * scManager = G4ScoringManager::GetScoringManager();  
+   And then with scoring macros. A few different macros are available in the git hub repository.
 
-   Total dose deposited is computed at G4SKspallationRunAction::EndOfRunAction(), 
-   and printed together with informations about the primary particle.
-   In multi-threading mode the energy accumulated in G4Accumulable objects per
-   workers is merged to the master in G4SKspallationRunAction::EndOfRunAction() and the final
-   result is printed on the screen. xxxx
+   The other method is introduced with the sensitive detector construction. This is more complex
+   and , for this specific simulation , requires the definition of some classes :
+   SKRunAction, SKEventAction, SKHits, SKSD, SKAnalysis.
+   And some changes in the action initialization and in the detector geometry classes.
+
+   Alternative ways of scoring via Geant4 classes can be found in many Geant4 official examples.
    
-  xxxx G4Parameter<G4double> type instead of G4double type is used for the G4SKspallationRunAction
-   data members in order to facilitate merging of the values accumulated on workers 
-   to the master.  Currently the accumulables have to be registered to G4AccumulablesManager
-   and G4AccumulablesManager::Merge() has to be called from the users code. This is planned
-   to be further simplified with a closer integration of G4Accumulable classes in
-   the Geant4 kernel next year.  xxxx
+   The energy deposited in the SK tank is collected step by step in the SKSD and accumulated event 
+   by event in a SKHit class object. The tank being the sensitive detector defined (one can change 
+   the sensitive detector only to the fiducial volume by a few lines in the SKDetectorConstruction 
+   class).
 
+   At end of an event, the value acummulated in a SKHit class object is added to a histogram in SKEventAction.
 
+   The rest of the data is added to histograms and ntuples, which are created in the SKRunAction, already
+   whithin the SKSD::ProcessHits(G4Step* step, G4TouchableHistory* history) virtual function. These 
+   histograms and ntuples are all saved in a root file named "SK.root"(it can be changed to a csv or 
+   a xml file in the SKAnalysis).
 
  A- VISUALISATION
 
