@@ -30,7 +30,7 @@
 /// that create the fiducial volume and change the Sensitive Detector logical volume.
 
 #include "SKDetectorConstruction.hh"
-#include "SKTankSD.hh"
+#include "SKSD.hh"
 #include "G4VSensitiveDetector.hh"
 #include "G4RunManager.hh"
 #include "G4NistManager.hh"
@@ -151,13 +151,14 @@ void SKDetectorConstruction::ConstructSDandField()
   // 
   // Creating the sensitive detector for the tank
   //
-  G4VSensitiveDetector* tankSD = new SKTankSD("TankSD", "TankHitsCollection");
+  G4VSensitiveDetector* tankSD = new SKSD("TankSD", "TankHitsCollection");
+  G4SDManager::GetSDMpointer()->AddNewDetector(tankSD);
   SetSensitiveDetector("TankLV", tankSD);
 
   // 
   // Creating the sensitive detector for the fiducial volume - comment the above lines
   // so we only have one detector
-  //auto fiduSD = new SKTankSD("FiduSD", "TankHitsCollection");
+  //auto fiduSD = new SKSD("FiduSD", "TankHitsCollection");
   //----------------------------------------------------G4SDManager::GetSDMpointer()->AddNewDetector(fiduSD);
   //SetSensitiveDetector("FiducialLV", fiduSD);
 

@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
+// 
 /// \file SKRunAction.hh
 /// \brief Definition of the SKRunAction class
 
@@ -37,8 +37,15 @@ class G4Run;
 
 /// Run action class
 ///
-/// BeginOfRunAction(), crete the histograms and ntuples
-/// In EndOfRunAction(), Save the histograms and ntuples
+/// It accumulates statistic and computes dispersion of the energy distribution 
+/// of some sencondary particles with use of analysis tools:
+/// H1D histograms and a  ntuple are created in BeginOfRunAction()
+/// The histograms and ntuple are saved in the output file in a format
+/// according to a selected technology in SKAnalysis.hh.
+///
+/// In EndOfRunAction(), the accumulated statistic and computed 
+/// dispersion is printed.
+///
 
 class SKRunAction : public G4UserRunAction
 {
@@ -46,11 +53,11 @@ class SKRunAction : public G4UserRunAction
     SKRunAction();
     virtual ~SKRunAction();
 
-    // virtual G4Run* GenerateRun();
     virtual void BeginOfRunAction(const G4Run*);
     virtual void   EndOfRunAction(const G4Run*);
-
 };
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
 

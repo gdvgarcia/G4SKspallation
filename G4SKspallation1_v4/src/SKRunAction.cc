@@ -26,52 +26,46 @@
 //
 /// \file SKRunAction.cc
 /// \brief Implementation of the SKRunAction class
-///  It creates the histograms and Ntuples for the event
 
 #include "SKRunAction.hh"
-
-// #include "SKRun.hh"
-
 #include "SKAnalysis.hh"
+
 #include "G4Run.hh"
 #include "G4RunManager.hh"
-
+#include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SKRunAction::SKRunAction()
-: G4UserRunAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-SKRunAction::~SKRunAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void SKRunAction::BeginOfRunAction(const G4Run*)
+ : G4UserRunAction()
 { 
-  // Generating the Ntuples and histrograms for data collection
-  //
+  // set printing event number per each event
+  G4RunManager::GetRunManager()->SetPrintProgress(1);     
 
   // Create analysis manager
   // The choice of analysis technology is done via selectin of a namespace
   // in SKAnalysis.hh
   auto analysisManager = G4AnalysisManager::Instance();
-  // PRINTING TYPE OF ANALYSIS TECHNOLOGY
   G4cout << "Using " << analysisManager->GetType() << G4endl;
 
+  // Create directories 
+  //analysisManager->SetHistoDirectoryName("histograms");
+  //analysisManager->SetNtupleDirectoryName("ntuple");
   analysisManager->SetVerboseLevel(1);
   //analysisManager->SetNtupleMerging(true);
     // Note: merging ntuples is available only with Root output
 
+  // Book histograms, ntuple
+  //
+  
   // Creating histograms
   // 1D histograms for energy spectra
-  analysisManager->CreateH1("En_spec","Energy of neutrons", 301, -0.5 * MeV, 300.5 * MeV// ,"log"
+  analysisManager->CreateH1("En_spec","Energy of neutrons", 1000, 0.1 , 500.1 , "MeV", "none", "log"
 );
-  analysisManager->CreateH1("Ee_spec","Energy of electrons", 301, -0.5 * MeV, 300.5 * MeV// ,"log"
+  analysisManager->CreateH1("Ee_spec","Energy of electrons", 1000, 0.1 , 500.1 ,"MeV", "none", "log"
+);
+    analysisManager->CreateH1("Edep","Energy of deposited per event", 101, 0.5 , 100.5 * GeV// ,"log"
 );
   // 2D histogram for A and Z quantities
   analysisManager->CreateH2("Isotopes", "Ions produced; Z values; A values", 150, 0.5, 150.5, 300, 0.5, 300.5);
@@ -87,28 +81,62 @@ void SKRunAction::BeginOfRunAction(const G4Run*)
   analysisManager->CreateNtupleSColumn("Process");
   analysisManager->CreateNtupleIColumn("EventID");
   analysisManager->FinishNtuple();
-
-  // Open an output file
-  //
-  G4String fileName = "G4SKspallation";
-  analysisManager->OpenFile(fileName);
-
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void SKRunAction::EndOfRunAction(const G4Run* run)
+SKRunAction::~SKRunAction()
 {
+  delete G4AnalysisManager::Instance();  
+}
 
-  G4int nofEvents = run->GetNumberOfEvent();
-  if (nofEvents == 0) return;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void SKRunAction::BeginOfRunAction(const G4Run* /*run*/)
+{ 
+  //inform the runManager to save random number seed
+  //G4RunManager::GetRunManager()->SetRandomNumberStore(true);
+  
+  // Get analysis manager
+  auto analysisManager = G4AnalysisManager::Instance();
+
+  // Open an output file
+  //
+  G4String fileName = "SK";
+  analysisManager->OpenFile(fileName);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void SKRunAction::EndOfRunAction(const G4Run* /*run*/)
+{
+  // print histogram statistics
+  //
+  auto analysisManager = G4AnalysisManager::Instance();
+  if ( analysisManager->GetH1(1) ) {
+    G4cout << G4endl << " ----> print histograms statistic ";
+    if(isMaster) {
+      G4cout << "for the entire run " << G4endl << G4endl; 
+    }
+    else {
+      G4cout << "for the local thread " << G4endl << G4endl; 
+    }
+    
+    G4cout << " Neutron energy spectrum : mean = " 
+       << G4BestUnit(analysisManager->GetH1(0)->mean(), "Energy") 
+       << " rms = " 
+       << G4BestUnit(analysisManager->GetH1(0)->rms(),  "Energy") << G4endl;
+    
+    G4cout << " Electron energy spectrum : mean = " 
+       << G4BestUnit(analysisManager->GetH1(1)->mean(), "Energy") 
+       << " rms = " 
+       << G4BestUnit(analysisManager->GetH1(1)->rms(),  "Energy") << G4endl;
+  }
 
   // save histograms & ntuple
   //
-  auto analysisManager = G4AnalysisManager::Instance();
   analysisManager->Write();
   analysisManager->CloseFile();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-

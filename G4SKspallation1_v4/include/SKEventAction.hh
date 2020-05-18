@@ -23,71 +23,46 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
-/// \file SKTankHit.hh
-/// \brief Definition of the SKTankHit class
+// 
+/// \file SKEventAction.hh
+/// \brief Definition of the SKEventAction class
 
-#ifndef SKTankHit_h
-#define SKTankHit_h 1
+#ifndef SKEventAction_h
+#define SKEventAction_h 1
 
-#include "G4VHit.hh"
-#include "G4THitsCollection.hh"
-#include "G4Allocator.hh"
-#include "G4ThreeVector.hh"
-#include "G4Threading.hh"
+#include "G4UserEventAction.hh"
 
-/// Tank hit class
+#include "SKHit.hh"
+
+#include "globals.hh"
+
+/// Event action class
 ///
-/// It defines data members to store the the N number
-/// of produced particles(nucleons) in a selected volume, the tank:
-/// - fN
+/// In EndOfEventAction(), it prints the accumulated quantities of the energy 
+/// deposit of all particles in the SK tank
+/// stored in the hits collections.
 
-class SKTankHit : public G4VHit
+class SKEventAction : public G4UserEventAction
 {
-  public:
-    SKTankHit();
-    SKTankHit(const SKTankHit&);
-    virtual ~SKTankHit();
+public:
+  SKEventAction();
+  virtual ~SKEventAction();
 
-    // operators
-    const SKTankHit& operator=(const SKTankHit&);
-    G4bool operator==(const SKTankHit&) const;
-
-    inline void* operator new(size_t);
-    inline void  operator delete(void*);
-
-    // methods from base class
-    virtual void Draw() {}
-    virtual void Print();
-
+  virtual void  BeginOfEventAction(const G4Event* event);
+  virtual void    EndOfEventAction(const G4Event* event);
+    
+private:
+  // methods
+  SKHitsCollection* GetHitsCollection(G4int hcID,
+                                            const G4Event* event) const;
+  void PrintEventStatistics(G4double Edep) const;
+  
+  // data members                   
+  G4int  fTankHCID;
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-using SKTankHitsCollection = G4THitsCollection<SKTankHit>;
-
-extern G4ThreadLocal G4Allocator<SKTankHit>* SKTankHitAllocator;
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-inline void* SKTankHit::operator new(size_t)
-{
-  if (!SKTankHitAllocator) {
-    SKTankHitAllocator = new G4Allocator<SKTankHit>;
-  }
-  void *hit;
-  hit = (void *) SKTankHitAllocator->MallocSingle();
-  return hit;
-}
-
-inline void SKTankHit::operator delete(void *hit)
-{
-  if (!SKTankHitAllocator) {
-    SKTankHitAllocator = new G4Allocator<SKTankHit>;
-  }
-  SKTankHitAllocator->FreeSingle((SKTankHit*) hit);
-}
-
+                     
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
+
+    

@@ -23,64 +23,110 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
-/// \file SKTankHit.cc
-/// \brief Implementation of the SKTankHit class
+// 
+/// \file SKEventAction.cc
+/// \brief Implementation of the SKEventAction class
 
-#include "SKTankHit.hh"
+#include "SKEventAction.hh"
+#include "SKSD.hh"
+#include "SKHit.hh"
+#include "SKAnalysis.hh"
+
+#include "G4RunManager.hh"
+#include "G4Event.hh"
+#include "G4SDManager.hh"
+#include "G4HCofThisEvent.hh"
 #include "G4UnitsTable.hh"
-#include "G4VVisManager.hh"
-#include "G4Circle.hh"
-#include "G4Colour.hh"
-#include "G4VisAttributes.hh"
+#include "G4SystemOfUnits.hh"
 
+#include "Randomize.hh"
 #include <iomanip>
-
-G4ThreadLocal G4Allocator<SKTankHit>* SKTankHitAllocator = 0;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SKTankHit::SKTankHit()
- : G4VHit(),
-   fEventID(0)
+SKEventAction::SKEventAction()
+ : G4UserEventAction(),
+   fTankHCID(-1)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SKTankHit::~SKTankHit() {}
+SKEventAction::~SKEventAction()
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SKTankHit::SKTankHit(const SKTankHit& right)
-  : G4VHit()
+SKHitsCollection* 
+SKEventAction::GetHitsCollection(G4int hcID,
+                                  const G4Event* event) const
 {
-  fEventID        = right.fEventID;
-}
+  auto hitsCollection 
+    = static_cast<SKHitsCollection*>(
+        event->GetHCofThisEvent()->GetHC(hcID));
+  
+  if ( ! hitsCollection ) {
+    G4ExceptionDescription msg;
+    msg << "Cannot access hitsCollection ID " << hcID; 
+    G4Exception("SKEventAction::GetHitsCollection()",
+      "MyCode0003", FatalException, msg);
+  }         
+
+  return hitsCollection;
+}    
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-const SKTankHit& SKTankHit::operator=(const SKTankHit& right)
+void SKEventAction::PrintEventStatistics(
+                              G4double Edep) const
 {
-  fEventID        = right.fEventID;
-
-  return *this;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-G4bool SKTankHit::operator==(const SKTankHit& right) const
-{
-  return ( this == &right ) ? true : false;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void SKTankHit::Print()
-{
+  // print event statistics
   G4cout
-     << "fEventID: " 
-     << fEventID
+     << "   Tank: total energy: " 
+     << std::setw(7) << G4BestUnit(Edep, "Energy")
      << G4endl;
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void SKEventAction::BeginOfEventAction(const G4Event* /*event*/)
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void SKEventAction::EndOfEventAction(const G4Event* event)
+{  
+  // Get hits collections IDs (only once)
+  if ( fTankHCID == -1 ) {
+    fTankHCID 
+      = G4SDManager::GetSDMpointer()->GetCollectionID("TankHitsCollection");
+  }
+
+  // Get hits collections
+  auto tankHC = GetHitsCollection(fTankHCID, event);
+
+  // Get hit with total values
+  auto tankHit = (*tankHC)[tankHC->entries()-1];
+ 
+  // Print per event (modulo n)
+  //
+  auto eventID = event->GetEventID();
+  auto printModulo = G4RunManager::GetRunManager()->GetPrintProgress();
+  if ( ( printModulo > 0 ) && ( eventID % printModulo == 0 ) ) {
+    G4cout << "---> End of event: " << eventID << G4endl;     
+
+    PrintEventStatistics(
+      tankHit->GetEdep());
+  }  
+  
+  // Fill histograms, ntuple
+  //
+
+  // get analysis manager
+  auto analysisManager = G4AnalysisManager::Instance();
+ 
+  // fill histograms
+  analysisManager->FillH1(2, tankHit->GetEdep());
+   
+}  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

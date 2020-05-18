@@ -24,56 +24,53 @@
 // ********************************************************************
 //
 //
-/// \file SKTankSD.cc
-/// \brief Implementation of the SKTankSD class
+/// \file SKSD.cc
+/// \brief Implementation of the SKSD class
 
-#include "SKTankSD.hh"
+#include "SKSD.hh"
 #include "SKAnalysis.hh"
-
-#include "G4RunManager.hh"
-#include "G4SteppingManager.hh"
-#include "G4SDManager.hh"
-
-#include "G4ios.hh"
 #include "G4HCofThisEvent.hh"
-
 #include "G4Step.hh"
 #include "G4Track.hh"
 #include "G4ThreeVector.hh"
-#include "G4TrackVector.hh"
+#include "G4SDManager.hh"
+#include "G4ios.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4VProcess.hh"
+#include "SKHit.hh"
+
+#include "Randomize.hh"
+#include <iomanip>
+#include <map>
+#include <string> 
 
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
-#include "G4ParticleDefinition.hh"
-#include "G4VProcess.hh"
-#include <map>
-#include <string> 
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SKTankSD::SKTankSD(
+SKSD::SKSD(
                             const G4String& name, 
                             const G4String& hitsCollectionName)
  : G4VSensitiveDetector(name),
-   fHitsCollection(nullptr)
+   fHitsCollection(nullptr)//,
+   //fEventID(0)
 {
   collectionName.insert(hitsCollectionName);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SKTankSD::~SKTankSD() 
+SKSD::~SKSD() 
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void SKTankSD::Initialize(G4HCofThisEvent* hce)
+void SKSD::Initialize(G4HCofThisEvent* hce)
 {
   // Create hits collection
   fHitsCollection 
-    = new SKTankHitsCollection(SensitiveDetectorName, collectionName[0]); 
+    = new SKHitsCollection(SensitiveDetectorName, collectionName[0]); 
 
   // Add this collection in hce
   auto hcID 
@@ -81,19 +78,26 @@ void SKTankSD::Initialize(G4HCofThisEvent* hce)
   hce->AddHitsCollection( hcID, fHitsCollection ); 
 
   // Create hits
-  fHitsCollection->insert(new SKTankHit());
+  fHitsCollection->insert(new SKHit());
 
-  // Keep event ID
-   // Get hit accounting data
-  auto hit = (*fHitsCollection)[0];
-  hit->Add();
+  // keeping track of the event 
+  fEventID = fEventID + 1;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4bool SKTankSD::ProcessHits(G4Step* step, 
+G4bool SKSD::ProcessHits(G4Step* step, 
                                      G4TouchableHistory*)
-{ 
+{
+  // energy deposit
+  auto edep = step->GetTotalEnergyDeposit();  
+
+  // Get hit accounting data
+  auto hit = (*fHitsCollection)[0];
+
+  // Add values
+  hit->Add(edep);
+
   //----------------------------------------------
   //        Track
   //----------------------------------------------
@@ -108,19 +112,13 @@ G4bool SKTankSD::ProcessHits(G4Step* step,
   G4String name = thePartDef->GetParticleName();
   const G4VProcess* process = Track->GetCreatorProcess();
 
-
+  
   //----------------------------------------------
   //  Collect information for isotopes
   //  generated from an interaction with the water tank
   //----------------------------------------------
   //check if it is an ion
   if ( partType == "nucleus" ){
-
-	// Get event ID
-  	// Get hit accounting data
-  	auto hit = (*fHitsCollection)[0];
-  	G4int eventID = hit->GetEventID();
-
 	//----------------------------------------------
 	//   isotopes info
 	//----------------------------------------------
@@ -144,12 +142,11 @@ G4bool SKTankSD::ProcessHits(G4Step* step,
   	analysisManager->FillNtupleDColumn(3, y);
   	analysisManager->FillNtupleDColumn(4, z);
   	analysisManager->FillNtupleSColumn(5, Process);
-	analysisManager->FillNtupleIColumn(6, eventID);
+	analysisManager->FillNtupleIColumn(6, fEventID);
   	analysisManager->AddNtupleRow(); 
       
   	return true;
   }
-
 
   //----------------------------------------------
   //  Collect information for other particles
@@ -186,9 +183,25 @@ G4bool SKTankSD::ProcessHits(G4Step* step,
   	analysisManager->FillH1(1, E);
  
   	return true;
-   }
+   } 
 
-   return false;
+
+
+  return false;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void SKSD::EndOfEvent(G4HCofThisEvent*)
+{
+  if ( verboseLevel>1 ) { 
+     auto nofHits = fHitsCollection->entries();
+     G4cout
+       << G4endl 
+       << "-------->Hits Collection: in this event they are " << nofHits 
+       << " hits in the sensitive volume / tank : " << G4endl;
+     (*fHitsCollection)[0]->Print();
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -24,31 +24,63 @@
 // ********************************************************************
 //
 //
-/// \file SKRunAction.hh
-/// \brief Definition of the SKRunAction class
+/// \file SKHit.cc
+/// \brief Implementation of the SKHit class
 
-#ifndef SKRunAction_h
-#define SKRunAction_h 1
+#include "SKHit.hh"
+#include "G4UnitsTable.hh"
+#include "G4VVisManager.hh"
+#include "G4Circle.hh"
+#include "G4Colour.hh"
+#include "G4VisAttributes.hh"
 
-#include "G4UserRunAction.hh"
-#include "globals.hh"
+#include <iomanip>
 
-class G4Run;
+G4ThreadLocal G4Allocator<SKHit>* SKHitAllocator = 0;
 
-/// Run action class
-///
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-class SKRunAction : public G4UserRunAction
+SKHit::SKHit()
+ : G4VHit(),
+   fEdep(0.)
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+SKHit::~SKHit() {}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+SKHit::SKHit(const SKHit& right)
+  : G4VHit()
 {
-  public:
-    SKRunAction();
-    virtual ~SKRunAction();
+  fEdep        = right.fEdep;
+}
 
-    // virtual G4Run* GenerateRun();
-    virtual void BeginOfRunAction(const G4Run*);
-    virtual void   EndOfRunAction(const G4Run*);
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-};
+const SKHit& SKHit::operator=(const SKHit& right)
+{
+  fEdep        = right.fEdep;
 
-#endif
+  return *this;
+}
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4bool SKHit::operator==(const SKHit& right) const
+{
+  return ( this == &right ) ? true : false;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void SKHit::Print()
+{
+  G4cout
+     << "Edep: " 
+     << std::setw(7) << G4BestUnit(fEdep,"Energy")
+     << G4endl;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

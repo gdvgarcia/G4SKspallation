@@ -24,41 +24,43 @@
 // ********************************************************************
 //
 //
-/// \file SKTankSD.hh
-/// \brief Definition of the SKTankSD class
+/// \file SKSD.hh
+/// \brief Definition of the SKSD class
 
-#ifndef SKTankSD_h
-#define SKTankSD_h 1
+#ifndef SKSD_h
+#define SKSD_h 1
 
 #include "G4VSensitiveDetector.hh"
 
-#include "globals.hh"
+#include "SKHit.hh"
+
 #include <vector>
 
 class G4Step;
 class G4HCofThisEvent;
-class G4Track;
 
-/// Tank sensitive detector class
+/// SK sensitive detector class
 ///
-/// 
+/// In Initialize(), it creates one hit 
+///
 /// The values are accounted in hits in ProcessHits() function which is called
 /// by Geant4 kernel at each step.
-///
-class SKTankSD : public G4VSensitiveDetector
+
+class SKSD : public G4VSensitiveDetector
 {
   public:
-    SKTankSD(const G4String& name, 
+    SKSD(const G4String& name, 
                      const G4String& hitsCollectionName);
-    virtual ~SKTankSD();
+    virtual ~SKSD();
   
     // methods from base class
     virtual void   Initialize(G4HCofThisEvent* hitCollection);
     virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
+    virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
 
-    private:
-         G4VHitsCollection* fHitsCollection;
-
+  private:
+    SKHitsCollection* fHitsCollection;
+    G4double fEventID;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -24,11 +24,11 @@
 // ********************************************************************
 //
 //
-/// \file SKTankHit.hh
-/// \brief Definition of the SKTankHit class
+/// \file SKHit.hh
+/// \brief Definition of the SKHit class
 
-#ifndef SKTankHit_h
-#define SKTankHit_h 1
+#ifndef SKHit_h
+#define SKHit_h 1
 
 #include "G4VHit.hh"
 #include "G4THitsCollection.hh"
@@ -36,21 +36,22 @@
 #include "G4ThreeVector.hh"
 #include "G4Threading.hh"
 
-/// Tank hit class
+/// SK hit class
 ///
-/// It defines data members to store the fEventID:
-/// - fEventID
+/// It defines data members to store the the energy deposit
+/// of all particles in a selected volume:
+/// - fEdep
 
-class SKTankHit : public G4VHit
+class SKHit : public G4VHit
 {
   public:
-    SKTankHit();
-    SKTankHit(const SKTankHit&);
-    virtual ~SKTankHit();
+    SKHit();
+    SKHit(const SKHit&);
+    virtual ~SKHit();
 
     // operators
-    const SKTankHit& operator=(const SKTankHit&);
-    G4bool operator==(const SKTankHit&) const;
+    const SKHit& operator=(const SKHit&);
+    G4bool operator==(const SKHit&) const;
 
     inline void* operator new(size_t);
     inline void  operator delete(void*);
@@ -60,49 +61,48 @@ class SKTankHit : public G4VHit
     virtual void Print();
 
     // methods to handle data
-    void Add();
+    void Add(G4double de);
 
     // get methods
-    G4double GetEventID() const;
+    G4double GetEdep() const;
       
   private:
-    G4int fEventID;        ///< Event ID
+    G4double fEdep;        ///< Energy deposit in the sensitive volume
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-using SKTankHitsCollection = G4THitsCollection<SKTankHit>;
+using SKHitsCollection = G4THitsCollection<SKHit>;
 
-extern G4ThreadLocal G4Allocator<SKTankHit>* SKTankHitAllocator;
+extern G4ThreadLocal G4Allocator<SKHit>* SKHitAllocator;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-inline void* SKTankHit::operator new(size_t)
+inline void* SKHit::operator new(size_t)
 {
-  if (!SKTankHitAllocator) {
-    SKTankHitAllocator = new G4Allocator<SKTankHit>;
+  if (!SKHitAllocator) {
+    SKHitAllocator = new G4Allocator<SKHit>;
   }
   void *hit;
-  hit = (void *) SKTankHitAllocator->MallocSingle();
+  hit = (void *) SKHitAllocator->MallocSingle();
   return hit;
 }
 
-inline void SKTankHit::operator delete(void *hit)
+inline void SKHit::operator delete(void *hit)
 {
-  if (!SKTankHitAllocator) {
-    SKTankHitAllocator = new G4Allocator<SKTankHit>;
+  if (!SKHitAllocator) {
+    SKHitAllocator = new G4Allocator<SKHit>;
   }
-  SKTankHitAllocator->FreeSingle((SKTankHit*) hit);
+  SKHitAllocator->FreeSingle((SKHit*) hit);
 }
 
-inline void SKTankHit::Add() {
-  fEventID += 1;
+inline void SKHit::Add(G4double de) {
+  fEdep += de;
 }
 
-inline G4double SKTankHit::GetEventID() const { 
-  return fEventID; 
+inline G4double SKHit::GetEdep() const { 
+  return fEdep; 
 }
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

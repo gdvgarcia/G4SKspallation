@@ -46,5 +46,49 @@
 # electrons total
 /score/quantity/nOfSecondary nOfSecondaryEminus
 /score/filter/particle eMinusFilter e-
+# electron energy distribution score
+/score/quantity/nOfSecondary nOfSecondaryEMinus_12.5
+/score/filter/particleWithKineticEnergy range0 0. 25. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_37.5
+/score/filter/particleWithKineticEnergy range1 25. 50. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_62.5
+/score/filter/particleWithKineticEnergy range2 50. 75. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_87.5
+/score/filter/particleWithKineticEnergy range3 75. 100. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_112.5
+/score/filter/particleWithKineticEnergy range4 100. 125. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_137.5
+/score/filter/particleWithKineticEnergy range5 125. 150. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_162.5
+/score/filter/particleWithKineticEnergy range6 150. 175. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_187.5
+/score/filter/particleWithKineticEnergy range7 175. 200. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_212.5
+/score/filter/particleWithKineticEnergy range8 200. 225. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_237.5
+/score/filter/particleWithKineticEnergy range9 225. 250. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_262.5
+/score/filter/particleWithKineticEnergy range10 250. 275. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_287.5
+/score/filter/particleWithKineticEnergy range11 275. 300. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_312.5
+/score/filter/particleWithKineticEnergy range12 300. 325. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_337.5
+/score/filter/particleWithKineticEnergy range13 325. 350. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_362.5
+/score/filter/particleWithKineticEnergy range14 350. 375. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_387.5
+/score/filter/particleWithKineticEnergy range15 375. 400. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_412.5
+/score/filter/particleWithKineticEnergy range16 400. 425. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_437.5
+/score/filter/particleWithKineticEnergy range17 425. 450. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_462.5
+/score/filter/particleWithKineticEnergy range18 450. 475. MeV e-
+/score/quantity/nOfSecondary nOfSecondaryEMinus_487.5
+/score/filter/particleWithKineticEnergy range19 475. 500. MeV e-
+#
+# total energy
+/score/quantity/energyDeposit totalEdep
 /score/close
 #
