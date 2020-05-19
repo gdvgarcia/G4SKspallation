@@ -1,0 +1,32 @@
+# Macro file for G4SKspallation
+# 
+# Can be run in batch, without graphic
+# or interactively: Idle> /control/execute run1.mac
+#
+# Change the default number of workers (in multi-threading mode) 
+#/run/numberOfThreads 4
+#
+# define scoring mesh
+#/score/create/boxMesh boxMesh_1
+#/score/mesh/boxSize 21. 21. 21. m
+#/score/mesh/nBin 1 1 4200
+# define quantities to be scored
+#/score/quantity/energyDeposit eDep MeV
+#/score/close
+#
+# Initialize kernel
+/run/initialize
+# Setting its verbosity
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+#
+# Genereating 1 muon
+#
+/run/beamOn 1
+#
+# Dump scorers to a file
+#
+#/score/dumpQuantityToFile boxMesh_1 eDep eDep_run1.txt
+

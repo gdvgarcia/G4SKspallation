@@ -76,15 +76,40 @@ SKRunAction::SKRunAction()
 
   // Creating the ntuple
   //
-  analysisManager->CreateNtuple("isotopes_data", "A, Z, position and type of parent process");
-  analysisManager->CreateNtupleDColumn("A");
-  analysisManager->CreateNtupleDColumn("Z");
-  analysisManager->CreateNtupleDColumn("x");
-  analysisManager->CreateNtupleDColumn("y");
-  analysisManager->CreateNtupleDColumn("z");
-  analysisManager->CreateNtupleSColumn("Process");
-  analysisManager->CreateNtupleIColumn("EventID");
-  analysisManager->FinishNtuple();
+  analysisManager->CreateNtuple("isotopes_data", "A, Z, position, type of parent process and EventID");
+  // For the isotopes ID=0
+  analysisManager->CreateNtupleDColumn(0 , "A");
+  analysisManager->CreateNtupleDColumn(0 , "Z");
+  analysisManager->CreateNtupleDColumn(0 , "x");
+  analysisManager->CreateNtupleDColumn(0 , "y");
+  analysisManager->CreateNtupleDColumn(0 , "z");
+  analysisManager->CreateNtupleSColumn(0 , "Process");
+  analysisManager->CreateNtupleIColumn(0 , "ParentID");
+  analysisManager->CreateNtupleIColumn(0 , "EventID");
+  analysisManager->FinishNtuple(0);
+
+  analysisManager->CreateNtuple("muon_data", "Particle name, Energy, position and EventID");
+  // For the muon ID=1
+  analysisManager->CreateNtupleSColumn(1 , "Particle");
+  analysisManager->CreateNtupleDColumn(1 , "Energy");
+  analysisManager->CreateNtupleDColumn(1 , "x");
+  analysisManager->CreateNtupleDColumn(1 , "y");
+  analysisManager->CreateNtupleDColumn(1 , "z");
+  analysisManager->CreateNtupleIColumn(1 , "EventID");
+  analysisManager->FinishNtuple(1);
+
+  analysisManager->CreateNtuple("parents_data", "Particle name, Energy, position,daugher A and Z, trackID andEventID");
+  // For the parent particles ID=2
+  analysisManager->CreateNtupleSColumn(2 , "Particle");
+  analysisManager->CreateNtupleDColumn(2 , "Energy");
+  analysisManager->CreateNtupleDColumn(2 , "x");
+  analysisManager->CreateNtupleDColumn(2 , "y");
+  analysisManager->CreateNtupleDColumn(2 , "z");
+  analysisManager->CreateNtupleDColumn(2 , "A");
+  analysisManager->CreateNtupleDColumn(2 , "Z");
+  analysisManager->CreateNtupleIColumn(2 , "TrackID");
+  analysisManager->CreateNtupleIColumn(2 , "EventID");
+  analysisManager->FinishNtuple(2);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -131,7 +156,7 @@ void SKRunAction::EndOfRunAction(const G4Run* /*run*/)
        << " rms = " 
        << G4BestUnit(analysisManager->GetH1(0)->rms(),  "Energy") << G4endl;
     
-    G4cout << " Electron + electrons energy spectrum : mean = " 
+    G4cout << " Electron + positrons energy spectrum : mean = " 
        << G4BestUnit(analysisManager->GetH1(1)->mean(), "Energy") 
        << " rms = " 
        << G4BestUnit(analysisManager->GetH1(1)->rms(),  "Energy") << G4endl;
