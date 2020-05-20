@@ -61,13 +61,13 @@ SKRunAction::SKRunAction()
   
   // Creating histograms
   // 1D histograms for energy spectra
-  analysisManager->CreateH1("En_spec","Energy of neutrons", 1000, 0.1 , 500.1 , "MeV", "none", "log"
+  analysisManager->CreateH1("En_spec","Energy of neutrons", 100, 0.1 , 500.1 , "MeV", "none", "log"
 );
   analysisManager->CreateH1("Ee_spec","Energy of electrons + positrons", 1000, 0.1 , 500.1 ,"MeV", "none", "log"
 );
-  analysisManager->CreateH1("Epi_spec","Energy of charged pions", 1000, 0.1 , 500.1 ,"MeV", "none", "log"
+  analysisManager->CreateH1("Epi_spec","Energy of charged pions", 100, 0.1 , 500.1 ,"MeV", "none", "log"
 );
-  analysisManager->CreateH1("Epi0_spec","Energy of neutral pion", 1000, 0.1 , 500.1 ,"MeV", "none", "log"
+  analysisManager->CreateH1("Epi0_spec","Energy of neutral pion", 100, 0.1 , 500.1 ,"MeV", "none", "log"
 );
     analysisManager->CreateH1("Edep","Energy of deposited per event", 101, 0.5 , 100.5 * GeV// ,"log"
 );
@@ -107,6 +107,7 @@ SKRunAction::SKRunAction()
   analysisManager->CreateNtupleDColumn(2 , "z");
   analysisManager->CreateNtupleDColumn(2 , "A");
   analysisManager->CreateNtupleDColumn(2 , "Z");
+  analysisManager->CreateNtupleSColumn(2 , "Process");
   analysisManager->CreateNtupleIColumn(2 , "TrackID");
   analysisManager->CreateNtupleIColumn(2 , "EventID");
   analysisManager->FinishNtuple(2);

@@ -108,35 +108,19 @@ G4bool SKSD::ProcessHits(G4Step* step,
   G4ParticleDefinition* thePartDef = Track->GetDefinition();
   G4String partType= thePartDef->GetParticleType();
   G4String name = thePartDef->GetParticleName();
+  // avoiding getting the process for the initial muon
+  G4String Process = "None";
+  if ( name != "mu-" ){
+	const G4VProcess* process = Track->GetCreatorProcess();
+  	Process = process->GetProcessName();
+  }
 
-  // check if it is our muon that is leaving the tank
-  if (name == "mu-" && step->IsLastStepInVolume() ){
-	//----------------------------------------------
-	//    leaving muon info
-	//----------------------------------------------
-	G4double E = Track->GetKineticEnergy();
-	G4double x = Track->GetPosition().getX();
-	G4double y = Track->GetPosition().getY();
-	G4double z = Track->GetPosition().getZ();
 
-  	// get analysis manager
-  	auto analysisManager = G4AnalysisManager::Instance();
- 
-  	// fill ntuple
-  	analysisManager->FillNtupleSColumn(1, 0, name);
-  	analysisManager->FillNtupleDColumn(1, 1, E);
-  	analysisManager->FillNtupleDColumn(1, 2, x);
-  	analysisManager->FillNtupleDColumn(1, 3, y);
-  	analysisManager->FillNtupleDColumn(1, 4, z);
-	analysisManager->FillNtupleIColumn(1, 5, fEventID);
-  	analysisManager->AddNtupleRow(1); 
-      
-  	return true;
-   }
-
+  //----------------------------------------------
+  //  Collect information for isotopes' parents
+  //----------------------------------------------
   // still need to improve when we check the track - I want at the end 
-  if ( Track->GetCurrentStepNumber() == 1){
-//Track->GetTrackStatus() != fStopAndKill || step->IsLastStepInVolume()){
+  if ( ( step->IsLastStepInVolume() ) || ( Track->GetTrackStatus() == fStopAndKill ) ){
 
   // making the ntuple for the parent particles - first take all the secondaries
   G4TrackVector* Secondaries = step->GetfSecondary();
@@ -195,16 +179,45 @@ G4bool SKSD::ProcessHits(G4Step* step,
   			analysisManager->FillNtupleDColumn(2, 4, zp);
 			analysisManager->FillNtupleDColumn(2, 5, Ad);
 			analysisManager->FillNtupleDColumn(2, 6, Zd);
-			analysisManager->FillNtupleIColumn(2, 7, TrackID);
-			analysisManager->FillNtupleIColumn(2, 8, size);
+			analysisManager->FillNtupleSColumn(2, 7, Process);
+			analysisManager->FillNtupleIColumn(2, 8, TrackID);
+			analysisManager->FillNtupleIColumn(2, 9, fEventID);
   			analysisManager->AddNtupleRow(2);  
 			
-			// go out from for
+			// go out from for-loop
 			i = size;
 		} 
 	}
   }
   }
+
+  //----------------------------------------------
+  //  Collect information for the muon
+  //----------------------------------------------
+  // check if it is our muon that is leaving the tank
+  if (name == "mu-" && step->IsLastStepInVolume() ){
+	//----------------------------------------------
+	//    leaving muon info
+	//----------------------------------------------
+	G4double E = Track->GetKineticEnergy();
+	G4double x = Track->GetPosition().getX();
+	G4double y = Track->GetPosition().getY();
+	G4double z = Track->GetPosition().getZ();
+
+  	// get analysis manager
+  	auto analysisManager = G4AnalysisManager::Instance();
+ 
+  	// fill ntuple
+  	analysisManager->FillNtupleSColumn(1, 0, name);
+  	analysisManager->FillNtupleDColumn(1, 1, E);
+  	analysisManager->FillNtupleDColumn(1, 2, x);
+  	analysisManager->FillNtupleDColumn(1, 3, y);
+  	analysisManager->FillNtupleDColumn(1, 4, z);
+	analysisManager->FillNtupleIColumn(1, 5, fEventID);
+  	analysisManager->AddNtupleRow(1); 
+      
+  	return true;
+   }
 
 
   //- check for newly produced particle. e.g. first step.
@@ -225,8 +238,6 @@ G4bool SKSD::ProcessHits(G4Step* step,
 	G4double y = Track->GetPosition().getY();
 	G4double z = Track->GetPosition().getZ();
 	G4int    ParentID = Track->GetParentID();
-        const G4VProcess* process = Track->GetCreatorProcess();
-	G4String Process = process->GetProcessName();
 
   	// get analysis manager
   	auto analysisManager = G4AnalysisManager::Instance();
@@ -317,6 +328,9 @@ G4bool SKSD::ProcessHits(G4Step* step,
   	return true;
    }
 
+   //----------------------------------------------
+   //  Collect information for the muon
+   //----------------------------------------------
    //saving entering muon
    if (name == "mu-"){
 	//----------------------------------------------

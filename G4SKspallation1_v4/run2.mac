@@ -6,7 +6,7 @@
 # Change the default number of workers (in multi-threading mode) 
 #/run/numberOfThreads 4
 #
-#Setting scoring mesh
+# Setting scoring mesh
 /control/execute scoring.mac
 #
 # Initialize kernel
@@ -16,6 +16,8 @@
 /run/verbose 0
 /event/verbose 0
 /tracking/verbose 0
+/process/em/verbose 0
+/process/verbose 0
 #
 # Genereating 10 muons hit
 #
