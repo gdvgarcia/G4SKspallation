@@ -41,65 +41,18 @@
 
 #include "Randomize.hh"
 #include <iomanip>
-#include<string>
-#include <iostream>
-
-using namespace std;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SKEventAction::SKEventAction()
  : G4UserEventAction(),
    fTankHCID(-1)
-{  
-  // Create analysis manager
-  // The choice of analysis technology is done via selectin of a namespace
-  // in SKAnalysis.hh
-  auto analysisManager = G4AnalysisManager::Instance();
-  G4cout << "Using " << analysisManager->GetType() << G4endl;
-
-  // Create directories 
-  //analysisManager->SetHistoDirectoryName("histograms");
-  //analysisManager->SetNtupleDirectoryName("ntuple");
-  analysisManager->SetVerboseLevel(1);
-  //analysisManager->SetNtupleMerging(true);
-    // Note: merging ntuples is available only with Root output
-
-  // Book histograms, ntuple
-  //
-  
-  // Creating histograms
-  // 1D histograms for energy spectra
-  analysisManager->CreateH1("En_spec","Energy of neutrons", 1000, 0.1 , 500.1 , "MeV", "none", "log"
-);
-  analysisManager->CreateH1("Ee_spec","Energy of electrons + positrons", 1000, 0.1 , 500.1 ,"MeV", "none", "log"
-);
-  analysisManager->CreateH1("Epi_spec","Energy of charged pions", 1000, 0.1 , 500.1 ,"MeV", "none", "log"
-);
-  analysisManager->CreateH1("Epi0_spec","Energy of neutral pion", 1000, 0.1 , 500.1 ,"MeV", "none", "log"
-);
-  
-  // 2D histogram for A and Z quantities
-  analysisManager->CreateH2("Isotopes", "Ions produced; Z values; A values", 150, 0.5, 150.5, 300, 0.5, 300.5);
-
-  // Creating the ntuple
-  //
-  analysisManager->CreateNtuple("isotopes_data", "A, Z, position and type of parent process");
-  analysisManager->CreateNtupleDColumn("A");
-  analysisManager->CreateNtupleDColumn("Z");
-  analysisManager->CreateNtupleDColumn("x");
-  analysisManager->CreateNtupleDColumn("y");
-  analysisManager->CreateNtupleDColumn("z");
-  analysisManager->CreateNtupleSColumn("Process");
-  analysisManager->FinishNtuple();
-}
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SKEventAction::~SKEventAction()
-{
-  delete G4AnalysisManager::Instance();
-}
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -135,16 +88,8 @@ void SKEventAction::PrintEventStatistics(
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void SKEventAction::BeginOfEventAction(const G4Event* event)
-{
-  // Get analysis manager
-  auto analysisManager = G4AnalysisManager::Instance();
-
-  // Open an output file where we save the data collected
-  //
-  string fileName = "SK" +  to_string(event->GetEventID()); ;
-  analysisManager->OpenFile(fileName);
-}
+void SKEventAction::BeginOfEventAction(const G4Event* /*event*/)
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -170,12 +115,13 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
     PrintEventStatistics(
       tankHit->GetEdep());
   }  
-
-  // save histograms & ntuple
+  
+  // Fill the histogram for the total energy deposit per event
   //
+  // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
-  analysisManager->Write();
-  analysisManager->CloseFile();
+  // fill histograms
+  analysisManager->FillH1(6, tankHit->GetEdep());
    
 }  
 

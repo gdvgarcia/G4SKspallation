@@ -42,8 +42,6 @@
 /// deposit of all particles in the SK tank
 /// stored in the hits collections.
 
-class G4Run;
-
 class SKEventAction : public G4UserEventAction
 {
 public:

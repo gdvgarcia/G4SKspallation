@@ -32,6 +32,7 @@
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
 #include "G4Track.hh"
+#include "G4TrackVector.hh"
 #include "G4ThreeVector.hh"
 #include "G4SDManager.hh"
 #include "G4ios.hh"
@@ -53,7 +54,8 @@ SKSD::SKSD(
                             const G4String& name, 
                             const G4String& hitsCollectionName)
  : G4VSensitiveDetector(name),
-   fHitsCollection(nullptr)
+   fHitsCollection(nullptr),
+   fEventID(0)
 {
   collectionName.insert(hitsCollectionName);
 }
@@ -78,6 +80,12 @@ void SKSD::Initialize(G4HCofThisEvent* hce)
 
   // Create hits
   fHitsCollection->insert(new SKHit());
+
+  // keeping track of the event 
+  fEventID = fEventID + 1;
+
+  // Leave the map empty for starting a new event
+  fParents.clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -99,15 +107,96 @@ G4bool SKSD::ProcessHits(G4Step* step,
   //----------------------------------------------
   // get track to collect the data
   G4Track* Track = step->GetTrack();
-
-  //- check for newly produced particle. e.g. first step.
-  if ( Track->GetCurrentStepNumber() != 1){return false;}
-
+  // and take some information about the particle of the track
   G4ParticleDefinition* thePartDef = Track->GetDefinition();
   G4String partType= thePartDef->GetParticleType();
   G4String name = thePartDef->GetParticleName();
-  const G4VProcess* process = Track->GetCreatorProcess();
+  // avoiding getting the process for the initial muon
+  G4String Process = "None";
+  if ( name != "mu-" ){
+	const G4VProcess* process = Track->GetCreatorProcess();
+  	Process = process->GetProcessName();
+  }
 
+
+  //----------------------------------------------
+  //  Collect information for isotopes' parents
+  //----------------------------------------------
+  // still need to improve when we check the track - I want at the end 
+  if ( ( step->IsLastStepInVolume() ) || ( Track->GetTrackStatus() == fStopAndKill ) ){
+
+  // making the ntuple for the parent particles - first take all the secondaries
+  G4TrackVector* Secondaries = step->GetfSecondary();
+  // size of secondary vetor
+  G4int size = Secondaries->size();
+
+  if ( size > 0){
+	
+	// initializing variables
+	//----------------------------------------------
+	//   parent variables
+	//----------------------------------------------
+	G4int    TrackID = 0;
+	// daughter variables
+	G4ParticleDefinition* secPartDef = thePartDef;
+	G4String secpartType = " ";
+	G4String secname = " ";
+
+	// track for the loop
+	G4Track* secondary = Secondaries->at(0);
+
+	// we look for an ion type secondary
+	for( int i = 0; i < size; ++i){
+		secondary = Secondaries->at(i);
+		secPartDef = secondary->GetDefinition();
+  		secpartType = secPartDef->GetParticleType();
+  		secname = secPartDef->GetParticleName();
+		// if we find we save the parent information
+		if ( secpartType == "nucleus"){
+			// only getting TrackID if we want to keep the particle
+			TrackID = Track->GetTrackID();
+
+			// Filling the map
+			fParents[TrackID] = name;
+			
+			// go out from for-loop
+			i = size;
+		} 
+	}
+  }
+  }
+
+  //----------------------------------------------
+  //  Collect information for the muon
+  //----------------------------------------------
+  // check if it is our muon that is leaving the tank
+  if (name == "mu-" && step->IsLastStepInVolume() ){
+	//----------------------------------------------
+	//    leaving muon info
+	//----------------------------------------------
+	G4double E = Track->GetKineticEnergy();
+	G4double x = Track->GetPosition().getX();
+	G4double y = Track->GetPosition().getY();
+	G4double z = Track->GetPosition().getZ();
+
+  	// get analysis manager
+  	auto analysisManager = G4AnalysisManager::Instance();
+ 
+  	// fill ntuple
+  	analysisManager->FillNtupleSColumn(1, 0, name);
+  	analysisManager->FillNtupleDColumn(1, 1, E);
+  	analysisManager->FillNtupleDColumn(1, 2, x);
+  	analysisManager->FillNtupleDColumn(1, 3, y);
+  	analysisManager->FillNtupleDColumn(1, 4, z);
+	analysisManager->FillNtupleIColumn(1, 5, fEventID);
+  	analysisManager->AddNtupleRow(1); 
+      
+  	return true;
+   }
+
+
+  //- check for newly produced particle. e.g. first step.
+  if ( Track->GetCurrentStepNumber() != 1){return false;}
   
   //----------------------------------------------
   //  Collect information for isotopes
@@ -118,12 +207,16 @@ G4bool SKSD::ProcessHits(G4Step* step,
 	//----------------------------------------------
 	//   isotopes info
 	//----------------------------------------------
-	G4double Z = thePartDef->GetAtomicNumber();
-	G4double A = thePartDef->GetAtomicMass();
+	G4int Z = thePartDef->GetAtomicNumber();
+	G4int A = thePartDef->GetAtomicMass();
 	G4double x = Track->GetPosition().getX();
 	G4double y = Track->GetPosition().getY();
 	G4double z = Track->GetPosition().getZ();
-	G4String Process = process->GetProcessName();
+	G4int    ParentID = Track->GetParentID();
+	G4double E = Track->GetVertexKineticEnergy();
+	G4double Px = Track->GetVertexMomentumDirection().getX();
+	G4double Py = Track->GetVertexMomentumDirection().getY();
+	G4double Pz = Track->GetVertexMomentumDirection().getZ();
 
   	// get analysis manager
   	auto analysisManager = G4AnalysisManager::Instance();
@@ -132,13 +225,19 @@ G4bool SKSD::ProcessHits(G4Step* step,
   	analysisManager->FillH2(0, Z, A);
   
   	// fill ntuple
-  	analysisManager->FillNtupleDColumn(0, A);
-  	analysisManager->FillNtupleDColumn(1, Z);
-  	analysisManager->FillNtupleDColumn(2, x);
-  	analysisManager->FillNtupleDColumn(3, y);
-  	analysisManager->FillNtupleDColumn(4, z);
-  	analysisManager->FillNtupleSColumn(5, Process);
-  	analysisManager->AddNtupleRow(); 
+  	analysisManager->FillNtupleIColumn(0, 0, A);
+  	analysisManager->FillNtupleIColumn(0, 1, Z);
+  	analysisManager->FillNtupleDColumn(0, 2, x);
+  	analysisManager->FillNtupleDColumn(0, 3, y);
+  	analysisManager->FillNtupleDColumn(0, 4, z);
+  	analysisManager->FillNtupleSColumn(0, 5, Process);
+	analysisManager->FillNtupleSColumn(0, 6, fParents[ParentID]);
+  	analysisManager->FillNtupleDColumn(0, 7, E);
+  	analysisManager->FillNtupleDColumn(0, 8, Px);
+  	analysisManager->FillNtupleDColumn(0, 9, Py);
+  	analysisManager->FillNtupleDColumn(0, 10, Pz);
+	analysisManager->FillNtupleIColumn(0, 11, fEventID);
+  	analysisManager->AddNtupleRow(0); 
       
   	return true;
   }
@@ -164,6 +263,38 @@ G4bool SKSD::ProcessHits(G4Step* step,
   	return true;
   }
 
+  //check if it is a gamma
+  if ( name == "gamma" ){
+	//----------------------------------------------
+	//   gamma info
+	//----------------------------------------------
+	G4double E = Track->GetVertexKineticEnergy();
+
+  	// get analysis manager
+  	auto analysisManager = G4AnalysisManager::Instance();
+ 
+  	// fill histogram
+  	analysisManager->FillH1(1, E);
+      
+  	return true;
+  }
+
+  //check if it is a proton
+  if ( name == "proton" ){
+	//----------------------------------------------
+	//   proton info
+	//----------------------------------------------
+	G4double E = Track->GetVertexKineticEnergy();
+
+  	// get analysis manager
+  	auto analysisManager = G4AnalysisManager::Instance();
+ 
+  	// fill histogram
+  	analysisManager->FillH1(2, E);
+      
+  	return true;
+  }
+
   //check if it is a electron or a positron
   if (name == "e-" || name == "e+" ){
 	//----------------------------------------------
@@ -175,7 +306,7 @@ G4bool SKSD::ProcessHits(G4Step* step,
   	auto analysisManager = G4AnalysisManager::Instance();
  
   	// fill histogram
-  	analysisManager->FillH1(1, E);
+  	analysisManager->FillH1(3, E);
  
   	return true;
    }
@@ -191,7 +322,7 @@ G4bool SKSD::ProcessHits(G4Step* step,
   	auto analysisManager = G4AnalysisManager::Instance();
  
   	// fill histogram
-  	analysisManager->FillH1(2, E);
+  	analysisManager->FillH1(4, E);
  
   	return true;
    } 
@@ -207,11 +338,38 @@ G4bool SKSD::ProcessHits(G4Step* step,
   	auto analysisManager = G4AnalysisManager::Instance();
  
   	// fill histogram
-  	analysisManager->FillH1(3, E);
+  	analysisManager->FillH1(5, E);
  
   	return true;
-   } 
+   }
 
+   //----------------------------------------------
+   //  Collect information for the muon
+   //----------------------------------------------
+   //saving entering muon
+   if (name == "mu-"){
+	//----------------------------------------------
+	//    entering muon info
+	//----------------------------------------------
+	G4double E = Track->GetKineticEnergy();
+	G4double x = Track->GetPosition().getX();
+	G4double y = Track->GetPosition().getY();
+	G4double z = Track->GetPosition().getZ();
+
+  	// get analysis manager
+  	auto analysisManager = G4AnalysisManager::Instance();
+ 
+  	// fill ntuple
+  	analysisManager->FillNtupleSColumn(1, 0, name);
+  	analysisManager->FillNtupleDColumn(1, 1, E);
+  	analysisManager->FillNtupleDColumn(1, 2, x);
+  	analysisManager->FillNtupleDColumn(1, 3, y);
+  	analysisManager->FillNtupleDColumn(1, 4, z);
+	analysisManager->FillNtupleIColumn(1, 5, fEventID);
+  	analysisManager->AddNtupleRow(1);   
+      
+  	return true;
+   }
 
 
   return false;

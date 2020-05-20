@@ -95,6 +95,7 @@ with simple conditions for the geometry.
    One is command-based method implemented in the main function with the line : 
    G4ScoringManager * scManager = G4ScoringManager::GetScoringManager();  
    And then with scoring macros. A few different macros are available in the git hub repository.
+	***This method is desactivated(commented for now)
 
    The other method is introduced with the sensitive detector construction. This is more complex
    and , for this specific simulation , requires the definition of some classes :

@@ -7,7 +7,7 @@
 #/run/numberOfThreads 4
 #
 # Setting scoring mesh
-/control/execute scoring.mac
+#/control/execute scoring.mac
 #
 # Initialize kernel
 /run/initialize
@@ -25,5 +25,5 @@
 #
 # Dump scorers to a file
 #
-/score/dumpAllQuantitiesToFile boxMesh_2 particles_spec_run2.txt
+#/score/dumpAllQuantitiesToFile boxMesh_2 particles_spec_run2.txt
 

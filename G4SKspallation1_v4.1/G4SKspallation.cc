@@ -74,8 +74,8 @@ int main(int argc,char** argv)
 #endif
 
   // Activate UI-command base scorer
-  G4ScoringManager * scManager = G4ScoringManager::GetScoringManager();
-  scManager->SetVerboseLevel(0);
+  //G4ScoringManager * scManager = G4ScoringManager::GetScoringManager();
+  //scManager->SetVerboseLevel(0);
 
 
   // Set mandatory initialization classes
@@ -89,7 +89,7 @@ int main(int argc,char** argv)
   //G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("QGSP_BIC_HP"); 
   //G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("FTFP_BERT_HP"); 
   //G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("QGSP_INCLXX_HP"); //still have to check if the _HP of this list exists 
-  physicsList->SetVerboseLevel(1);
+  physicsList->SetVerboseLevel(0);
   runManager->SetUserInitialization(physicsList);
     
   // User action initialization
@@ -97,9 +97,8 @@ int main(int argc,char** argv)
   
   // Initialize visualization
   //
-  G4VisManager* visManager = new G4VisExecutive();
+  G4VisManager* visManager = new G4VisExecutive("Quiet");
   // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
-  // G4VisManager* visManager = new G4VisExecutive("Quiet");
   visManager->Initialize();
 
   // Get the pointer to the User Interface manager

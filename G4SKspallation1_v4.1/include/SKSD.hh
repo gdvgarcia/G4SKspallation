@@ -35,6 +35,8 @@
 #include "SKHit.hh"
 
 #include <vector>
+#include <map>
+#include <string> 
 
 class G4Step;
 class G4HCofThisEvent;
@@ -60,6 +62,8 @@ class SKSD : public G4VSensitiveDetector
 
   private:
     SKHitsCollection* fHitsCollection;
+    G4int fEventID; // keep track of the event number
+    std::map< int, std::string> fParents; // keep parents' trackIDs so we can recover parents' names
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

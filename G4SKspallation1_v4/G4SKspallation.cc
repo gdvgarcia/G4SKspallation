@@ -74,8 +74,8 @@ int main(int argc,char** argv)
 #endif
 
   // Activate UI-command base scorer
-  G4ScoringManager * scManager = G4ScoringManager::GetScoringManager();
-  scManager->SetVerboseLevel(0);
+  //G4ScoringManager * scManager = G4ScoringManager::GetScoringManager();
+  //scManager->SetVerboseLevel(0);
 
 
   // Set mandatory initialization classes
