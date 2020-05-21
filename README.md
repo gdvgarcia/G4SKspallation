@@ -6,9 +6,9 @@ The first simulation consists of downward muons with the SK energy spectrum targ
 
 The second simulation adds the photomultipliers to the tank.
 
-The third simulation adds the angular distribution of muons to the tank, but not the photomultipliers.
+The third simulation adds the angular distribution of muons, but not adding the photomultipliers.
 
-Maybe introduce a simulation with a single muon energy to analyse assumption of the paper of S. W. Lee and J. F. Beacom
+We also keep a forth simulation with a single muon energy to analyse the results and assumptions of the paper of S. W. Lee and J. F. Beacom.
 
 References:
 
