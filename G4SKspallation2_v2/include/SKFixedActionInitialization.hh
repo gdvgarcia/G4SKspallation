@@ -24,39 +24,28 @@
 // ********************************************************************
 //
 //
-/// \file SKActionInitialization.cc
-/// \brief Implementation of the SKActionInitialization class
+/// \file SKFixedActionInitialization.hh
+/// \brief Definition of the SKFixedActionInitialization class
 
-#include "SKActionInitialization.hh"
-#include "SKPrimaryGeneratorAction.hh"
-#include "SKRunAction.hh"
-#include "SKEventAction.hh"
+#ifndef SKFixedActionInitialization_h
+#define SKFixedActionInitialization_h 1
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#include "G4VUserActionInitialization.hh"
 
-SKActionInitialization::SKActionInitialization()
- : G4VUserActionInitialization()
-{}
+/// Action initialization class.
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-SKActionInitialization::~SKActionInitialization()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void SKActionInitialization::BuildForMaster() const
+class SKFixedActionInitialization : public G4VUserActionInitialization
 {
-   SetUserAction(new SKRunAction);
-}
+  public:
+    SKFixedActionInitialization();
+    virtual ~SKFixedActionInitialization();
+
+    virtual void BuildForMaster() const;
+    virtual void Build() const;
+};
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void SKActionInitialization::Build() const
-{
-  SetUserAction(new SKPrimaryGeneratorAction);
-  SetUserAction(new SKRunAction);
-  SetUserAction(new SKEventAction);
-}  
+#endif
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+    
