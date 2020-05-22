@@ -11,22 +11,12 @@ All in one :
 
 $ cmake -DCMAKE_PREFIX_PATH=/home/gvalle/Programs/geant4.6/geant4.10.06-install $HOME/G4SKspallation/G4SKspallation1_v3 && make -j2 && make VERBOSE=1 && ./G4SKspallation
 
+$ cmake -DCMAKE_PREFIX_PATH=/home/ggarcia/Programs/geant4/geant4.10.06-install $HOME/G4SKspallation/G4SKspallation2_v2 && make -j2
+
 Or here 
 
 $ cmake -DCMAKE_PREFIX_PATH=/home/gvalle/Programs/geant4.6/geant4.10.06-install $HOME/Programs/geant4.6/spallation_v3
 
 git committing text : Added the simulation1 version3 - still missing to code the way we retrieve information for analysis and to code the muon energy spectrum for the particle gun
-
-$ gedit ~/.bashrc 
-
-And there I put and save : 
-
-
-source /home/gvalle/Programs/root6/root/bin/thisroot.sh
-
-source /home/gvalle/Programs/geant4.6/geant4.10.06-install/bin/geant4.sh
-
-
-Figures : the energy lost is per cm along Z axis 
 
 
