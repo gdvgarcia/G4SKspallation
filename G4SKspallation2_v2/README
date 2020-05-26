@@ -13,7 +13,7 @@ with simple conditions for the geometry.
 	
  1- GEOMETRY DEFINITION
 	
-   The geometry is constructed in the G4SKspallationDetectorConstruction class.
+   The geometry is constructed in the G4SKDetectorConstruction class.
    The setup consists of a an envelope(world) of box shape containing two volumes: 
    the water tank cylinder and the fiducial volume of the tank which is also a cylinder.
    ***Fiducial volume is commented - if you want to measure things only for the fiducial volume 
@@ -48,9 +48,9 @@ with simple conditions for the geometry.
  2- PHYSICS LIST
  
    The particle's type and the physics processes which will be available
-   in this simulation are set in the QGSP_BERT_HP physics list(or QGSP_BIC_HP or
-   FTFP_BERT_HP or QGSP_INCLXX_HP - for later comparison of results of these 
-   different lists). This physics list requires data files for electromagnetic 
+   in this simulation are set in the QGSP_BERT_HP physics list, or in the QGSP_BIC_HP or
+   in the FTFP_BERT_HP or in the QGSP_INCLXX_HP (for later comparison of results of these 
+   different lists). These physics lists require data files for electromagnetic 
    and hadronic processes.
    See more on installation of the datasets in Geant4 Installation Guide,
    Chapter 3.3: Note On Geant4 Datasets:
@@ -62,30 +62,45 @@ with simple conditions for the geometry.
    In addition the build-in interactive command:
                /process/(in)activate processName
    allows to activate/inactivate the processes one by one.
+
+   The physics list can be chosen by addind an extra argument when opening the application
+   in batch mode. The third argument corresponds to the physics list choice. By default we 
+   use the QGSP_BERT_HP. If the third argument is "0", we keep the QGSP_BERT_HP. If it is "1", we 
+   get the QGSP_BIC_HP. "2" brings the FTFP_BERT_HP and "3" the QGSP_INCLXX_HP. Any other number or
+   value for the third argument will bring the default physics list. If the argument is "!", it just
+   keep the default one and you can add a fourth argument. Meaning that "!" is just a place holder. 
    
  3- ACTION INITALIZATION
 
-   A newly introduced class, G4SKspallationActionInitialization, instantiates and registers 
-   to Geant4 kernel all user action classes.
+   Two newly introduced classes, G4SKFixedActionInitialization and G4SKReadActionInitialization, 
+   instantiates and registers to Geant4 kernel all user action classes.
 
    While in sequential mode the action classes are instatiated just once,
    via invoking the method:
-      G4SKspallationActionInitialization::Build() 
+      G4SKActionInitialization::Build() 
    in multi-threading mode the same method is invoked for each thread worker
    and so all user action classes are defined thread-local.
 
    A run action class is instantiated both thread-local 
    and global that's why its instance is created also in the method
-      G4SKspallationActionInitialization::BuildForMaster() 
+      G4SKActionInitialization::BuildForMaster() 
    which is invoked only in multi-threading mode.
   	 
  4- PRIMARY GENERATOR
   
-   The primary generator is defined in the G4SKspallationPrimaryGeneratorAction class.
+   The primary generator is defined in the G4SKPrimaryGeneratorAction class.
    The default kinematics is a 271 GeV muon(which is average muon energy for Super-Kamiokande) 
    with downward momentum along the cylinder axis located on top of the tank's water in the center
    of the tank surface.
-   	*** The new version reads the muon energy from an ASCII file
+   
+   One may choose to read the initial conditions for the muons from an ASCII file. For this to be done,
+   one have to write the initial conditions in the ini_cond.txt text file, keeping the same file format. 
+   Then when lauching the application, if the command has a fourth argument the initial conditions will be 
+   read from the file. 
+   For example, I want to keep the default physics list, read the run2.mac macro and use the initial conditions
+   from the ini_cond.txt file. So I use the following command :
+   $  ./G4SKspallation run2.mac ! yes
+   The last argument "yes" could be anything.
 
    This default setting can be changed via the Geant4 built-in commands of the G4ParticleGun class.
      

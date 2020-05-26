@@ -1,7 +1,0 @@
-# mesh name: boxMesh_2
-# primitive scorer name: nOfSecondaryEminus
-# iX, iY, iZ, total(value) [NoUnit], total(val^2), entry
-0,0,0,7270,52852900,1
-# primitive scorer name: nOfSecondaryNeutron
-# iX, iY, iZ, total(value) [NoUnit], total(val^2), entry
-0,0,0,0,0,0

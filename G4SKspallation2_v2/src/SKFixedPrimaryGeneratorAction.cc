@@ -26,10 +26,10 @@
 // HERE WE GENERATE A MUON WITH A GIVEN ENERGY(AVERAGE MUON ENERGY FOR SK) AND 
 // A GIVEN POSITION( ON THE TANK AXIS AND ON THE UPPER PART OF THE TANK )
 //
-/// \file SKPrimaryGeneratorAction.cc
-/// \brief Implementation of the SKPrimaryGeneratorAction class
+/// \file SKFixedPrimaryGeneratorAction.cc
+/// \brief Implementation of the SKFixedPrimaryGeneratorAction class
 
-#include "SKPrimaryGeneratorAction.hh"
+#include "SKFixedPrimaryGeneratorAction.hh"
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
@@ -40,7 +40,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SKPrimaryGeneratorAction::SKPrimaryGeneratorAction()
+SKFixedPrimaryGeneratorAction::SKFixedPrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(),
   fParticleGun(0)
 {
@@ -59,14 +59,14 @@ SKPrimaryGeneratorAction::SKPrimaryGeneratorAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SKPrimaryGeneratorAction::~SKPrimaryGeneratorAction()
+SKFixedPrimaryGeneratorAction::~SKFixedPrimaryGeneratorAction()
 {
   delete fParticleGun;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+void SKFixedPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   //This function is called at the begining of each event
   //

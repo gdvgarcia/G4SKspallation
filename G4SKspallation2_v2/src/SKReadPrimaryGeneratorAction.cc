@@ -26,10 +26,10 @@
 // HERE WE GENERATE A MUON WITH ENERGY GIVEN BY AN ASCII FILE AND 
 // A GIVEN POSITION( ON THE TANK AXIS AND ON THE UPPER PART OF THE TANK )
 //
-/// \file SKPrimaryGeneratorAction.cc
-/// \brief Implementation of the SKPrimaryGeneratorAction class
+/// \file SKReadPrimaryGeneratorAction.cc
+/// \brief Implementation of the SKReadPrimaryGeneratorAction class
 
-#include "SKPrimaryGeneratorAction.hh"
+#include "SKReadPrimaryGeneratorAction.hh"
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
@@ -51,7 +51,7 @@ using namespace std;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SKPrimaryGeneratorAction::SKPrimaryGeneratorAction()
+SKReadPrimaryGeneratorAction::SKReadPrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(),
   fParticleGun(0)
 {
@@ -70,14 +70,14 @@ SKPrimaryGeneratorAction::SKPrimaryGeneratorAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SKPrimaryGeneratorAction::~SKPrimaryGeneratorAction()
+SKReadPrimaryGeneratorAction::~SKReadPrimaryGeneratorAction()
 {
   delete fParticleGun;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   //This function is called at the begining of each event
   //
@@ -148,7 +148,7 @@ void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 //function used to split the line so we can take the data and put in the vector
-void SKPrimaryGeneratorAction::Split(const string& line, char divisionchart, vector<string>& words) {
+void SKReadPrimaryGeneratorAction::Split(const string& line, char divisionchart, vector<string>& words) {
    int i = 0;
    int j = line.find(divisionchart);
 

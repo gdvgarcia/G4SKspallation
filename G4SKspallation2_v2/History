@@ -25,5 +25,5 @@ track of all tags.
 15/05/20 G. D. V. Garcia (G4SKspallation1)
 - Addition of histograms and ntuples with data simulated from each run and removal (commenting its creation lines) of the fiducial volume. 
 21/05/20 G. D. V. Garcia (G4SKspallation1)
-- Now muons have initial energies given by an ASCII file. 
+- Now muons have initial energies given by an ASCII file that can be turned on by using extra arguments when calling the macro to run. 
 

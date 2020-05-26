@@ -24,40 +24,39 @@
 // ********************************************************************
 //
 //
-/// \file G4SKspallationPrimaryGeneratorAction.hh
-/// \brief Definition of the G4SKspallationPrimaryGeneratorAction class
+/// \file SKFixedActionInitialization.cc
+/// \brief Implementation of the SKFixedActionInitialization class
 
-#ifndef G4SKspallationPrimaryGeneratorAction_h
-#define G4SKspallationPrimaryGeneratorAction_h 1
-
-#include "G4VUserPrimaryGeneratorAction.hh"
-#include "G4ParticleGun.hh"
-#include "globals.hh"
-
-class G4ParticleGun;
-class G4Event;
-
-/// The primary generator action class with particle gun.
-///
-/// The default kinematic is a 50 GeV muon xxx change with the spectrum xxx, randomly distribued 
-/// on the top part of the water tank across 100% xxxx (maybe change with a bit more) xxxx of the (X,Y) tank top surface.
-
-class G4SKspallationPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
-{
-  public:
-    G4SKspallationPrimaryGeneratorAction();    
-    virtual ~G4SKspallationPrimaryGeneratorAction();
-
-    // method from the base class
-    virtual void GeneratePrimaries(G4Event*);         
-  
-    // method to access particle gun
-    const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
-  
-  private:
-    G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
-};
+#include "SKFixedActionInitialization.hh"
+#include "SKFixedPrimaryGeneratorAction.hh"
+#include "SKRunAction.hh"
+#include "SKEventAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+SKFixedActionInitialization::SKFixedActionInitialization()
+ : G4VUserActionInitialization()
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+SKFixedActionInitialization::~SKFixedActionInitialization()
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void SKFixedActionInitialization::BuildForMaster() const
+{
+   SetUserAction(new SKRunAction);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void SKFixedActionInitialization::Build() const
+{
+  SetUserAction(new SKFixedPrimaryGeneratorAction);
+  SetUserAction(new SKRunAction);
+  SetUserAction(new SKEventAction);
+}  
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -23,46 +23,40 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// 
-/// \file SKEventAction.hh
-/// \brief Definition of the SKEventAction class
+//
+/// \file SKFixedPrimaryGeneratorAction.hh
+/// \brief Definition of the SKFixedPrimaryGeneratorAction class
 
-#ifndef SKEventAction_h
-#define SKEventAction_h 1
+#ifndef SKFixedPrimaryGeneratorAction_h
+#define SKFixedPrimaryGeneratorAction_h 1
 
-#include "G4UserEventAction.hh"
-
-#include "SKHit.hh"
-
+#include "G4VUserPrimaryGeneratorAction.hh"
+#include "G4ParticleGun.hh"
 #include "globals.hh"
 
-/// Event action class
+class G4ParticleGun;
+class G4Event;
+
+/// The primary generator action class with particle gun.
 ///
-/// In EndOfEventAction(), it prints the accumulated quantities of the energy 
-/// deposit of all particles in the SK tank
-/// stored in the hits collections.
+/// The default kinematic is a 271 GeV muon with downward velocity along the cylinder axis.
 
-class SKEventAction : public G4UserEventAction
+class SKFixedPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
-public:
-  SKEventAction();
-  virtual ~SKEventAction();
+  public:
+    SKFixedPrimaryGeneratorAction();    
+    virtual ~SKFixedPrimaryGeneratorAction();
 
-  virtual void  BeginOfEventAction(const G4Event* event);
-  virtual void    EndOfEventAction(const G4Event* event);
-    
-private:
-  // methods
-  SKHitsCollection* GetHitsCollection(G4int hcID,
-                                            const G4Event* event) const;
-  void PrintEventStatistics(G4double Edep) const;
+    // method from the base class
+    virtual void GeneratePrimaries(G4Event*);         
   
-  // data members                   
-  G4int  fTankHCID;
+    // method to access particle gun
+    const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
+  
+  private:
+    G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
 };
-                     
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
-
-    

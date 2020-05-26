@@ -26,10 +26,11 @@
 //
 /// \file G4SKspallation.cc
 /// \brief Main program of the G4SKspallation
-/// You can choose the physics list by commenting/uncommenting a few lines 
+/// You can choose the physics list by using a third argument when opening the application
 
 #include "SKDetectorConstruction.hh"
-#include "SKActionInitialization.hh"
+#include "SKReadActionInitialization.hh" // Reading the initial conditions from a file
+#include "SKFixedActionInitialization.hh" // Fixed initial muon energy
 
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
@@ -39,10 +40,10 @@
 
 #include "G4UImanager.hh"
 #include "G4ScoringManager.hh"
-#include "QGSP_BERT_HP.hh"  //physics list that will be used
-//#include "QGSP_BIC_HP.hh"  //physics list that will be used
-//#include "FTFP_BERT_HP.hh"  //physics list that will be used
-//#include "QGSP_INCLXX_HP.hh"  //physics list that will be used
+#include "QGSP_BERT_HP.hh"  //physics list that will be used by default ID 0
+#include "QGSP_BIC_HP.hh"  // ID 1
+#include "FTFP_BERT_HP.hh"  // ID 2
+#include "QGSP_INCLXX_HP.hh"  // ID 3
 #include "G4PhysListFactory.hh"
 #include "G4VUserPhysicsList.hh"
 
@@ -50,6 +51,11 @@
 #include "G4UIExecutive.hh"
 
 #include "Randomize.hh"
+
+#include <iostream>
+#include <string>
+
+using namespace std;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -85,22 +91,45 @@ int main(int argc,char** argv)
 
   // Physics list
   G4PhysListFactory  *physListFactory = new G4PhysListFactory(); 
-  // Detect if we are choosing a physics list (if a third argument)
+  G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP"); //default one
+  // Detect if we are choosing a physics list (if there is a third argument)
   //
-  //G4UIExecutive* ui = 0;
-  //if ( argc == 1 ) {
-  //  ui = new G4UIExecutive(argc, argv);
-  //}
-  G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP"); 
-  //G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("QGSP_BIC_HP"); 
-  //G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("FTFP_BERT_HP"); 
-  //G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("QGSP_INCLXX_HP"); //still have to check if the _HP of this list exists 
-  //}
+  if (  argc > 2 ) { 
+	G4String physL = argv[2];
+  	if (  physL.compare("!") != 0 ){// check if we have a ! , because it is just a place holder
+  		if( physL.size() == 1 ){ // check if we really have a size one argument 
+  			G4int ID = atof(physL.c_str()); // getting the ID of the chosen phys List
+			// taking the phys list by its ID
+  			switch(ID) {
+      			case 0:
+         			physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP");
+      	        		break;
+      			case 1:
+          			physicsList =  physListFactory->GetReferencePhysList("QGSP_BIC_HP");
+          			break;
+      			case 2:
+          			physicsList =  physListFactory->GetReferencePhysList("FTFP_BERT_HP");
+          			break;
+      			case 3:
+          			physicsList =  physListFactory->GetReferencePhysList("QGSP_INCLXX_HP"); // it says that this phys List is still under validation and improvements
+          			break;
+      			default:
+          			physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP"); //default
+          			break;
+			}
+    		}
+	}
+  }
   physicsList->SetVerboseLevel(0);
   runManager->SetUserInitialization(physicsList);
     
   // User action initialization
-  runManager->SetUserInitialization(new SKActionInitialization());
+  // Detect if we want to read a initial condition file (if there is a forth argument)
+  //
+  if (  argc > 3 ) { 
+  runManager->SetUserInitialization(new SKReadActionInitialization());
+  }
+  else{runManager->SetUserInitialization(new SKFixedActionInitialization());}
   
   // Initialize visualization
   //

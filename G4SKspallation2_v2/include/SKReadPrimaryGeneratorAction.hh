@@ -24,28 +24,48 @@
 // ********************************************************************
 //
 //
-/// \file SKActionInitialization.hh
-/// \brief Definition of the SKActionInitialization class
+/// \file SKReadPrimaryGeneratorAction.hh
+/// \brief Definition of the SKReadPrimaryGeneratorAction class
 
-#ifndef SKActionInitialization_h
-#define SKActionInitialization_h 1
+#ifndef SKReadPrimaryGeneratorAction_h
+#define SKReadPrimaryGeneratorAction_h 1
 
-#include "G4VUserActionInitialization.hh"
+#include "G4VUserPrimaryGeneratorAction.hh"
+#include "G4ParticleGun.hh"
+#include "globals.hh"
 
-/// Action initialization class.
+#include <string>
+#include <vector>
 
-class SKActionInitialization : public G4VUserActionInitialization
+using namespace std;
+
+class G4ParticleGun;
+class G4Event;
+
+/// The primary generator action class with particle gun.
+///
+/// It reads the initial energy from a ASCII file and the other default conditions are 
+/// a muon with downward velocity along the cylinder axis.
+
+class SKReadPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   public:
-    SKActionInitialization();
-    virtual ~SKActionInitialization();
+    SKReadPrimaryGeneratorAction();    
+    virtual ~SKReadPrimaryGeneratorAction();
 
-    virtual void BuildForMaster() const;
-    virtual void Build() const;
+    // method from the base class
+    virtual void GeneratePrimaries(G4Event*);         
+  
+    // method to access particle gun
+    const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
+  
+  private:
+    G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
+
+    // Funtion to split the line so we can take the data and put in the vector
+    void Split(const string& line, char divisionchart, vector<string>& words) ;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
-
-    

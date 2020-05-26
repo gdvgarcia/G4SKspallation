@@ -23,41 +23,29 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// 
-/// \file SKRunAction.hh
-/// \brief Definition of the SKRunAction class
+//
+/// \file SKReadActionInitialization.hh
+/// \brief Definition of the SKReadActionInitialization class
 
-#ifndef SKRunAction_h
-#define SKRunAction_h 1
+#ifndef SKReadActionInitialization_h
+#define SKReadActionInitialization_h 1
 
-#include "G4UserRunAction.hh"
-#include "globals.hh"
+#include "G4VUserActionInitialization.hh"
 
-class G4Run;
+/// Action initialization class.
 
-/// Run action class
-///
-/// It accumulates statistic and computes dispersion of the energy distribution 
-/// of some sencondary particles with use of analysis tools:
-/// H1D histograms and a  ntuple are created in BeginOfRunAction()
-/// The histograms and ntuple are saved in the output file in a format
-/// according to a selected technology in SKAnalysis.hh.
-///
-/// In EndOfRunAction(), the accumulated statistic and computed 
-/// dispersion is printed.
-///
-
-class SKRunAction : public G4UserRunAction
+class SKReadActionInitialization : public G4VUserActionInitialization
 {
   public:
-    SKRunAction();
-    virtual ~SKRunAction();
+    SKReadActionInitialization();
+    virtual ~SKReadActionInitialization();
 
-    virtual void BeginOfRunAction(const G4Run*);
-    virtual void   EndOfRunAction(const G4Run*);
+    virtual void BuildForMaster() const;
+    virtual void Build() const;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
 
+    
