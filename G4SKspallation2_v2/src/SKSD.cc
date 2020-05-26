@@ -111,9 +111,10 @@ G4bool SKSD::ProcessHits(G4Step* step,
   G4ParticleDefinition* thePartDef = Track->GetDefinition();
   G4String partType= thePartDef->GetParticleType();
   G4String name = thePartDef->GetParticleName();
+  G4int TrackID = Track->GetTrackID();
   // avoiding getting the process for the initial muon
   G4String Process = "None";
-  if ( name != "mu-" ){
+  if ( TrackID != 1 ){
 	const G4VProcess* process = Track->GetCreatorProcess();
   	Process = process->GetProcessName();
   }
@@ -122,8 +123,7 @@ G4bool SKSD::ProcessHits(G4Step* step,
   //----------------------------------------------
   //  Collect information for isotopes' parents
   //----------------------------------------------
-  // still need to improve when we check the track - I want at the end 
-  if ( ( step->IsLastStepInVolume() ) || ( Track->GetTrackStatus() == fStopAndKill ) ){
+  if ( ( step->IsLastStepInVolume() ) || ( Track->GetTrackStatus() == fStopAndKill ) ){ // Check if is the end of the track
 
   // making the ntuple for the parent particles - first take all the secondaries
   G4TrackVector* Secondaries = step->GetfSecondary();
@@ -136,7 +136,6 @@ G4bool SKSD::ProcessHits(G4Step* step,
 	//----------------------------------------------
 	//   parent variables
 	//----------------------------------------------
-	G4int    TrackID = 0;
 	// daughter variables
 	G4ParticleDefinition* secPartDef = thePartDef;
 	G4String secpartType = " ";
@@ -153,8 +152,6 @@ G4bool SKSD::ProcessHits(G4Step* step,
   		secname = secPartDef->GetParticleName();
 		// if we find we save the parent information
 		if ( secpartType == "nucleus"){
-			// only getting TrackID if we want to keep the particle
-			TrackID = Track->GetTrackID();
 
 			// Filling the map
 			fParents[TrackID] = name;
@@ -165,12 +162,13 @@ G4bool SKSD::ProcessHits(G4Step* step,
 	}
   }
   }
+  //---------------------------------------------- END CHECK IF IS THE END OF THE STEP
 
   //----------------------------------------------
   //  Collect information for the muon
   //----------------------------------------------
   // check if it is our muon that is leaving the tank
-  if (name == "mu-" && step->IsLastStepInVolume() ){
+  if ( ( TrackID == 1 )  && ( ( step->IsLastStepInVolume() ) || ( Track->GetTrackStatus() == fStopAndKill ) || ( Track->GetCurrentStepNumber() == 1 ) || ( step->IsFirstStepInVolume() ) ){
 	//----------------------------------------------
 	//    leaving muon info
 	//----------------------------------------------
@@ -190,10 +188,16 @@ G4bool SKSD::ProcessHits(G4Step* step,
   	analysisManager->FillNtupleDColumn(1, 4, z);
 	analysisManager->FillNtupleIColumn(1, 5, fEventID);
   	analysisManager->AddNtupleRow(1); 
+
+	if( ( Track->GetCurrentStepNumber() == 1 ) || ( step->IsFirstStepInVolume() ) ){
+        	// Filling the hit with the muon initial energy
+		E = Track->GetVertexKineticEnergy();
+		hit->Fill(E);
+	}
       
   	return true;
    }
-
+   //---------------------------------------------- END MUON 
 
   //- check for newly produced particle. e.g. first step.
   if ( Track->GetCurrentStepNumber() != 1){return false;}
@@ -207,8 +211,8 @@ G4bool SKSD::ProcessHits(G4Step* step,
 	//----------------------------------------------
 	//   isotopes info
 	//----------------------------------------------
-	G4int Z = thePartDef->GetAtomicNumber();
-	G4int A = thePartDef->GetAtomicMass();
+	G4int 	 Z = thePartDef->GetAtomicNumber();
+	G4int 	 A = thePartDef->GetAtomicMass();
 	G4double x = Track->GetPosition().getX();
 	G4double y = Track->GetPosition().getY();
 	G4double z = Track->GetPosition().getZ();
@@ -340,37 +344,6 @@ G4bool SKSD::ProcessHits(G4Step* step,
   	// fill histogram
   	analysisManager->FillH1(5, E);
  
-  	return true;
-   }
-
-   //----------------------------------------------
-   //  Collect information for the muon
-   //----------------------------------------------
-   //saving entering muon
-   if (name == "mu-"){
-	//----------------------------------------------
-	//    entering muon info
-	//----------------------------------------------
-	G4double E = Track->GetKineticEnergy();
-	G4double x = Track->GetPosition().getX();
-	G4double y = Track->GetPosition().getY();
-	G4double z = Track->GetPosition().getZ();
-
-  	// get analysis manager
-  	auto analysisManager = G4AnalysisManager::Instance();
- 
-  	// fill ntuple
-  	analysisManager->FillNtupleSColumn(1, 0, name);
-  	analysisManager->FillNtupleDColumn(1, 1, E);
-  	analysisManager->FillNtupleDColumn(1, 2, x);
-  	analysisManager->FillNtupleDColumn(1, 3, y);
-  	analysisManager->FillNtupleDColumn(1, 4, z);
-	analysisManager->FillNtupleIColumn(1, 5, fEventID);
-  	analysisManager->AddNtupleRow(1);   
-
-	// Filling the hit with the muon initial energy
-	hit->Fill(E);
-      
   	return true;
    }
 
