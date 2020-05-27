@@ -127,8 +127,8 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
   // fill histograms
-  analysisManager->FillH1(6, tankHit->GetEdep());
-  analysisManager->FillH1(7, tankHit->GetEmu());
+  analysisManager->FillH1(0, tankHit->GetEdep());
+  analysisManager->FillH1(1, tankHit->GetEmu());
    
 }  
 

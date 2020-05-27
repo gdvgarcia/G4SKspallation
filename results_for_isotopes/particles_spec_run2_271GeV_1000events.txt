@@ -1,0 +1,22 @@
+# mesh name: boxMesh_2
+# primitive scorer name: nOfSecondaryEminus
+# iX, iY, iZ, total(value) [NoUnit], total(val^2), entry
+0,0,0,12539300,711756684820,1000
+# primitive scorer name: nOfSecondaryEplus
+# iX, iY, iZ, total(value) [NoUnit], total(val^2), entry
+0,0,0,66128,30403266,1000
+# primitive scorer name: nOfSecondaryNeutron
+# iX, iY, iZ, total(value) [NoUnit], total(val^2), entry
+0,0,0,2001,210057,207
+# primitive scorer name: nOfSecondaryPiMinus
+# iX, iY, iZ, total(value) [NoUnit], total(val^2), entry
+0,0,0,184,3140,38
+# primitive scorer name: nOfSecondaryPiPlus
+# iX, iY, iZ, total(value) [NoUnit], total(val^2), entry
+0,0,0,211,3899,43
+# primitive scorer name: nOfSecondaryPiZero
+# iX, iY, iZ, total(value) [NoUnit], total(val^2), entry
+0,0,0,179,2805,50
+# primitive scorer name: totalEdep
+# iX, iY, iZ, total(value) [MeV], total(val^2), entry
+0,0,0,14755997.33554994,397399405439.6941,1000
