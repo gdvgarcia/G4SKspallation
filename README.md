@@ -6,6 +6,7 @@ The first simulation consists of downward muons(SK angular distribution can be a
 
 The second simulation adds the photomultipliers to the tank...
 
+Geant4 default units : http://geant4.web.cern.ch/sites/geant4.web.cern.ch/files/geant4/collaboration/working_groups/electromagnetic/gallery/units/SystemOfUnits.html
 
 References:
 
