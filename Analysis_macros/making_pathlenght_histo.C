@@ -98,7 +98,7 @@ int making_pathlenght_histo(){
 			for( int i =0; i < nentries; ++i){
 				DataTree->GetEntry(i);
 				if( (particles[j][0].compare(Particle) == 0) || (particles[j][1].compare(Particle) == 0) ){ // if desired particle		
-					double Weight = 10 * (PathLenght/nmuons); // multiplied by ten to get the result in cm and divided by the number of muons simulated	
+					double Weight = (PathLenght/nmuons)/10; // divided by ten to get the result in cm and divided by the number of muons simulated	
 					h1->Fill(Energy, Weight);} // fill with path lenght weight devided by the number of events
  			}
 		}
@@ -112,7 +112,7 @@ int making_pathlenght_histo(){
 			for( int i =0; i < nentries; ++i){
 				DataTree->GetEntry(i);
 				if( (particles[j][0].compare(Particle) == 0) ){ // if desired particle	
-					double Weight = 10 * (PathLenght/nmuons); // multiplied by ten to get the result in cm and divided by the number of muons simulated	
+					double Weight = (PathLenght/nmuons)/10; // divided by ten to get the result in cm and divided by the number of muons simulated	
 					h1->Fill(Energy, Weight);} // fill with path lenght weight devided by the number of events
  			}	
 		}
@@ -127,10 +127,11 @@ int making_pathlenght_histo(){
     		h1->SetLineStyle(2);
 		h1->GetXaxis()->SetTitle("E [MeV]");
 		h1->GetYaxis()->SetTitle("Path  length [cm / MeV]");
+		h1->GetYaxis()->SetTitleOffset(1.);
 		h1->GetXaxis()->SetLabelSize(.04);
 		h1->GetYaxis()->SetLabelSize(.045);
 		h1->GetXaxis()->SetTitleSize(.045);
-		h1->GetYaxis()->SetTitleSize(.04);
+		h1->GetYaxis()->SetTitleSize(.045);
 		h1->SetStats(kFALSE);
 
 		// Saving the histogram	
