@@ -6,66 +6,107 @@
 #include "TTree.h"
 #include "TFile.h"
 
-void making_pathlenght_histo(){
-	// Open a file, get the tree and clone it
-	TFile tree_file("SK.root");
+int making_pathlenght_histo(){
+	// Opening a file
+	TFile* inputFile = new TFile("SK.root");
+	// checking if the file is open correctly
+	if (inputFile->IsOpen()) {
+    		cout << "Reading file: " << inputFile->GetName() << endl;
+  	}
+  	else {
+    		cerr << "Error opening input file!" << endl;
+    		return 0;
+  	}
+
+	// Getting the tree
 	TTree* DataTree;
-	tree_file.GetObject("particles_data",DataTree);
-	TTree* DataTreeClone = (TTree*)DataTree->Clone();
+	inputFile->GetObject("particles_data",DataTree);
+	int nentries = (int)DataTree->GetEntries();
+	cout << "Number of entries in the Tree: " << DataTree->GetEntries() << endl;
 
 	// creating variables for the branches
-	Char_t Particle [25]; // weird particle type Chart_t so we have to make an array big enought to contain the name
+	Char_t Particle [25]; // contains the particle name
 	double Energy, PathLenght;
 	int EventID;
 	// Attaching to branches
-	DataTreeClone->SetBranchAddress("Particle",&Particle);
-	DataTreeClone->SetBranchAddress("Energy",&Energy);
-	DataTreeClone->SetBranchAddress("PathLenght",&PathLenght);
-	DataTreeClone->SetBranchAddress("EventID",&EventID);
+	DataTree->SetBranchAddress("Particle",&Particle);
+	DataTree->SetBranchAddress("Energy",&Energy);
+	DataTree->SetBranchAddress("PathLenght",&PathLenght);
+	DataTree->SetBranchAddress("EventID",&EventID);
 
-	// selecting the particles
-	string particlesname1 = "e-";
-	string particlesname2 = "e+";
-	//TCut eminus = "particlesname1.compare(Particle) == 0";
-	//TCut eplus  = "particlesname2.compare(Particle) == 0";
-	//TCut particles =  eminus || eplus;
-
-	//Creating the histogram
-	TH1* h1 = new TH1D("h1", "PathLenght", 500, 0.0, 500.0);
+	// create container for particles names
+    	string particles[4][2]; 
+    	particles[0][0] = "e-";
+	particles[0][1] = "e+";
+	particles[1][0] = "gamma";
+	particles[1][1] = "none";
+	particles[2][0] = "neutron";
+	particles[2][1] = "none";
+	particles[3][0] = "pi+";
+	particles[3][1] = "pi-";
 
 	// Create a new file
-	string filename = "PathLength";
-	filename.append( "_" );// 
-	filename.append(particlesname1);
-	filename.append( "_" );
-	filename.append(particlesname2);
-	filename.append( ".root" ); // weird proble;s with the file name
-	TFile hist_file("PathLength.root", "recreate"); 
+	string filename = "PathLength.root";
+	TFile *outputFile = new TFile(filename.c_str(),"RECREATE");
+  	if (outputFile->IsOpen()) {
+    		cout << "Everything is fine!" << endl;
+  	}
+  	else {
+    		cerr << "That should not happen." << endl;
+		return 0;
+  	}
+	
+	//Declaring the histogram
+	TH1* h1;
 
-	// Running through the tree and filling the histogram
-	int nentries = (int)DataTreeClone->GetEntries();
-	for( int i =0; i < 100; ++i){
-	DataTreeClone->GetEntry(i);
-	if( (particlesname1.compare(Particle) == 0) || (particlesname2.compare(Particle) == 0) ){ // if desired particle		
-		h1->Fill(Energy, PathLenght);} // fill with path lenght weight devided by the number of events
+	for( int j =0; j < 4 ; ++j){
+		if( particles[j][1].compare("none") != 0 ){// selecting the particles
+			//Creating the histogram
+			string histtitle = "Path Length spectra for " + particles[j][0] + " + " + particles[j][1];
+			string histname = "h" + particles[j][0] + "_" + particles[j][1];
+			h1 = new TH1D(histname.c_str(), histtitle.c_str(), 500, 0.0, 500.0);
+
+			// Running through the tree and filling the histogram
+			for( int i =0; i < nentries; ++i){
+				DataTree->GetEntry(i);
+				if( (particles[j][0].compare(Particle) == 0) || (particles[j][1].compare(Particle) == 0) ){ // if desired particle		
+					h1->Fill(Energy, PathLenght);} // fill with path lenght weight devided by the number of events
+ 			}
+
+		}
+		else{
+			//Creating the histogram
+			string histtitle = "Path Length spectra for " + particles[j][0];
+			string histname = "h" + particles[j][0];
+			h1 = new TH1D(histname.c_str(), histtitle.c_str(), 500, 0.0, 500.0);
+
+			// Running through the tree and filling the histogram
+			for( int i =0; i < nentries; ++i){
+				DataTree->GetEntry(i);
+				if( (particles[j][0].compare(Particle) == 0) ){ // if desired particle		
+					h1->Fill(Energy, PathLenght);} // fill with path lenght weight devided by the number of events
+ 			}
+		}
+	
+		// Checking if the histogram was filled
+		cout << "Number of entries in the histogram : " << h1->GetEntries() << endl;
+
+			
+		// Adding histogram attributes
+   		h1->SetLineColor(j+1);
+    		h1->SetLineWidth(2);
+
+		// Saving the histogram	
+		h1->Write();
+
  	}
 
-	// Making the canvas we will draw in
-	TCanvas *c1 = new TCanvas();
-	// Adding histogram attributes and drawing it
-   	h1->SetLineColor(1);
-    	h1->SetLineWidth(2);
-	h1->Draw("HIST"); // weird problems with the drawing
 
-	// Saving the histogram	
-	h1->Write();
 
 	// Closing hist file
-	tree_file.Close();
-	hist_file.Close();
+	inputFile->Close();
+	outputFile->Close();
+
+	return 1;
 
 }
-
-int main(){
-    making_pathlenght_histo();
-    }
