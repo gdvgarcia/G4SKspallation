@@ -35,15 +35,19 @@ int making_pathlenght_histo(){
 	DataTree->SetBranchAddress("EventID",&EventID);
 
 	// create container for particles names
-    	string particles[4][2]; 
+    	string particles[4][3]; 
     	particles[0][0] = "e-";
 	particles[0][1] = "e+";
+	particles[0][2] = "eMinusePlus";
 	particles[1][0] = "gamma";
 	particles[1][1] = "none";
+	particles[1][2] = "gamma";
 	particles[2][0] = "neutron";
 	particles[2][1] = "none";
+	particles[2][2] = "neutron";
 	particles[3][0] = "pi+";
 	particles[3][1] = "pi-";
+	particles[3][2] = "piPluspiMinus";
 
 	// Create a new file
 	string filename = "PathLength.root";
@@ -63,7 +67,7 @@ int making_pathlenght_histo(){
 		if( particles[j][1].compare("none") != 0 ){// selecting the particles
 			//Creating the histogram
 			string histtitle = "Path Length spectra for " + particles[j][0] + " + " + particles[j][1];
-			string histname = "h" + particles[j][0] + "_" + particles[j][1];
+			string histname = "h" + particles[j][2];
 			h1 = new TH1D(histname.c_str(), histtitle.c_str(), 500, 0.0, 500.0);
 
 			// Running through the tree and filling the histogram
@@ -78,7 +82,7 @@ int making_pathlenght_histo(){
 		else{
 			//Creating the histogram
 			string histtitle = "Path Length spectra for " + particles[j][0];
-			string histname = "h" + particles[j][0];
+			string histname = "h" + particles[j][2];
 			h1 = new TH1D(histname.c_str(), histtitle.c_str(), 500, 0.0, 500.0);
 
 			// Running through the tree and filling the histogram
