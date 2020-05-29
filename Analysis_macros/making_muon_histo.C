@@ -89,6 +89,7 @@ int making_muon_histo(){
 	// Histograms attributes
    	h1->SetLineColor(4);
     	h1->SetLineWidth(2);
+    	h1->SetLineStyle(1);
 	h1->GetXaxis()->SetTitle("Energy [GeV]");
 	h1->GetYaxis()->SetTitle("Energy x flux per energy [cm^{-2} s^{-1} ]");
 	h1->GetYaxis()->SetTitleOffset(1.);
@@ -99,6 +100,7 @@ int making_muon_histo(){
 	h1->SetStats(kFALSE);
 	h1l->SetLineColor(4);
     	h1l->SetLineWidth(2);
+    	h1l->SetLineStyle(1);
 	h1l->GetXaxis()->SetTitle("Energy [GeV]");
 	h1l->GetYaxis()->SetTitle("Energy x flux per energy [cm^{-2} s^{-1} ]");
 	h1l->GetYaxis()->SetTitleOffset(1.);
@@ -109,6 +111,7 @@ int making_muon_histo(){
 	h1l->SetStats(kFALSE);
 	h2->SetLineColor(4);
     	h2->SetLineWidth(2);
+    	h2->SetLineStyle(1);
 	h2->GetXaxis()->SetTitle("Muon energy loss [GeV]");
 	h2->GetYaxis()->SetTitle("Normalized probability");
 	h2->GetYaxis()->SetTitleOffset(1.);
@@ -125,13 +128,13 @@ int making_muon_histo(){
 
 	// drawing the histograms
 	h2->SetTitle("");
-	h2->DrawNormalized("C9");
+	h2->DrawNormalized("HIST9");
 	// finilizing the figure and saving it
 	c1->SaveAs("MuonEnergyLost.png");
 
 	c1->Clear();
 	h1->SetTitle("");
-	h1->DrawClone("C9");
+	h1->DrawClone("HIST9");
 	// finilizing the figure and saving it
 	gPad->SetLogx();
 	gPad->SetLogy();
@@ -139,7 +142,7 @@ int making_muon_histo(){
 
 	c1->Clear();
 	h1l->SetTitle("");
-	h1l->DrawClone("C9");
+	h1l->DrawClone("HIST9");
 	// finilizing the figure and saving it
 	c1->SaveAs("MuonSpectraLogbin.png");
 
