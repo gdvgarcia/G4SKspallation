@@ -70,7 +70,8 @@ int making_pathlenght_histo(){
 			for( int i =0; i < nentries; ++i){
 				DataTree->GetEntry(i);
 				if( (particles[j][0].compare(Particle) == 0) || (particles[j][1].compare(Particle) == 0) ){ // if desired particle		
-					h1->Fill(Energy, PathLenght);} // fill with path lenght weight devided by the number of events
+					double Weight = PathLenght/5000;
+					h1->Fill(Energy, Weight);} // fill with path lenght weight devided by the number of events
  			}
 
 		}
@@ -83,8 +84,9 @@ int making_pathlenght_histo(){
 			// Running through the tree and filling the histogram
 			for( int i =0; i < nentries; ++i){
 				DataTree->GetEntry(i);
-				if( (particles[j][0].compare(Particle) == 0) ){ // if desired particle		
-					h1->Fill(Energy, PathLenght);} // fill with path lenght weight devided by the number of events
+				if( (particles[j][0].compare(Particle) == 0) ){ // if desired particle	
+					double Weight = PathLenght/5000;	
+					h1->Fill(Energy, Weight);} // fill with path lenght weight devided by the number of events
  			}
 		}
 	
