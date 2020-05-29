@@ -1,4 +1,4 @@
-// Read the tree and make a pathlenght histo plot
+// Read the tree and make transverse distance histos plot
 
 #include "TCanvas.h"
 #include "TROOT.h"
@@ -23,7 +23,11 @@ int making_distance_histo(){
 	TTree* DataTree;
 	inputFile->GetObject("particles2_data",DataTree);
 	int nentries = (int)DataTree->GetEntries();
-	cout << "Number of entries in the Tree: " << DataTree->GetEntries() << endl;
+	cout << "Number of entries in the Tree: " << nentries << endl;
+	if( nentries < 1 ){
+		cerr << "No data to analyze." << endl;
+		return 0;
+	}
 
 	// creating variables for the branches
 	Char_t Particle [25]; // contains the particle name

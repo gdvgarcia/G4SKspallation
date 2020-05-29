@@ -1,4 +1,4 @@
-// Read the tree and make a pathlenght histo plot
+// Read the tree and make pathlenght histos plot
 
 #include "TCanvas.h"
 #include "TROOT.h"
@@ -23,7 +23,11 @@ int making_pathlenght_histo(){
 	TTree* DataTree;
 	inputFile->GetObject("particles_data",DataTree);
 	int nentries = (int)DataTree->GetEntries();
-	cout << "Number of entries in the Tree: " << DataTree->GetEntries() << endl;
+	cout << "Number of entries in the Tree: " << nentries << endl;
+	if( nentries < 1 ){
+		cerr << "No data to analyze." << endl;
+		return 0;
+	}
 
 	// creating variables for the branches
 	Char_t Particle [25]; // contains the particle name
@@ -125,8 +129,8 @@ int making_pathlenght_histo(){
    		h1->SetLineColor(colors[j]);
     		h1->SetLineWidth(2);
     		h1->SetLineStyle(2);
-		h1->GetXaxis()->SetTitle("E [MeV]");
-		h1->GetYaxis()->SetTitle("Path  length [cm / MeV]");
+		h1->GetXaxis()->SetTitle("Energy [MeV]");
+		h1->GetYaxis()->SetTitle("Path  length [cm MeV^{-1} ]");
 		h1->GetYaxis()->SetTitleOffset(1.);
 		h1->GetXaxis()->SetLabelSize(.04);
 		h1->GetYaxis()->SetLabelSize(.045);
