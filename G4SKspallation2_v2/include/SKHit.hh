@@ -63,14 +63,17 @@ class SKHit : public G4VHit
     // methods to handle data
     void Add(G4double de);
     void Fill(G4double emu);
+    void AddL(G4double dl);
 
     // get methods
     G4double GetEdep() const;
     G4double GetEmu() const;
+    G4double GetLmu() const;
       
   private:
     G4double fEdep;        ///< Energy deposit in the sensitive volume
     G4double fEmu;         ///< Initial kinetic energy of the muon
+    G4double fLmu;         ///< Path lenght of the muon
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -113,6 +116,14 @@ inline void SKHit::Fill(G4double emu) {
 
 inline G4double SKHit::GetEmu() const { 
   return fEmu; 
+}
+
+inline void SKHit::AddL(G4double dl) {
+  fLmu += dl;
+}
+
+inline G4double SKHit::GetLmu() const { 
+  return fLmu; 
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

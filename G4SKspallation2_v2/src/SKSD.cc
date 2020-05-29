@@ -179,6 +179,12 @@ G4bool SKSD::ProcessHits(G4Step* step,
   //----------------------------------------------
   if ( TrackID == 1 ){  // CHECK if it is our initial muon 
 
+	//----------------------------------------------
+  	//        Path Length
+  	//----------------------------------------------
+  	// getting the step length and adding it to the hit
+  	hit->AddL(step->GetStepLength());
+
   	if ( ( step->IsLastStepInVolume() ) || 
 	( Track->GetTrackStatus() == fStopAndKill ) ){ // CHECK if it is leaving the tank or finishing the track
 		muonFill( Track->GetKineticEnergy(), Track->GetPosition().getX() , 

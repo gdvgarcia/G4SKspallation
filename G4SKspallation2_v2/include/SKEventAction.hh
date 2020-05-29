@@ -55,7 +55,7 @@ private:
   // methods
   SKHitsCollection* GetHitsCollection(G4int hcID,
                                             const G4Event* event) const;
-  void PrintEventStatistics(G4double Edep, G4double Emu) const;
+  void PrintEventStatistics(G4double Edep, G4double Emu, G4double Lmu) const;
   
   // data members                   
   G4int  fTankHCID;

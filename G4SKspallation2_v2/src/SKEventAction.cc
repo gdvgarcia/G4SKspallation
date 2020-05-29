@@ -77,12 +77,16 @@ SKEventAction::GetHitsCollection(G4int hcID,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void SKEventAction::PrintEventStatistics(
-                              G4double Edep, G4double Emu ) const
+                              G4double Edep, G4double Emu, G4double Lmu ) const
 {
   // print event statistics
   G4cout
      << "   Tank: total energy deposited : " 
      << std::setw(7) << G4BestUnit(Edep, "Energy")
+     << G4endl;
+  G4cout
+     << "   Tank: muon path length : " 
+     << std::setw(7) << G4BestUnit(Lmu, "Length")
      << G4endl;
 
   // print the initial conditions
@@ -119,7 +123,7 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
     G4cout << "---> End of event: " << eventID << G4endl;     
 
     PrintEventStatistics(
-      tankHit->GetEdep(), tankHit->GetEmu());
+      tankHit->GetEdep(), tankHit->GetEmu(), tankHit->GetLmu());
   }  
   
   // Fill the histogram for the total energy deposit per event
@@ -129,6 +133,7 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
   // fill histograms
   analysisManager->FillH1(0, tankHit->GetEdep());
   analysisManager->FillH1(1, tankHit->GetEmu());
+  analysisManager->FillH1(2, tankHit->GetLmu());
    
 }  
 

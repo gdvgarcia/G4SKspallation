@@ -43,7 +43,8 @@ G4ThreadLocal G4Allocator<SKHit>* SKHitAllocator = 0;
 SKHit::SKHit()
  : G4VHit(),
    fEdep(0.),
-   fEmu(0.)
+   fEmu(0.),
+   fLmu(0.)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -57,6 +58,7 @@ SKHit::SKHit(const SKHit& right)
 {
   fEdep        = right.fEdep;
   fEmu         = right.fEmu;
+  fLmu         = right.fLmu;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -65,6 +67,7 @@ const SKHit& SKHit::operator=(const SKHit& right)
 {
   fEdep        = right.fEdep;
   fEmu         = right.fEmu;
+  fLmu         = right.fLmu;
 
   return *this;
 }
@@ -87,6 +90,10 @@ void SKHit::Print()
    G4cout
      << "KinEmu: " 
      << std::setw(7) << G4BestUnit(fEmu,"Energy")
+     << G4endl;
+   G4cout
+     << "Lmu: " 
+     << std::setw(7) << G4BestUnit(fLmu,"Lenght")
      << G4endl;
 }
 
