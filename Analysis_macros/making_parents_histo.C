@@ -101,7 +101,7 @@ int making_parents_histo(){
 			for( int i =0; i < nentries; ++i){
 				DataTree->GetEntry(i);
 				if( (particles[j][0].compare(Particle) == 0) || (particles[j][1].compare(Particle) == 0) ){ // if desired particle		
-					double Weight = (1/nmuons); // divided by the number of muons simulated	to normalize
+					double Weight = (1/nmuons); // divided by the number of muons simulated	to normalize + arbitrary normalization
 					h1->Fill(Energy, Weight);} // fill with path lenght weight devided by the number of events
  			}
 		}
@@ -115,7 +115,7 @@ int making_parents_histo(){
 			for( int i =0; i < nentries; ++i){
 				DataTree->GetEntry(i);
 				if( (particles[j][0].compare(Particle) == 0) ){ // if desired particle	
-					double Weight = (1/nmuons); // divided by the number of muons simulated	to normalize
+					double Weight = (1/nmuons); // divided by the number of muons simulated	to normalize + arbitrary normalization
 					h1->Fill(Energy, Weight);} // fill with path lenght weight devided by the number of events
  			}	
 		}
@@ -135,6 +135,7 @@ int making_parents_histo(){
 		h1->GetYaxis()->SetLabelSize(.045);
 		h1->GetXaxis()->SetTitleSize(.045);
 		h1->GetYaxis()->SetTitleSize(.045);
+		//h1->SetAxisRange(1., 1000000.,"Y");
 		h1->SetStats(kFALSE);
 
 		// Saving the histogram	

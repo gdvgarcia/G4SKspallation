@@ -136,6 +136,7 @@ int making_pathlenght_histo(){
 		h1->GetYaxis()->SetLabelSize(.045);
 		h1->GetXaxis()->SetTitleSize(.045);
 		h1->GetYaxis()->SetTitleSize(.045);
+		h1->SetAxisRange(0.001, 1000.,"Y");
 		h1->SetStats(kFALSE);
 
 		// Saving the histogram	
@@ -156,6 +157,7 @@ int making_pathlenght_histo(){
 
 	// finilizing the figure and saving it
 	gPad->SetLogy();
+	//->Range(-10,-1,10,1);
 	c1->SaveAs("PathLength.png");
 
 	// Closing hist file

@@ -129,6 +129,7 @@ int making_distance_histo(){
 		h1->GetYaxis()->SetLabelSize(.045);
 		h1->GetXaxis()->SetTitleSize(.045);
 		h1->GetYaxis()->SetTitleSize(.045);
+		h1->SetAxisRange(0.0001, 0.1,"Y");
 		h1->SetStats(kFALSE);
 
 		// Saving the histogram	
