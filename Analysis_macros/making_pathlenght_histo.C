@@ -81,7 +81,7 @@ int making_pathlenght_histo(){
   	}
 	
 	//Declaring the histogram
-	TH1* h1;
+	TH1* h[6];
 
 	// Making the canvas we will draw in
 	TCanvas *c1 = new TCanvas();
@@ -96,60 +96,55 @@ int making_pathlenght_histo(){
 			//Creating the histogram
 			string histtitle = "Path Length spectra for " + particles[j][0] + " + " + particles[j][1];
 			string histname = "h" + particles[j][2];
-			h1 = new TH1D(histname.c_str(), histtitle.c_str(), 500, 0.0, 500.0);
-
-			// Running through the tree and filling the histogram
-			for( int i =0; i < nentries; ++i){
-				DataTree->GetEntry(i);
-				if( (particles[j][0].compare(Particle) == 0) || (particles[j][1].compare(Particle) == 0) ){ // if desired particle		
-					double Weight = (PathLenght/nmuons)/10; // divided by ten to get the result in cm and divided by the number of muons simulated	
-					h1->Fill(Energy, Weight);} // fill with path lenght weight devided by the number of events
- 			}
+			h[j] = new TH1D(histname.c_str(), histtitle.c_str(), 500, 0.0, 500.0);
 		}
 		else{
 			//Creating the histogram
 			string histtitle = "Path Length spectra for " + particles[j][0];
 			string histname = "h" + particles[j][2];
-			h1= new TH1D(histname.c_str(), histtitle.c_str(), 500, 0.0, 500.0);
+			h[j] = new TH1D(histname.c_str(), histtitle.c_str(), 500, 0.0, 500.0);
 
-			// Running through the tree and filling the histogram
-			for( int i =0; i < nentries; ++i){
-				DataTree->GetEntry(i);
-				if( (particles[j][0].compare(Particle) == 0) ){ // if desired particle	
-					double Weight = (PathLenght/nmuons)/10; // divided by ten to get the result in cm and divided by the number of muons simulated	
-					h1->Fill(Energy, Weight);} // fill with path lenght weight devided by the number of events
- 			}	
 		}
+	}
+
+		// Running through the tree and filling the histogram
+		for( int i =0; i < nentries; ++i){
+			for( int j =0; j < 6 ; ++j){
+			DataTree->GetEntry(i);
+			if( (particles[j][0].compare(Particle) == 0) || (particles[j][1].compare(Particle) == 0) ){ // if desired particle		
+				double Weight = (PathLenght/nmuons)/10; // divided by ten to get the result in cm and divided by the number of muons simulated	
+				h[j]->Fill(Energy, Weight);} // fill with path lenght weight devided by the number of events
+			}
+ 		}
+
+	for( int j =0; j < 6 ; ++j){
 	
 		// Checking if the histogram was filled
-		cout << "Number of entries in the h1gram : " << h1->GetEntries() << endl;
+		cout << "Number of entries in the h1gram : " << h[j]->GetEntries() << endl;
 
 			
 		// Histogram attributes
-   		h1->SetLineColor(colors[j]);
-    		h1->SetLineWidth(2);
-    		h1->SetLineStyle(2);
-		h1->GetXaxis()->SetTitle("Energy [MeV]");
-		h1->GetYaxis()->SetTitle("Path  length [cm MeV^{-1} ]");
-		h1->GetYaxis()->SetTitleOffset(1.);
-		h1->GetXaxis()->SetLabelSize(.04);
-		h1->GetYaxis()->SetLabelSize(.045);
-		h1->GetXaxis()->SetTitleSize(.045);
-		h1->GetYaxis()->SetTitleSize(.045);
-		h1->SetAxisRange(0.001, 1000.,"Y");
-		h1->SetStats(kFALSE);
+   		h[j]->SetLineColor(colors[j]);
+    		h[j]->SetLineWidth(2);
+    		h[j]->SetLineStyle(2);
+		h[j]->GetXaxis()->SetTitle("Energy [MeV]");
+		h[j]->GetYaxis()->SetTitle("Path  length [cm MeV^{-1} ]");
+		h[j]->GetYaxis()->SetTitleOffset(1.);
+		h[j]->GetXaxis()->SetLabelSize(.04);
+		h[j]->GetYaxis()->SetLabelSize(.045);
+		h[j]->GetXaxis()->SetTitleSize(.045);
+		h[j]->GetYaxis()->SetTitleSize(.045);
+		h[j]->SetAxisRange(0.001, 1000.,"Y");
+		h[j]->SetStats(kFALSE);
 
 		// Saving the histogram	
-		h1->Write();
+		h[j]->Write();
 
 		// drawing the histograms
-		if ( j == 0 ){
-		h1->SetTitle("");
-		h1->DrawClone("C9");
-		}		
-		h1->DrawClone("SAME");
+		h[j]->SetTitle("");
+		h[j]->DrawClone("HIST C 9 SAME");
 		// Adding the legend
-		leg.AddEntry(h1,particles[j][0].c_str(),"l");
+		leg.AddEntry(h[j],particles[j][0].c_str(),"l");
  	}
 
 	// Draw a legend 

@@ -55,7 +55,7 @@ int making_muon_histo(){
 	
 	//Declaring the histograms
 	TH1* h1 = new TH1D("hspec", "Muon spectrum", 1000, 0.1, 10000);
-	TH1* h2 = new TH1D("hdep", "Muon energy loss", 30, 5, 20);
+	TH1* h2 = new TH1D("hdep", "Muon energy loss", 60, 5, 20);
 	// Building log binning for h1l
 	const Int_t nbins = 500;
    	Double_t xmin = 1e-1;
@@ -128,13 +128,13 @@ int making_muon_histo(){
 
 	// drawing the histograms
 	h2->SetTitle("");
-	h2->DrawNormalized("HIST9");
+	h2->DrawNormalized("HIST 9");
 	// finilizing the figure and saving it
 	c1->SaveAs("MuonEnergyLost.png");
 
 	c1->Clear();
 	h1->SetTitle("");
-	h1->DrawClone("HIST9");
+	h1->DrawClone("HIST C 9");
 	// finilizing the figure and saving it
 	gPad->SetLogx();
 	gPad->SetLogy();
@@ -142,7 +142,7 @@ int making_muon_histo(){
 
 	c1->Clear();
 	h1l->SetTitle("");
-	h1l->DrawClone("HIST9");
+	h1l->DrawClone("HIST C 9");
 	// finilizing the figure and saving it
 	c1->SaveAs("MuonSpectraLogbin.png");
 
