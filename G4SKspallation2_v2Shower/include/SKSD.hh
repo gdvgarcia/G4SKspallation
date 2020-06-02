@@ -76,7 +76,7 @@ class SKSD : public G4VSensitiveDetector
     void muonFill( G4double E, G4double x , G4double y , G4double z , G4String name ); // muon ntuple filler
     void isotopeFill( G4String name , G4int A, G4int Z, G4double x , G4double y , 
     G4double z , G4int    ParentID , G4String Process ); // isotopes ntuple filler
-    void particlesFill( G4String name , G4double Energy , G4double StepLength ); // particles ntuple filler
+    void particlesFill( G4String name , G4double Energy , G4double StepLength, G4double z ); // particles ntuple filler
 };
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

@@ -95,29 +95,43 @@ void SKSD::Initialize(G4HCofThisEvent* hce)
 G4bool SKSD::ProcessHits(G4Step* step, 
                                      G4TouchableHistory*)
 {
+  // Get hit for accounting the data
+  auto hit = (*fHitsCollection)[0];
+
+
+
+  //----------------------------------------------
+  //        Energy deposit
+  //----------------------------------------------
+  // getting the energy deposit for this step and adding it to the hit
+  hit->Add(step->GetTotalEnergyDeposit());
+
   //----------------------------------------------
   //        Track
   //----------------------------------------------
   // getting track to collect the data and some of its informtion about the current particle
   G4Track* Track = step->GetTrack();
+  G4ParticleDefinition* thePartDef = Track->GetDefinition();
+  G4String partType= thePartDef->GetParticleType();
+  G4String name = thePartDef->GetParticleName();
+  G4double charge = thePartDef->GetPDGCharge();
   G4int TrackID = Track->GetTrackID();
 
-
+  //----------------------------------------------
+  //  Collect information for the muon
+  //----------------------------------------------
+  if ( TrackID == 1 ){  // CHECK if it is our initial muon 
+  	if( ( Track->GetCurrentStepNumber() == 1 ) || ( step->IsFirstStepInVolume() ) ){ // CHECK if it is entering the tank or is the first step
+        	// Filling the hit with the muon initial energy
+		hit->Fill(Track->GetVertexKineticEnergy());
+	}
+  } 
 
   //----------------------------------------------
   //  Collect information for the initial muon
   //----------------------------------------------
-  if ( TrackID == 1 ){  // CHECK if it is our initial muon
-	G4double Energy = step->GetPreStepPoint()->GetTotalEnergy() - step->GetPostStepPoint()->GetTotalEnergy();
-	  // get analysis manager
-  	auto analysisManager = G4AnalysisManager::Instance();
- 
-  	// fill ntuple
-  	analysisManager->FillNtupleDColumn( 0, Energy); // kinetic energy
-  	analysisManager->FillNtupleDColumn( 1, step->GetStepLength());
-  	analysisManager->FillNtupleIColumn( 2, fEventID);
-  	analysisManager->AddNtupleRow(); 
-  	return true;
+  if ( charge > 0.001 || charge < 0.001 ){  // CHECK if it has a charge
+	SKSD::particlesFill( name , Track->GetKineticEnergy() , Track->GetStepLength(), Track->GetPosition().getZ() ) ;
   } 
   //---------------------------------------------- END MUON 
 
@@ -263,17 +277,18 @@ G4String name ) // it fills the fParents map with the names
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-  void SKSD::particlesFill( G4String name , G4double Energy , G4double StepLength )  // particles ntuple filler
+  void SKSD::particlesFill( G4String name , G4double Energy , G4double StepLength, G4double z )  // particles ntuple filler
 {
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
  
   // fill ntuple
-  analysisManager->FillNtupleSColumn(2, 0, name);
-  analysisManager->FillNtupleDColumn(2, 1, Energy); // kinetic energy
-  analysisManager->FillNtupleDColumn(2, 2, StepLength);
-  analysisManager->FillNtupleIColumn(2, 3, fEventID);
-  analysisManager->AddNtupleRow(2); 
+  analysisManager->FillNtupleSColumn(0, name);
+  analysisManager->FillNtupleDColumn(1, Energy); // kinetic energy
+  analysisManager->FillNtupleDColumn(2, StepLength);
+  analysisManager->FillNtupleDColumn(3, z);
+  analysisManager->FillNtupleIColumn(4, fEventID);
+  analysisManager->AddNtupleRow(); 
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

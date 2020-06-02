@@ -62,10 +62,12 @@ SKRunAction::SKRunAction()
   // Creating the ntuple
   //
 
-  analysisManager->CreateNtuple("muonEdep_data", "Energy depositd, Step length and event ID");
-  analysisManager->CreateNtupleDColumn("Energy"); //column ID 0
-  analysisManager->CreateNtupleDColumn("PathLenght"); //column ID 1
-  analysisManager->CreateNtupleIColumn("EventID"); //column ID 2
+  analysisManager->CreateNtuple("pathlength_data", "Kinetic Energy, Step length, z position and event ID");
+  analysisManager->CreateNtupleSColumn("Particle"); //column ID 0
+  analysisManager->CreateNtupleDColumn("Energy"); //column ID 1
+  analysisManager->CreateNtupleDColumn("PathLenght"); //column ID 2
+  analysisManager->CreateNtupleDColumn("z"); //column ID 3
+  analysisManager->CreateNtupleIColumn("EventID"); //column ID 4
   analysisManager->FinishNtuple();
 
 }
