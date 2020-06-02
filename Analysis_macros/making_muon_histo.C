@@ -30,10 +30,12 @@ int making_muon_histo(){
 	}
 
 	// creating variables for the branches
-	double Energy, Energy1;
-	int EventID, EventID1;
+	double Energy, Energy1, x, y;
+	int EventID, EventID1, nmuclose; //nmuclose number of muons less than 30 cm away from straight line path
 	// Attaching to branches
 	DataTree->SetBranchAddress("Energy",&Energy);
+	DataTree->SetBranchAddress("x",&x);
+	DataTree->SetBranchAddress("y",&y);
 	DataTree->SetBranchAddress("EventID",&EventID);
 
 	
@@ -58,17 +60,17 @@ int making_muon_histo(){
 	TH1* h2 = new TH1D("hdep", "Muon energy loss", 60, 5, 20);
 	// Building log binning for h1l
 	const Int_t nbins = 500;
-   	Double_t xmin = 1e-1;
-   	Double_t xmax = 1e4;
-   	Double_t logxmin = TMath::Log10(xmin);
-   	Double_t logxmax = TMath::Log10(xmax);
-   	Double_t binwidth = (logxmax-logxmin)/nbins;
-   	Double_t xbins[nbins+1];
-   	xbins[0] = xmin;
-   	for (Int_t i=1;i<=nbins;i++) {
-      		xbins[i] = xmin + TMath::Power(10,logxmin+i*binwidth);
-   	}
-   	TH1F *h1l = new TH1F("hspecl","Muon spectrum with log bins",nbins,xbins);
+   	//Double_t xmin = 1e-1;
+   	//Double_t xmax = 1e4;
+   	//Double_t logxmin = TMath::Log10(xmin);
+   	//Double_t logxmax = TMath::Log10(xmax);
+   	//Double_t binwidth = (logxmax-logxmin)/nbins;
+   	//Double_t xbins[nbins+1];
+   	//xbins[0] = xmin;
+   	//for (Int_t i=1;i<=nbins;i++) {
+      	//	xbins[i] = xmin + TMath::Power(10,logxmin+i*binwidth);
+   	//}
+   	//TH1F *h1l = new TH1F("hspecl","Muon spectrum with log bins",nbins,xbins);
 
 	// Making the canvas we will draw in
 	TCanvas *c1 = new TCanvas();
@@ -81,8 +83,9 @@ int making_muon_histo(){
 		DataTree->GetEntry(i + 1);
 		if ( EventID1 == EventID){
 			h1->Fill(Energy1/1000, Energy1/1000); // fill with the energy normalized by the energy - divide per 1000 to convert to GeV
-			h1l->Fill(Energy1/1000, Energy1/1000); // fill with the energy normalized by the energy - divide per 1000 to convert to GeV
+			//h1l->Fill(Energy1/1000, Energy1/1000); // fill with the energy normalized by the energy - divide per 1000 to convert to GeV
 			h2->Fill((Energy1 - Energy)/1000); // divide per 1000 to convert to GeV
+			if ( x*x + y*y < 90000 ){ nmuclose ++;} //if displaced less than 30 cm
 		}		
 	}
 				
@@ -98,17 +101,17 @@ int making_muon_histo(){
 	h1->GetXaxis()->SetTitleSize(.045);
 	h1->GetYaxis()->SetTitleSize(.045);
 	h1->SetStats(kFALSE);
-	h1l->SetLineColor(4);
-    	h1l->SetLineWidth(2);
-    	h1l->SetLineStyle(1);
-	h1l->GetXaxis()->SetTitle("Energy [GeV]");
-	h1l->GetYaxis()->SetTitle("Energy x flux per energy [cm^{-2} s^{-1} ]");
-	h1l->GetYaxis()->SetTitleOffset(1.);
-	h1l->GetXaxis()->SetLabelSize(.035);
-	h1l->GetYaxis()->SetLabelSize(.04);
-	h1l->GetXaxis()->SetTitleSize(.045);
-	h1l->GetYaxis()->SetTitleSize(.045);
-	h1l->SetStats(kFALSE);
+	//h1l->SetLineColor(4);
+    	//h1l->SetLineWidth(2);
+    	//h1l->SetLineStyle(1);
+	//h1l->GetXaxis()->SetTitle("Energy [GeV]");
+	//h1l->GetYaxis()->SetTitle("Energy x flux per energy [cm^{-2} s^{-1} ]");
+	//h1l->GetYaxis()->SetTitleOffset(1.);
+	//h1l->GetXaxis()->SetLabelSize(.035);
+	//h1l->GetYaxis()->SetLabelSize(.04);
+	//h1l->GetXaxis()->SetTitleSize(.045);
+	//h1l->GetYaxis()->SetTitleSize(.045);
+	//h1l->SetStats(kFALSE);
 	h2->SetLineColor(4);
     	h2->SetLineWidth(2);
     	h2->SetLineStyle(1);
@@ -123,7 +126,7 @@ int making_muon_histo(){
 
 	// Saving histograms	
 	h1->Write();		
-	h1l->Write();
+	//h1l->Write();
 	h2->Write();		
 
 	// drawing the histograms
@@ -134,17 +137,19 @@ int making_muon_histo(){
 
 	c1->Clear();
 	h1->SetTitle("");
-	h1->DrawClone("HIST C 9");
+	h1->DrawNormalized("HIST C 9");
 	// finilizing the figure and saving it
 	gPad->SetLogx();
 	gPad->SetLogy();
 	c1->SaveAs("MuonSpectra.png");
 
-	c1->Clear();
-	h1l->SetTitle("");
-	h1l->DrawClone("HIST C 9");
+	//c1->Clear();
+	//h1l->SetTitle("");
+	//h1l->DrawClone("HIST C 9");
 	// finilizing the figure and saving it
-	c1->SaveAs("MuonSpectraLogbin.png");
+	//c1->SaveAs("MuonSpectraLogbin.png");
+
+	cout << "Percentage of muons with less than 30 cm displacement : " << nmuclose/(1. * nmuons) << endl;
 
 
 	// Closing hist file
