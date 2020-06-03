@@ -79,14 +79,19 @@ SKRunAction::SKRunAction()
   analysisManager->CreateNtupleDColumn(0 , "x"); //column ID 3
   analysisManager->CreateNtupleDColumn(0 , "y"); //column ID 4
   analysisManager->CreateNtupleDColumn(0 , "z"); //column ID 5
-  analysisManager->CreateNtupleSColumn(0 , "Process"); //column ID 6
-  analysisManager->CreateNtupleSColumn(0 , "Parent"); //column ID 7
-  //analysisManager->CreateNtupleDColumn(0 , "ParentsEnergy"); //column ID 8
-  //analysisManager->CreateNtupleDColumn(0 , "Energy"); //column ID 9 kinetic
-  //analysisManager->CreateNtupleDColumn(0 , "Px"); //column ID 10
-  //analysisManager->CreateNtupleDColumn(0 , "Py"); //column ID 11
-  //analysisManager->CreateNtupleDColumn(0 , "Pz"); //column ID 12
-  analysisManager->CreateNtupleIColumn(0 , "EventID"); //column ID 13 - 9
+  analysisManager->CreateNtupleDColumn(0 , "Transverse"); //column ID 6
+  analysisManager->CreateNtupleSColumn(0 , "Process"); //column ID 7
+  analysisManager->CreateNtupleSColumn(0 , "Parent"); //column ID 8
+  analysisManager->CreateNtupleDColumn(0 , "LifeTime"); //column ID 9
+  analysisManager->CreateNtupleDColumn(0 , "InitialTime"); //column ID 10
+  analysisManager->CreateNtupleDColumn(0 , "FinalTime"); //column ID 11
+  analysisManager->CreateNtupleSColumn(0 , "Daughters"); //column ID 12
+  //analysisManager->CreateNtupleDColumn(0 , "ParentsEnergy"); //column ID 13
+  //analysisManager->CreateNtupleDColumn(0 , "Energy"); //column ID 14 kinetic
+  //analysisManager->CreateNtupleDColumn(0 , "Px"); //column ID 15
+  //analysisManager->CreateNtupleDColumn(0 , "Py"); //column ID 16
+  //analysisManager->CreateNtupleDColumn(0 , "Pz"); //column ID 17
+  analysisManager->CreateNtupleIColumn(0 , "EventID"); //column ID 18 - 13
   analysisManager->FinishNtuple(0);
 
   analysisManager->CreateNtuple("muon_data", "Particle name, Kinetic Energy, position and EventID");
@@ -124,6 +129,13 @@ SKRunAction::SKRunAction()
   analysisManager->CreateNtupleDColumn(4 , "Energy"); //column ID 4 kinetic
   analysisManager->CreateNtupleIColumn(4 , "EventID"); //column ID 5
   analysisManager->FinishNtuple(4);
+
+  analysisManager->CreateNtuple("muondaug_data", "Particle name, Kinetic Energy and event ID");
+  // For the particles ntupleID=5
+  analysisManager->CreateNtupleSColumn(5 , "Particle"); //column ID 0
+  analysisManager->CreateNtupleDColumn(5 , "Energy"); //column ID 1 kinetic
+  analysisManager->CreateNtupleIColumn(5 , "EventID"); //column ID 2
+  analysisManager->FinishNtuple(5);
   
 }
 

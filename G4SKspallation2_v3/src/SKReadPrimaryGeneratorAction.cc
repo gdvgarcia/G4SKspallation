@@ -116,18 +116,18 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   if ( line.compare("") != 0 ){ //check if the line is not empty
   Split(line, ' ', *words); 			// Splitting the line into words
   // Convert the strings to numbers with the atof and saving the initial conditions variables
-  G4double KineticEnergy = atof(words->at(2).c_str()) - 0.1056583755; // Transform the average total energy of 271 GeV to Kinetic energy
-  //G4double theta =  atof(words->at(0).c_str());
-  //G4double phi =  atof(words->at(1).c_str());
+  G4double KineticEnergy = atof(words->at(2).c_str()) - 0.1056583755; // Transform the total energy to Kinetic energy
+  G4double theta =  atof(words->at(0).c_str());
+  G4double phi =  atof(words->at(1).c_str());
 
   // Building the direction
-  //G4double Px = cos( phi ) * sin( theta );
-  //G4double Py = sin( phi ) * sin( theta );
-  //G4double Pz = - cos( theta );
+  G4double Px = cos( phi ) * sin( theta );
+  G4double Py = sin( phi ) * sin( theta );
+  G4double Pz = - cos( theta );
 
   // Filling the gun
   fParticleGun->SetParticleEnergy(KineticEnergy *GeV);
-  //fParticleGun->SetParticleMomentumDirection(G4ThreeVector( Px, Py, Pz ));
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector( Px, Py, Pz ));
   }
 
   // cleaning the string and closing file
@@ -136,12 +136,19 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   //Building the GUN in the right position 
 
   //SK tank parameters to set up the gun in the right height
+  G4double TouterRadius = 19.5*m; 
   G4double Thz = 42.*m;
 
+ // Here we make the gun shoot inside the SK tank with a uniform distribution
+  const G4double 	pi = 3.14159265358979323846264338328;
+  G4double 	theta =  2* pi * G4UniformRand();
+  G4double 	r =  TouterRadius * G4UniformRand();
   //setting vertex position
-  G4double x0 = 0;//centered
-  G4double y0 = 0;//centered
-  G4double z0 = 0.5 * Thz;//on top of the tank
+  G4double x0 = cos( theta ) * r;
+  G4double y0 = sin( theta ) * r;
+  G4double z0 = 0.5 * Thz;
+
+  // Filling the gun
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
   fParticleGun->GeneratePrimaryVertex(anEvent);

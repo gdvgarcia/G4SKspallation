@@ -88,8 +88,12 @@ void SKSD::Initialize(G4HCofThisEvent* hce)
   // keeping track of the event 
   fEventID = fEventID + 1;
 
+  // Leave the muon vecotr empty for starting a new event
+  fMuonPositions.clear();
+
   // Leave the maps empty for starting a new event
   fParents.clear();
+  fInitialTimes.clear();
   //fParentsEnergy.clear(); - DELETE IF CAN NOT SOLVE IT
 }
 
@@ -145,6 +149,31 @@ G4bool SKSD::ProcessHits(G4Step* step,
 
 
   
+  if ( ( Track->GetCurrentStepNumber() == 1) || ( step->IsFirstStepInVolume() ) ){ //- CHECK for newly produced particle. e.g. first step. or if it is an entering
+
+  //----------------------------------------------
+  //  Collect information for primarly daughters of the muon
+  //----------------------------------------------
+  if ( name == "neutron" || name == "gamma" || name == "e-" || name == "e+" || name == "pi+" || name == "pi-" || name == "pi0" ){ //check if it is a wanted particle
+	if(Track->GetParentID() == 1){ // check if it is our initial muon
+		muonDaugFill( name , Track->GetVertexKineticEnergy() );// fill the muon daughters ntuple
+	}
+
+  } //---------------------------------------------- END check if it is a wanted particle  
+
+  
+
+  //----------------------------------------------
+  //  Collect the initial time for the isotopes
+  //----------------------------------------------
+  if ( partType == "nucleus" ){  //check if it is an ion
+	fInitialTimes[TrackID] = Track->GetGlobalTime();  // fill the initial time in the map
+  }
+
+  } //---------------------------------------------- END check for newly produced particle 
+
+
+  
   if ( ( step->IsLastStepInVolume() ) || 
 ( Track->GetTrackStatus() == fStopAndKill ) ){ // CHECK if is the end of the track
 
@@ -167,8 +196,33 @@ G4bool SKSD::ProcessHits(G4Step* step,
   //  generated from an interaction with the water tank
   //----------------------------------------------
   if ( name == "neutron" || name == "gamma" || name == "e-" || name == "e+" || name == "pi+" || name == "pi-" || name == "pi0" ){ //check if it is a wanted particle
-	transverseFill( Track->GetPosition().getX(), Track->GetPosition().getY() , name ); // calculate transverse distance and fill it in the ntuple
+	transverseFill( Track->GetPosition().getX(), Track->GetPosition().getY() , Track->GetPosition().getZ() , name ); // calculate transverse distance and fill it in the ntuple
   } //---------------------------------------------- END check if it is a wanted particle  
+
+  
+  
+  //----------------------------------------------
+  //  Collect information for isotopes
+  //  generated from an interaction with the water tank
+  //----------------------------------------------
+  if ( partType == "nucleus" ){  //check if it is an ion
+	// Building the daugthers string
+	G4String daughters = name + "--> ";
+        // first take all the secondaries in a vector and its size
+  	const std::vector<const G4Track*>* Secondaries3 = step->GetSecondaryInCurrentStep();
+ 	G4int size3 = Secondaries2->size();
+	// we loop over secondaries and make the string
+	for( int i = 0; i < size3; ++i){
+		daughters = "+" + loopForSecondariesNames( Secondaries3 , i ) + " ";
+	}
+
+	isotopeFill( name , thePartDef->GetAtomicMass(), thePartDef->GetAtomicNumber(),
+	Track->GetPosition().getX() , Track->GetPosition().getY() , 
+    	Track->GetPosition().getZ() , Track->GetParentID(), Process, Track->GetGlobalTime(),
+	Track->GetDefinition()->GetPDGLifeTime(), daughters, TrackID ); // fill isotope data in the isotope ntuple
+      
+  	return true;
+  } //---------------------------------------------- END ISOTOPE 
 
   } //---------------------------------------------- END CHECK IF IS THE END OF THE STEP
 
@@ -185,17 +239,33 @@ G4bool SKSD::ProcessHits(G4Step* step,
   	// getting the step length and adding it to the hit
   	hit->AddL(step->GetStepLength());
 
+	
+	//----------------------------------------------
+  	//        Muon info
+  	//----------------------------------------------
+	G4double E = Track->GetKineticEnergy();
+	G4double x = Track->GetPosition().getX();
+	G4double y = Track->GetPosition().getY();
+	G4double z = Track->GetPosition().getZ();
+	
+
   	if ( ( step->IsLastStepInVolume() ) || 
 	( Track->GetTrackStatus() == fStopAndKill ) ){ // CHECK if it is leaving the tank or finishing the track
-		muonFill( Track->GetKineticEnergy(), Track->GetPosition().getX() , 
-		Track->GetPosition().getY() , Track->GetPosition().getZ() , 
-		name ); // fill muon data in the muon ntuple
+		// Setting muon position vector
+		fMuonPositions.push_back (x);
+		fMuonPositions.push_back (y);
+		fMuonPositions.push_back (z);
+
+		muonFill( E, x, y, z, name ); // fill muon data in the muon ntuple
   	}
 
   	if( ( Track->GetCurrentStepNumber() == 1 ) || ( step->IsFirstStepInVolume() ) ){ // CHECK if it is entering the tank or is the first step
-		muonFill( Track->GetKineticEnergy(), Track->GetPosition().getX() , 
-		Track->GetPosition().getY() , Track->GetPosition().getZ() , 
-		name ); // fill muon data in the muon ntuple
+		// Setting muon position vector
+		fMuonPositions.push_back (x);
+		fMuonPositions.push_back (y);
+		fMuonPositions.push_back (z);
+
+		muonFill( E, x, y, z, name ); // fill muon data in the muon ntuple
 
         	// Filling the hit with the muon initial energy
 		hit->Fill(Track->GetVertexKineticEnergy());
@@ -204,25 +274,6 @@ G4bool SKSD::ProcessHits(G4Step* step,
   	return true;
   } 
   //---------------------------------------------- END MUON 
-
-
-
-  
-  if ( ( Track->GetCurrentStepNumber() == 1) || ( step->IsFirstStepInVolume() ) ){ //- CHECK for newly produced particle. e.g. first step. or if it is an entering
-  
-  //----------------------------------------------
-  //  Collect information for isotopes
-  //  generated from an interaction with the water tank
-  //----------------------------------------------
-  if ( partType == "nucleus" ){  //check if it is an ion
-  	isotopeFill( name ,thePartDef->GetAtomicMass(), thePartDef->GetAtomicNumber(),
-	Track->GetPosition().getX() , Track->GetPosition().getY() , 
-    	Track->GetPosition().getZ() , Track->GetParentID(), Process ); // fill isotope data in the isotope ntuple
-      
-  	return true;
-  } //---------------------------------------------- END ISOTOPE 
-
-  } //---------------------------------------------- END check for newly produced particle 
 
 
 
@@ -263,7 +314,7 @@ void SKSD::EndOfEvent(G4HCofThisEvent*)
 
 void SKSD::loopForSecondariesEnergies(
              const std::vector<const G4Track*>* Secondaries , G4int n , //G4int TrackID,  
-G4double Energy , G4String Process, G4String name ) // it fills the fParentsEnergy map - ACTUALLY THE PARENTS NTUPLE
+G4double Energy , G4String Process, G4String name ) // it fills the fParentsEnergy map - ACTUALLY THE PARENTS NTUPLE 
 {
   // getting the information about the secondary
   const G4Track* secondary = Secondaries->at(n);
@@ -319,10 +370,10 @@ G4String name ) // it fills the fParents map with the names
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-  void SKSD::transverseFill( G4double x, G4double y , G4String name ) // transverse distance calculator and ntuple filler
+  void SKSD::transverseFill( G4double x, G4double y , G4double z, G4String name ) // transverse distance calculator and ntuple filler
 {
-  // for now we calculate the transverse as the distance from cilinder axis
-  G4double dis = sqrt(x*x + y*y);	
+  
+  G4double dis = transverseDistance( x, y, z );
 
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
@@ -354,8 +405,12 @@ G4String name ) // it fills the fParents map with the names
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
   void SKSD::isotopeFill( G4String name , G4int A, G4int Z, G4double x , G4double y , 
-    G4double z , G4int    ParentID,  G4String Process ) // isotopes ntuple filler
+    G4double z , G4int    ParentID,  G4String Process, G4double FinalTime, G4double LifeTime, G4String 
+    daughters  , G4int TrackID ) // isotopes ntuple filler
 {
+  
+  G4double dis = transverseDistance( x, y, z );
+
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
  
@@ -363,20 +418,25 @@ G4String name ) // it fills the fParents map with the names
   analysisManager->FillH2(0, Z, A);
   
   // fill ntuple
-  analysisManager->FillNtupleSColumn(0, 0, name);
-  analysisManager->FillNtupleIColumn(0, 1, A);
-  analysisManager->FillNtupleIColumn(0, 2, Z);
-  analysisManager->FillNtupleDColumn(0, 3, x);
-  analysisManager->FillNtupleDColumn(0, 4, y);
-  analysisManager->FillNtupleDColumn(0, 5, sqrt(x*x + y*y)); // remember to put z as Z again WARNING
-  analysisManager->FillNtupleSColumn(0, 6, Process);
-  analysisManager->FillNtupleSColumn(0, 7, fParents[ParentID]);
-  //analysisManager->FillNtupleDColumn(0, 8, fParentsEnergy[ParentID][TrackID]); - DELETE IF CAN NOT SOLVE IT
-  //analysisManager->FillNtupleDColumn(0, 7, E);
-  //analysisManager->FillNtupleDColumn(0, 8, Px);
-  //analysisManager->FillNtupleDColumn(0, 9, Py);
-  //analysisManager->FillNtupleDColumn(0, 10, Pz);
-  analysisManager->FillNtupleIColumn(0, 8, fEventID);
+  analysisManager->FillNtupleSColumn(0, 0,  name);
+  analysisManager->FillNtupleIColumn(0, 1,  A);
+  analysisManager->FillNtupleIColumn(0, 2,  Z);
+  analysisManager->FillNtupleDColumn(0, 3,  x);
+  analysisManager->FillNtupleDColumn(0, 4,  y);
+  analysisManager->FillNtupleDColumn(0, 5,  z);
+  analysisManager->FillNtupleDColumn(0, 6,  dis);
+  analysisManager->FillNtupleSColumn(0, 7,  Process);
+  analysisManager->FillNtupleSColumn(0, 8,  fParents[ParentID]);
+  analysisManager->FillNtupleDColumn(0, 9,  LifeTime);
+  analysisManager->FillNtupleDColumn(0, 10,  fInitialTimes[TrackID]);
+  analysisManager->FillNtupleDColumn(0, 11, FinalTime);
+  analysisManager->FillNtupleSColumn(0, 12, daughters);
+  //analysisManager->FillNtupleDColumn(0, 13, fParentsEnergy[ParentID][TrackID]); - DELETE IF CAN NOT SOLVE IT
+  //analysisManager->FillNtupleDColumn(0, 14, E);
+  //analysisManager->FillNtupleDColumn(0, 15, Px);
+  //analysisManager->FillNtupleDColumn(0, 16, Py);
+  //analysisManager->FillNtupleDColumn(0, 17, Pz);
+  analysisManager->FillNtupleIColumn(0, 13, fEventID);
   analysisManager->AddNtupleRow(0); 
 }
 
@@ -396,3 +456,50 @@ G4String name ) // it fills the fParents map with the names
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+G4double SKSD::transverseDistance( G4double x, G4double y, G4double z )// transverse distance to the muon track line - suppose an "infinite" line 
+{
+  // making the vector from initial to particle and initial to final to calculate the cross product and have the transverse distance
+  G4double xp = x - fMuonPositions[0];
+  G4double yp = y - fMuonPositions[1];
+  G4double zp = z - fMuonPositions[2];
+  G4double xm = fMuonPositions[0] - fMuonPositions[3];
+  G4double ym = fMuonPositions[1] - fMuonPositions[4];
+  G4double zm = fMuonPositions[2] - fMuonPositions[5];
+
+  // taking the cross product
+  G4double xc, yc, zc; 
+  xc = yp * zm - zp * ym; 
+  yc = zp * xm - xp * zm; 
+  zc = xp * ym - yp * xm;
+
+  // taking the norms and returning the result
+  G4double normMu = sqrt( xm*xm + ym*ym + zm*zm );
+  G4double normc = sqrt( xc*xc + yc*yc + zc*zc );
+
+  return normc/normMu;
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+  G4String SKSD::loopForSecondariesNames(const std::vector<const G4Track*>* Secondaries , G4int n ) // this return secondaries names
+{
+ // getting the information about the secondary
+  const G4Track* secondary = Secondaries->at(n);
+  G4ParticleDefinition* secPartDef = secondary->GetDefinition();
+
+  return secPartDef->GetParticleName();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+  void SKSD::muonDaugFill( G4String name , G4double Energy )  // muon's daughters ntuple filler
+{
+  // get analysis manager
+  auto analysisManager = G4AnalysisManager::Instance();
+ 
+  // fill ntuple
+  analysisManager->FillNtupleSColumn(5, 0, name);
+  analysisManager->FillNtupleDColumn(5, 1, Energy); // kinetic energy
+  analysisManager->FillNtupleIColumn(5, 2, fEventID);
+  analysisManager->AddNtupleRow(5); 
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

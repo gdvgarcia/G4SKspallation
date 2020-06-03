@@ -30,12 +30,12 @@ int making_isodistance_histo(){
 	}
 
 	// creating variables for the branches
-	double z;
+	double Transverse;
 	int A, Z;
 	// Attaching to branches
 	DataTree->SetBranchAddress("A",&A);
 	DataTree->SetBranchAddress("Z",&Z);
-	DataTree->SetBranchAddress("z",&z);
+	DataTree->SetBranchAddress("Transverse",&Transverse);
 
 
 	// Create a new file
@@ -60,7 +60,7 @@ int making_isodistance_histo(){
 	// Running through the tree and filling the histogram
 	for( int i =0; i < nentries; ++i){
 		DataTree->GetEntry(i);
-		double distance = z / 10; // to convert mm to cm
+		double distance = Transverse / 10; // to convert mm to cm
 		h1->Fill(distance);
 		if(A == 16 && Z == 7){h2->Fill(distance);}//N16 - Z = 7 
 		if(A == 8 && Z == 5){h3->Fill(distance);}//B8 - Z = 5

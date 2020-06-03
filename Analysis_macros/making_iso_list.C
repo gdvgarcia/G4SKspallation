@@ -61,12 +61,12 @@ int making_iso_list(){
 	for( int i =0; i < nentries; ++i){
 		DataTree->GetEntry(i);
 		if(A>7){
-			appeared[Z][A] = true;
-			if(appeared[Z][A]){
-				multiplicity[Z][A] += 1;
+			appeared[Z-1][A] = true;
+			if(appeared[Z-1][A]){
+				multiplicity[Z-1][A] += 1;
 			}
 			else{
-				multiplicity[Z][A] = 1;
+				multiplicity[Z-1][A] = 1;
 			}
 		}
 	}

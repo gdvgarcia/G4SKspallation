@@ -126,7 +126,7 @@ int main(int argc,char** argv)
   // User action initialization
   // Detect if we want to read a initial condition file (if there is a forth argument)
   //
-  if (  argc > 3 ) { 
+  if (  argc > 3 || argc == 1 ) { 
   runManager->SetUserInitialization(new SKReadActionInitialization());
   }
   else{runManager->SetUserInitialization(new SKFixedActionInitialization());}
