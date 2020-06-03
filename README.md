@@ -13,3 +13,5 @@ References:
 http://www-sk.icrr.u-tokyo.ac.jp/doc/sk/pub/sknimpaper.pdf
 https://iopscience.iop.org/article/10.1088/1742-6596/293/1/012001/pdf
 https://cds.cern.ch/record/357153/files/CMS_HCAL_TDR.pdf
+
+Installing Geant4 : https://github.com/gdvgarcia/Geant4.6-4.5installation/wiki/GEANT4installation-wiki-everything-here
