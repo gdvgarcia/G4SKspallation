@@ -82,7 +82,7 @@ class SKSD : public G4VSensitiveDetector
     void particlesFill( G4String name , G4double Energy , G4double StepLength ); // particles ntuple filler
     G4double transverseDistance( G4double x, G4double y, G4double z ); // transverse distance to the muon track line - suppose an "infinite" line 
     G4String loopForSecondariesNames(const std::vector<const G4Track*>* Secondaries , G4int n ); // this return secondaries names
-    void muonDaugFill( G4String name , G4double Energy ); // muon's daughters ntuple filler
+    void muonDaugFill( G4String name , G4double Energy , G4String Process); // muon's daughters ntuple filler
 
 };
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

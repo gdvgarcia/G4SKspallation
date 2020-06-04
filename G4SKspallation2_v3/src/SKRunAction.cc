@@ -134,7 +134,8 @@ SKRunAction::SKRunAction()
   // For the particles ntupleID=5
   analysisManager->CreateNtupleSColumn(5 , "Particle"); //column ID 0
   analysisManager->CreateNtupleDColumn(5 , "Energy"); //column ID 1 kinetic
-  analysisManager->CreateNtupleIColumn(5 , "EventID"); //column ID 2
+  analysisManager->CreateNtupleSColumn(5 , "Process"); //column ID 2
+  analysisManager->CreateNtupleIColumn(5 , "EventID"); //column ID 3
   analysisManager->FinishNtuple(5);
   
 }

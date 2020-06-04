@@ -156,12 +156,12 @@ G4bool SKSD::ProcessHits(G4Step* step,
   //----------------------------------------------
   if ( name == "neutron" || name == "gamma" || name == "e-" || name == "e+" || name == "pi+" || name == "pi-" || name == "pi0" ){ //check if it is a wanted particle
 	if(Track->GetParentID() == 1){ // check if it is our initial muon
-		muonDaugFill( name , Track->GetVertexKineticEnergy() );// fill the muon daughters ntuple
+		muonDaugFill( name , Track->GetVertexKineticEnergy() , Process);// fill the muon daughters ntuple
 	}
 
   } //---------------------------------------------- END check if it is a wanted particle  
 
-  
+
 
   //----------------------------------------------
   //  Collect the initial time for the isotopes
@@ -491,7 +491,7 @@ G4double SKSD::transverseDistance( G4double x, G4double y, G4double z )// transv
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-  void SKSD::muonDaugFill( G4String name , G4double Energy )  // muon's daughters ntuple filler
+  void SKSD::muonDaugFill( G4String name , G4double Energy, G4String Process )  // muon's daughters ntuple filler
 {
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
@@ -499,7 +499,8 @@ G4double SKSD::transverseDistance( G4double x, G4double y, G4double z )// transv
   // fill ntuple
   analysisManager->FillNtupleSColumn(5, 0, name);
   analysisManager->FillNtupleDColumn(5, 1, Energy); // kinetic energy
-  analysisManager->FillNtupleIColumn(5, 2, fEventID);
+  analysisManager->FillNtupleSColumn(5, 2, Process);
+  analysisManager->FillNtupleIColumn(5, 3, fEventID);
   analysisManager->AddNtupleRow(5); 
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

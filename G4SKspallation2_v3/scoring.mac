@@ -63,3 +63,29 @@
 /score/quantity/energyDeposit totalEdep
 /score/close
 #
+# A FEW EXAMPLES OF SCORES
+# energyDeposit * Energy deposit scorer.
+# cellCharge * Cell charge scorer.
+# cellFlux * Cell flux scorer.
+# passageCellFlux * Passage cell flux scorer
+# doseDeposit * Dose deposit scorer.
+# nOfStep * Number of step scorer.
+# nOfSecondary * Number of secondary scorer.
+# trackLength * Track length scorer.
+# passageCellCurrent * Passage cell current scorer.
+# passageTrackLength * Passage track length scorer.
+# flatSurfaceCurrent * Flat surface current Scorer.
+# flatSurfaceFlux * Flat surface flux scorer.
+# nOfCollision * Number of collision scorer.
+# population * Population scorer.
+# nOfTrack * Number of track scorer.
+# nOfTerminatedTrack * Number of terminated tracks scorer.
+# A FEW EXAMPLES OF FILTERS
+# charged * Charged particle filter.
+# neutral * Neutral particle filter.
+# kineticEnergy * Kinetic energy filter. /score/filter/kineticEnergy <fname> <eLow> <eHigh> <unit>
+# particle * Particle filter. /score/filter/particle <fname> <p1> ... <pn>
+# particleWithKineticEnergy * Particle with kinetic energy filter. /score/filter/ParticleWithKineticEnergy <fname> <eLow> <eHigh> <unit> <p1> ... <pn>
+# EXAMPLE of usage
+# /score/quantity/flatSurfaceFlux flux0
+#/score/filter/particleWithKineticEnergy range0 10. 20. MeV e-
