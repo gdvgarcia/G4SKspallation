@@ -13,7 +13,7 @@
 #
 #
 #
-# --- Save results of scoring in a file - use it in the UI interface and do not uncomment here
+# --- Save results of scoring in a file - use it in the UI interface and do not uncomment here or run*.mac
 #/score/dumpQuantityToFile boxMesh_1 <scorer_name> <file_name>
 #---- Drawing the scoring mesh full projection
 #/score/drawProjection boxMesh_1 eDep
@@ -22,11 +22,11 @@
 #
 #
 #
-# define scoring mesh_2 for quantities that we only want energy distribution
+# define scoring mesh_2 for quantities that we only full tank results
 /score/create/boxMesh boxMesh_2
 /score/mesh/boxSize 21. 21. 21. m
 /score/mesh/nBin 1 1 1
-#precision only in longitudinal (z or tank axis)
+#precision only in longitudinal (z or tank axis) - for along downward muons path
 #/score/mesh/nBin 1 1 4200
 #
 #
@@ -34,10 +34,7 @@
 # total of electrons still have issues about total getting in or appearing inside
 # to solve this issue, one can create a mesh over the tank taking the initial vertex in and then compute
 # the number of secondaries - the number of therminated track , so we find the number that arrived in the sk
-# from outside colision vertex
-#
-#
-#
+# from outside colision vertex - but in the Sensitive detector mode we do not have this issues
 #
 #
 # neutron total
