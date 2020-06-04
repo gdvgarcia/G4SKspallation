@@ -1,0 +1,88 @@
+# Macro file for the scoring setting in the initialization phase 
+# of the G4SKspallation
+#
+# define scoring mesh_1 for quantities that we want spatial distribution
+#/score/create/boxMesh boxMesh_1
+#/score/mesh/boxSize 21. 21. 21. m
+#/score/mesh/nBin 84 84 84
+#precision only in longitudinal (z or tank axis)
+#/score/mesh/nBin 1 1 4200
+# define quantities to be scored
+#/score/quantity/energyDeposit eDep MeV
+#/score/close
+#
+#
+#
+# --- Save results of scoring in a file - use it in the UI interface and do not uncomment here or run*.mac
+#/score/dumpQuantityToFile boxMesh_1 <scorer_name> <file_name>
+#---- Drawing the scoring mesh full projection
+#/score/drawProjection boxMesh_1 eDep
+#---- Drawing the scoring mesh per columns
+#/score/drawColumn boxMesh_1 eDep <plane> <column>
+#
+#
+#
+# define scoring mesh_2 for quantities that we only full tank results
+/score/create/boxMesh boxMesh_2
+/score/mesh/boxSize 21. 21. 21. m
+/score/mesh/nBin 1 1 1
+#precision only in longitudinal (z or tank axis) - for along downward muons path
+#/score/mesh/nBin 1 1 4200
+#
+#
+# define quantities to be scored
+# total of electrons still have issues about total getting in or appearing inside
+# to solve this issue, one can create a mesh over the tank taking the initial vertex in and then compute
+# the number of secondaries - the number of therminated track , so we find the number that arrived in the sk
+# from outside colision vertex - but in the Sensitive detector mode we do not have this issues
+#
+#
+# neutron total
+/score/quantity/nOfSecondary nOfSecondaryNeutron
+/score/filter/particle neutronFilter neutron
+# electrons total
+/score/quantity/nOfSecondary nOfSecondaryEminus
+/score/filter/particle eMinusFilter e-
+# positrons total
+/score/quantity/nOfSecondary nOfSecondaryEplus
+/score/filter/particle ePlusFilter e+
+# pion + total
+/score/quantity/nOfSecondary nOfSecondaryPiPlus
+/score/filter/particle piPlusFilter pi+
+# pion - total
+/score/quantity/nOfSecondary nOfSecondaryPiMinus
+/score/filter/particle piMinusFilter pi-
+# pion 0 total
+/score/quantity/nOfSecondary nOfSecondaryPiZero
+/score/filter/particle pi0Filter pi0
+#
+# total energy
+/score/quantity/energyDeposit totalEdep
+/score/close
+#
+# A FEW EXAMPLES OF SCORES
+# energyDeposit * Energy deposit scorer.
+# cellCharge * Cell charge scorer.
+# cellFlux * Cell flux scorer.
+# passageCellFlux * Passage cell flux scorer
+# doseDeposit * Dose deposit scorer.
+# nOfStep * Number of step scorer.
+# nOfSecondary * Number of secondary scorer.
+# trackLength * Track length scorer.
+# passageCellCurrent * Passage cell current scorer.
+# passageTrackLength * Passage track length scorer.
+# flatSurfaceCurrent * Flat surface current Scorer.
+# flatSurfaceFlux * Flat surface flux scorer.
+# nOfCollision * Number of collision scorer.
+# population * Population scorer.
+# nOfTrack * Number of track scorer.
+# nOfTerminatedTrack * Number of terminated tracks scorer.
+# A FEW EXAMPLES OF FILTERS
+# charged * Charged particle filter.
+# neutral * Neutral particle filter.
+# kineticEnergy * Kinetic energy filter. /score/filter/kineticEnergy <fname> <eLow> <eHigh> <unit>
+# particle * Particle filter. /score/filter/particle <fname> <p1> ... <pn>
+# particleWithKineticEnergy * Particle with kinetic energy filter. /score/filter/ParticleWithKineticEnergy <fname> <eLow> <eHigh> <unit> <p1> ... <pn>
+# EXAMPLE of usage
+# /score/quantity/flatSurfaceFlux flux0
+#/score/filter/particleWithKineticEnergy range0 10. 20. MeV e-
