@@ -47,7 +47,8 @@ SKFixedActionInitialization::~SKFixedActionInitialization()
 
 void SKFixedActionInitialization::BuildForMaster() const
 {
-   SetUserAction(new SKRunAction);
+   SKEventAction* eventAction = new SKEventAction;
+   SetUserAction(new SKRunAction(eventAction));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -55,8 +56,12 @@ void SKFixedActionInitialization::BuildForMaster() const
 void SKFixedActionInitialization::Build() const
 {
   SetUserAction(new SKFixedPrimaryGeneratorAction);
-  SetUserAction(new SKRunAction);
-  SetUserAction(new SKEventAction);
+
+  SKEventAction* eventAction = new SKEventAction;
+  SetUserAction(eventAction);
+
+  
+  SetUserAction(new SKRunAction(eventAction));
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

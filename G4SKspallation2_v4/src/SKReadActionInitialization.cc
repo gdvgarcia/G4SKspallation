@@ -47,7 +47,8 @@ SKReadActionInitialization::~SKReadActionInitialization()
 
 void SKReadActionInitialization::BuildForMaster() const
 {
-   SetUserAction(new SKRunAction);
+   SKEventAction* eventAction = new SKEventAction;
+   SetUserAction(new SKRunAction(eventAction));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -55,8 +56,12 @@ void SKReadActionInitialization::BuildForMaster() const
 void SKReadActionInitialization::Build() const
 {
   SetUserAction(new SKReadPrimaryGeneratorAction);
-  SetUserAction(new SKRunAction);
-  SetUserAction(new SKEventAction);
+
+  SKEventAction* eventAction = new SKEventAction;
+  SetUserAction(eventAction);
+
+  
+  SetUserAction(new SKRunAction(eventAction));
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

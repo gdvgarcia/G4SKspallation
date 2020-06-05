@@ -93,6 +93,7 @@ void SKSD::Initialize(G4HCofThisEvent* hce)
 
   // Leave the maps empty for starting a new event
   fParents.clear();
+  fParentsCodes.clear();
   fInitialTimes.clear();
   //fParentsEnergy.clear(); - DELETE IF CAN NOT SOLVE IT
 }
@@ -143,7 +144,7 @@ G4bool SKSD::ProcessHits(G4Step* step,
 	// we loop over secondaries and save the information in a ntuple
 	for( int i = 0; i < size2; ++i){
 		loopForSecondariesEnergies( Secondaries2 , i , // TrackID,  
-			Track->GetKineticEnergy() , Process , name );
+			Track->GetKineticEnergy() , Process , name, hit, thePartDef->GetPDGEncoding() );
 	}
   } //---------------------------------------------- END isotopes' parents energies
 
@@ -186,7 +187,7 @@ G4bool SKSD::ProcessHits(G4Step* step,
 
   if ( size > 0){ // check if we have secondaries
 	// we loop over secondaries and fill in the map
-	for( int i = 0; i < size && !(loopForSecondaries( Secondaries , i ,TrackID, name ) ); ++i){;}
+	for( int i = 0; i < size && !(loopForSecondaries( Secondaries , i ,TrackID, name, thePartDef->GetPDGEncoding() ) ); ++i){;}
   } //---------------------------------------------- END isotopes' parents names
 
 
@@ -216,10 +217,17 @@ G4bool SKSD::ProcessHits(G4Step* step,
 		daughters = "+" + loopForSecondariesNames( Secondaries3 , i ) + " ";
 	}
 
+	// isotope position information
+	G4double xiso = Track->GetPosition().getX();
+	G4double yiso = Track->GetPosition().getX();
+	G4double ziso = Track->GetPosition().getX();
+
 	isotopeFill( name , thePartDef->GetAtomicMass(), thePartDef->GetAtomicNumber(),
-	Track->GetPosition().getX() , Track->GetPosition().getY() , 
-    	Track->GetPosition().getZ() , Track->GetParentID(), Process, Track->GetGlobalTime(),
+	xiso , yiso , ziso , Track->GetParentID(), Process, Track->GetGlobalTime(),
 	Track->GetDefinition()->GetPDGLifeTime(), daughters, TrackID ); // fill isotope data in the isotope ntuple
+
+	hit->FillIso( thePartDef->GetAtomicMass(), thePartDef->GetAtomicNumber(), xiso, yiso , 
+    	ziso , transverseDistance( xiso, yiso, ziso ), fParentsCodes[TrackID] ); // filling the hit with the isotope data
       
   	return true;
   } //---------------------------------------------- END ISOTOPE 
@@ -243,7 +251,7 @@ G4bool SKSD::ProcessHits(G4Step* step,
 	//----------------------------------------------
   	//        Muon info
   	//----------------------------------------------
-	G4double E = Track->GetKineticEnergy();
+	G4double E = Track->GetVertexKineticEnergy();
 	G4double x = Track->GetPosition().getX();
 	G4double y = Track->GetPosition().getY();
 	G4double z = Track->GetPosition().getZ();
@@ -257,6 +265,9 @@ G4bool SKSD::ProcessHits(G4Step* step,
 		fMuonPositions.push_back (z);
 
 		muonFill( E, x, y, z, name ); // fill muon data in the muon ntuple
+
+		// Filling the hit with the muon final conditions
+		hit->FillFin( x, y, z);
   	}
 
   	if( ( Track->GetCurrentStepNumber() == 1 ) || ( step->IsFirstStepInVolume() ) ){ // CHECK if it is entering the tank or is the first step
@@ -267,8 +278,8 @@ G4bool SKSD::ProcessHits(G4Step* step,
 
 		muonFill( E, x, y, z, name ); // fill muon data in the muon ntuple
 
-        	// Filling the hit with the muon initial energy
-		hit->Fill(Track->GetVertexKineticEnergy());
+        	// Filling the hit with the muon initial conditions
+		hit->FillIni(E, x, y, z);
 	}
 
   	return true;
@@ -314,7 +325,7 @@ void SKSD::EndOfEvent(G4HCofThisEvent*)
 
 void SKSD::loopForSecondariesEnergies(
              const std::vector<const G4Track*>* Secondaries , G4int n , //G4int TrackID,  
-G4double Energy , G4String Process, G4String name ) // it fills the fParentsEnergy map - ACTUALLY THE PARENTS NTUPLE 
+G4double Energy , G4String Process, G4String name, SKHit* hit, G4int code  ) // it fills the fParentsEnergy map - ACTUALLY THE PARENTS NTUPLE 
 {
   // getting the information about the secondary
   const G4Track* secondary = Secondaries->at(n);
@@ -344,14 +355,17 @@ G4double Energy , G4String Process, G4String name ) // it fills the fParentsEner
   	analysisManager->FillNtupleSColumn(4, 3, Process);
   	analysisManager->FillNtupleDColumn(4, 4, Energy); // kinetic energy
 	analysisManager->FillNtupleIColumn(4, 5, fEventID);
-  	analysisManager->AddNtupleRow(4); 
+  	analysisManager->AddNtupleRow(4);
+
+	// filling the hit with the isotopes' parent data
+	hit->FillIsoPar(code, A, Z, Energy);
   } 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
   bool SKSD::loopForSecondaries( G4TrackVector* Secondaries , G4int n , G4int TrackID, 
-G4String name ) // it fills the fParents map with the names
+G4String name , G4int code ) // it fills the fParents map with the names
 {
   // getting the information about the secondary
   G4Track* secondary = Secondaries->at(n);
@@ -360,8 +374,9 @@ G4String name ) // it fills the fParents map with the names
 
   // if we find a ion we save the parent information
   if ( secpartType == "nucleus"){
-	// Filling the map
+	// Filling the maps
 	fParents[TrackID] = name;
+	fParentsCodes[TrackID] = code;
 	
 	return true; // so we can exit the for loop
   }

@@ -64,6 +64,7 @@ class SKSD : public G4VSensitiveDetector
     SKHitsCollection* fHitsCollection;
     G4int fEventID; // keep track of the event number
     std::map< int, std::string> fParents; // keep parents' trackIDs so we can recover parents' names
+    std::map< int, int > fParentsCodes; // keep parents' trackIDs so we can recover parents' codes
     std::map< int, double> fInitialTimes; // keep isotopes' initial time
     // std::map< int, std::map< int, double >> fParentsEnergy; // keep parents' energies so we can recover parents' energies  -- DELETE IF CAN NOT SOLVE IT
     std::vector< double > fMuonPositions; // keep the muon initial and final position so we can calculate the transverse distance of particles - ID 0 = x_ini , ID 1 = y_ini , ID 2 = z_ini , ID 3 = x_fin , ID 4 = y_fin , ID 5 = z_fin
@@ -72,8 +73,8 @@ class SKSD : public G4VSensitiveDetector
     // Functions to make the code more userfriendly
     //
     void loopForSecondariesEnergies(const std::vector<const G4Track*>* Secondaries , G4int n , //G4int TrackID,  
-    G4double Energy , G4String Process, G4String name ); // this is used to make a for loop in the secondaries per step vector - it fills the fParentsEnergy map - THE NTUPLE ACTUALLY
-    bool loopForSecondaries( G4TrackVector* Secondaries , G4int n , G4int TrackID, G4String name ); // this is used to make a for loop in the secondaries per track vector - it fills the fParents map with the names
+    G4double Energy , G4String Process, G4String name , SKHit* hit, G4int code); // this is used to make a for loop in the secondaries per step vector - it fills the fParentsEnergy map - THE NTUPLE ACTUALLY
+    bool loopForSecondaries( G4TrackVector* Secondaries , G4int n , G4int TrackID, G4String name, G4int code); // this is used to make a for loop in the secondaries per track vector - it fills the fParents map with the names
     void transverseFill( G4double x, G4double y , G4double z , G4String name ); // transverse distance calculator and ntuple filler
     void muonFill( G4double E, G4double x , G4double y , G4double z , G4String name ); // muon ntuple filler
     void isotopeFill( G4String name , G4int A, G4int Z, G4double x , G4double y , 

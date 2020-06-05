@@ -50,6 +50,18 @@ public:
 
   virtual void  BeginOfEventAction(const G4Event* event);
   virtual void    EndOfEventAction(const G4Event* event);
+
+  std::vector<G4int>& GetvectorA() 			{ return fvectorA; }
+  std::vector<G4int>& GetvectorZ() 			{ return fvectorZ; }
+  std::vector<G4double>& Getvectorx() 			{ return fvectorx; }
+  std::vector<G4double>& Getvectory() 			{ return fvectory; }
+  std::vector<G4double>& Getvectorz() 			{ return fvectorz; }
+  std::vector<G4double>& GetvectorDist() 		{ return fvectorDist; }
+  std::vector<G4int>& GetvectorParentCode() 		{ return fvectorParentCode; }
+  std::vector<G4int>& GetvectorParticleCode() 		{ return fvectorParticleCode; }
+  std::vector<G4int>& GetvectorAdaug() 			{ return fvectorAdaug; }
+  std::vector<G4int>& GetvectorZdaug() 			{ return fvectorZdaug; }
+  std::vector<G4double>& GetvectorEparent() 		{ return fvectorEparent; }
     
 private:
   // methods
@@ -59,6 +71,17 @@ private:
   
   // data members                   
   G4int  fTankHCID;
+  std::vector< G4int > 		fvectorA;
+  std::vector< G4int > 		fvectorZ;
+  std::vector< G4double > 	fvectorx;
+  std::vector< G4double > 	fvectory;
+  std::vector< G4double > 	fvectorz;
+  std::vector< G4double > 	fvectorDist;
+  std::vector< G4int > 		fvectorParentCode;
+  std::vector< G4int > 		fvectorParticleCode;
+  std::vector< G4int > 		fvectorAdaug;
+  std::vector< G4int > 		fvectorZdaug;
+  std::vector< G4double > 	fvectorEparent;
 };
                      
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

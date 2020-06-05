@@ -47,7 +47,19 @@
 SKEventAction::SKEventAction()
  : G4UserEventAction(),
    fTankHCID(-1)
-{}
+{
+  fvectorA.clear();
+  fvectorZ.clear();
+  fvectorx.clear();
+  fvectory.clear();
+  fvectorz.clear();
+  fvectorDist.clear();
+  fvectorParentCode.clear();
+  fvectorParticleCode.clear();
+  fvectorAdaug.clear();
+  fvectorZdaug.clear();
+  fvectorEparent.clear();
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -125,8 +137,21 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
     PrintEventStatistics(
       tankHit->GetEdep(), tankHit->GetEmu(), tankHit->GetLmu());
   }  
+
+  // Get the data from the hits collection
+  fvectorA 		= tankHit->GetA();
+  fvectorZ 		= tankHit->GetZ();
+  fvectorx 		= tankHit->GetxIso();
+  fvectory 		= tankHit->GetyIso();
+  fvectorz 		= tankHit->GetzIso();
+  fvectorDist 		= tankHit->GetTransIso();
+  fvectorParentCode 	= tankHit->GetParentsCodes();
+  fvectorParticleCode 	= tankHit->GetParticleCode();
+  fvectorAdaug 		= tankHit->GetAdaug();
+  fvectorZdaug 		= tankHit->GetZdaug();
+  fvectorEparent 	= tankHit->GetEParf();
   
-  // Fill the histogram for the total energy deposit per event
+  // Fill the histograms and the ntuple
   //
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
@@ -134,6 +159,33 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
   analysisManager->FillH1(0, tankHit->GetEdep());
   analysisManager->FillH1(1, tankHit->GetEmu());
   analysisManager->FillH1(2, tankHit->GetLmu());
+  // fill the ntupleGet
+  analysisManager->FillNtupleDColumn(6, 0, 	tankHit->GetEmu());// kinetic energy
+  analysisManager->FillNtupleDColumn(6, 1, 	tankHit->GetxIni()); 
+  analysisManager->FillNtupleDColumn(6, 2, 	tankHit->GetyIni());
+  analysisManager->FillNtupleDColumn(6, 3, 	tankHit->GetzIni());
+  analysisManager->FillNtupleDColumn(6, 4, 	tankHit->GetEdep());
+  analysisManager->FillNtupleDColumn(6, 5, 	tankHit->GetxFin());
+  analysisManager->FillNtupleDColumn(6, 6, 	tankHit->GetyFin());
+  analysisManager->FillNtupleDColumn(6, 7, 	tankHit->GetzFin());
+  analysisManager->FillNtupleDColumn(6, 8, 	tankHit->GetLmu());
+  analysisManager->FillNtupleIColumn(6, 9, 	fvectorParentCode.size());
+  analysisManager->FillNtupleIColumn(6, 10, 	fvectorA.size());
+  analysisManager->AddNtupleRow(6); 
+
+
+  // cleaning the vectors
+  fvectorA.clear();
+  fvectorZ.clear();
+  fvectorx.clear();
+  fvectory.clear();
+  fvectorz.clear();
+  fvectorDist.clear();
+  fvectorParentCode.clear();
+  fvectorParticleCode.clear();
+  fvectorAdaug.clear();
+  fvectorZdaug.clear();
+  fvectorEparent.clear();
    
 }  
 

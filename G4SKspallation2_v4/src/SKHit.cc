@@ -42,10 +42,31 @@ G4ThreadLocal G4Allocator<SKHit>* SKHitAllocator = 0;
 
 SKHit::SKHit()
  : G4VHit(),
+   // muon
    fEdep(0.),
    fEmu(0.),
-   fLmu(0.)
-{}
+   fLmu(0.),
+   fxIni(0.), 	
+   fyIni(0.),
+   fzIni(0.),
+   fxFin(0.),
+   fyFin(0.),
+   fzFin(0.)
+{ 
+// isotopes
+   fA.clear();
+   fZ.clear(); 
+   fxIso.clear(); 
+   fyIso.clear();
+   fzIso.clear();
+   fTransIso.clear(); 
+   fParentsCodes.clear(); 
+   // isotopes' parents
+   fParticleCode.clear();
+   fAdaug.clear();
+   fZdaug.clear(); 	
+   fEPar.clear();
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -56,18 +77,58 @@ SKHit::~SKHit() {}
 SKHit::SKHit(const SKHit& right)
   : G4VHit()
 {
-  fEdep        = right.fEdep;
-  fEmu         = right.fEmu;
-  fLmu         = right.fLmu;
+   // muon
+   fEdep  		= right.fEdep;
+   fEmu 		= right.fEmu;
+   fLmu			= right.fLmu;
+   fxIni 		= right.fxIni;
+   fyIni 		= right.fyIni;
+   fzIni 		= right.fzIni;
+   fxFin 		= right.fxFin;
+   fyFin 		= right.fyFin;
+   fzFin 		= right.fzFin;
+   // isotopes
+   fA 			= right.fA;
+   fZ 			= right.fZ; 
+   fxIso 		= right.fxIso; 
+   fyIso 		= right.fyIso;
+   fzIso 		= right.fzIso;
+   fTransIso 		= right.fTransIso; 
+   fParentsCodes 	= right.fParentsCodes; 
+   // isotopes' parents
+   fParticleCode 	= right.fParticleCode;	
+   fAdaug 		= right.fAdaug;	
+   fZdaug 		= right.fAdaug;	
+   fEPar 		= right.fEPar;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 const SKHit& SKHit::operator=(const SKHit& right)
 {
-  fEdep        = right.fEdep;
-  fEmu         = right.fEmu;
-  fLmu         = right.fLmu;
+   // muon
+   fEdep  		= right.fEdep;
+   fEmu 		= right.fEmu;
+   fLmu			= right.fLmu;
+   fxIni 		= right.fxIni;
+   fyIni 		= right.fyIni;
+   fzIni 		= right.fzIni;
+   fxFin 		= right.fxFin;
+   fyFin 		= right.fyFin;
+   fzFin 		= right.fzFin;
+   // isotopes
+   fA 			= right.fA;
+   fZ 			= right.fZ; 
+   fxIso 		= right.fxIso; 
+   fyIso 		= right.fyIso;
+   fzIso 		= right.fzIso;
+   fTransIso 		= right.fTransIso; 
+   fParentsCodes 	= right.fParentsCodes; 
+   // isotopes' parents
+   fParticleCode 	= right.fParticleCode;	
+   fAdaug 		= right.fAdaug;	
+   fZdaug 		= right.fAdaug;	
+   fEPar 		= right.fEPar;
 
   return *this;
 }
