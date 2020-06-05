@@ -61,19 +61,51 @@ class SKHit : public G4VHit
     virtual void Print();
 
     // methods to handle data
+    // for the muon
     void Add(G4double de);
-    void Fill(G4double emu);
+    void FillIni(G4double Energy, G4double x, G4double y, G4double z);
     void AddL(G4double dl);
+    void FillFin( G4double x, G4double y, G4double z);
+    // for the isotopes
 
     // get methods
-    G4double GetEdep() const;
-    G4double GetEmu() const;
-    G4double GetLmu() const;
+    // for the muon
+    G4double GetEdep() 	const;
+    G4double GetEmu() 	const;
+    G4double GetLmu() 	const;
+    G4double GetxIni() 	const;
+    G4double GetyIni() 	const;
+    G4double GetzIni() 	const;
+    G4double GetxFin() 	const;
+    G4double GetyFin() 	const;
+    G4double GetzFin() 	const;
+    // for the isotopes
       
   private:
-    G4double fEdep;        ///< Energy deposit in the sensitive volume
-    G4double fEmu;         ///< Initial kinetic energy of the muon
-    G4double fLmu;         ///< Path lenght of the muon
+    // data for the muon
+    G4double fEdep;     ///< Energy deposit in the sensitive volume
+    G4double fEmu;      ///< Initial kinetic energy of the muon
+    G4double fLmu;      ///< Path lenght of the muon
+    G4double fxIni 	///< x initial position  of the muon
+    G4double fyIni 	///< y initial position  of the muon
+    G4double fzIni 	///< z initial position  of the muon
+    G4double fxFin 	///< x initial position  of the muon
+    G4double fyFin 	///< y initial position  of the muon
+    G4double fzFin 	///< z initial position  of the muon
+    // data for the isotopes
+    std::vector< G4int > fA 		///< vector of atomic masses
+    std::vector< G4int > fZ 		///< vector of atomic numbers
+    std::vector< G4double > fxIso 	///< vector of x positions of the isotopes
+    std::vector< G4double > fyIso 	///< vector of y positions of the isotopes
+    std::vector< G4double > fzIso 	///< vector of z positions of the isotopes
+    std::vector< G4double > fTransIso 	///< vector of transverse distances of the isotopes
+    std::vector< G4int > fParentsCodes 	///< vector of the isotopes' parents codes
+    // data for isotopes' parents
+    std::vector< G4int > fParticleCode 	///< vector of the parent particle codes
+    std::vector< G4int > fAdaug 	///< vector of atomic masses of the daughters
+    std::vector< G4int > fZdaug 	///< vector of atomic numbers of the daughters
+    std::vector< G4double > fEPar	///< vector of energy of parents
+    
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -102,6 +134,10 @@ inline void SKHit::operator delete(void *hit)
   SKHitAllocator->FreeSingle((SKHit*) hit);
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// Muon functions
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 inline void SKHit::Add(G4double de) {
   fEdep += de;
 }
@@ -110,8 +146,45 @@ inline G4double SKHit::GetEdep() const {
   return fEdep; 
 }
 
-inline void SKHit::Fill(G4double emu) {
-  fEmu = emu;
+inline void SKHit::FillIni(G4double Energy, G4double x, G4double y, G4double z){
+  fEmu = Energy;
+  fxIni = x;
+  fyIni = y;
+  fzIni = z;
+}
+
+inline G4double SKHit::GetxIni() const { 
+  return fxIni; 
+}
+
+inline G4double SKHit::GetyIni() const { 
+  return fyIni; 
+}
+
+inline G4double SKHit::GetzIni() const { 
+  return fzIni; 
+}
+
+inline void SKHit::FillFin( G4double x, G4double y, G4double z){
+  fxFin = x;
+  fyFin = y;
+  fzFin = z;
+}
+
+inline G4double SKHit::GetxFin() const { 
+  return fxFin; 
+}
+
+inline G4double SKHit::GetyFin() const { 
+  return fyFin; 
+}
+
+inline G4double SKHit::GetzFin() const { 
+  return fzFin; 
+}
+
+inline G4double SKHit::GetEdep() const { 
+  return fEdep; 
 }
 
 inline G4double SKHit::GetEmu() const { 
@@ -125,6 +198,16 @@ inline void SKHit::AddL(G4double dl) {
 inline G4double SKHit::GetLmu() const { 
   return fLmu; 
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// Isotope functions
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// Parents functions
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 #endif

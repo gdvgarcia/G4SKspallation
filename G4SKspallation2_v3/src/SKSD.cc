@@ -281,14 +281,12 @@ G4bool SKSD::ProcessHits(G4Step* step,
   //  Collect information for other particles
   //  generated from an interaction with the water tank
   //----------------------------------------------
-  if ( ( name == "neutron" || name == "gamma" || name == "e-" || 
-  name == "e+" || name == "pi+" || name == "pi-" || name == "pi0" ) 
-  && ( Track->GetKineticEnergy() > 0.9 )){ //check if it is a wanted particle and if its energy is greater than 0.9 MeV
+  if ( ( Track->GetKineticEnergy() > 0.9 ) && ( name == "neutron" || name == "gamma" || name == "e-" || 
+  name == "e+" || name == "pi+" || name == "pi-" || name == "pi0" ) ){ //check if it is a wanted particle and if its energy is greater than 0.9 MeV
 	particlesFill( name , Track->GetKineticEnergy(), Track->GetStepLength() ); // fill particles data in the particles ntuple
   	
   	return true;
    } //---------------------------------------------- END check if it is a wanted particle
-
 
 
   return false;
