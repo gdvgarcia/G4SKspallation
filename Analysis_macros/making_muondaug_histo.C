@@ -47,14 +47,14 @@ int making_muondaug_histo(){
 	// create container for particles names
     	string particles[6][3]; 
     	particles[0][0] = "e-";
-	particles[0][1] = "e+";
-	particles[0][2] = "eMinusePlus";
+	particles[0][1] = "none";
+	particles[0][2] = "eMinuse";
 	particles[1][0] = "gamma";
 	particles[1][1] = "none";
 	particles[1][2] = "gamma";
-	particles[2][0] = "neutron";
+	particles[2][0] = "e+";
 	particles[2][1] = "none";
-	particles[2][2] = "neutron";
+	particles[2][2] = "ePlus";
 	particles[3][0] = "proton";
 	particles[3][1] = "none";
 	particles[3][2] = "proton";
@@ -86,22 +86,36 @@ int making_muondaug_histo(){
 	TCanvas *c1 = new TCanvas();
 
 	// Build a legend - x1,y1,x2,y2 
-	TLegend leg(.55 ,.75 ,.9 ,.9);
+	TLegend leg(.675 ,.725 ,.9 ,.9);
 	leg.SetFillColor(0);
 	leg.SetNColumns(2);
+
+	// Building log binning for h
+	const Int_t nbins = 100;
+   	Double_t xmin = 1e-2;
+   	Double_t xmax = 1e2;
+   	Double_t logxmin = TMath::Log10(xmin);
+   	Double_t logxmax = TMath::Log10(xmax);
+   	Double_t binwidth = (logxmax-logxmin)/nbins;
+   	Double_t xbins[nbins+1];
+   	xbins[0] = xmin;
+   	for (Int_t i=1;i<=nbins;i++) {
+      		xbins[i] = xmin + TMath::Power(10,logxmin+i*binwidth);
+   	}
 
 	for( int j =0; j < 6 ; ++j){
 		if( particles[j][1].compare("none") != 0 ){// selecting the particles
 			//Creating the histogram
 			string histtitle = "Spectra for " + particles[j][0] + " + " + particles[j][1];
 			string histname = "h" + particles[j][2];
-			h[j] = new TH1D(histname.c_str(), histtitle.c_str(), 500, 0.1, 100.0);
+			h[j] = new TH1D(histname.c_str(), histtitle.c_str(),nbins,xbins);
+			
 		}
 		else{
 			//Creating the histogram
 			string histtitle = "Spectrum   for " + particles[j][0];
 			string histname = "h" + particles[j][2];
-			h[j] = new TH1D(histname.c_str(), histtitle.c_str(), 500, 0.1, 100.0);
+			h[j] = new TH1D(histname.c_str(), histtitle.c_str(),nbins,xbins);
 
 		}
 	}
@@ -111,7 +125,7 @@ int making_muondaug_histo(){
 			for( int j =0; j < 6 ; ++j){
 			DataTree->GetEntry(i);
 			if( (particles[j][0].compare(Particle) == 0) || (particles[j][1].compare(Particle) == 0) ){ // if desired particle		
-				double Weight = (Energy/nmuons)/1000.; // divided by 1000 to convert to GeV divided by the number of muons simulated to normalize	
+				double Weight = (1./nmuons); // divided by 1000 to convert to GeV divided by the number of muons simulated to normalize	
 				h[j]->Fill(Energy/1000., Weight);} // divided by 1000 to convert to GeV fill with energy weight divided by the number of events
 			}
  		}
@@ -133,7 +147,7 @@ int making_muondaug_histo(){
 		h[j]->GetYaxis()->SetLabelSize(.045);
 		h[j]->GetXaxis()->SetTitleSize(.045);
 		h[j]->GetYaxis()->SetTitleSize(.045);
-		h[j]->SetAxisRange(0.001, 10.,"Y");
+		h[j]->SetAxisRange(0.00001, 10.,"Y");
 		h[j]->SetAxisRange(0.1, 100.,"X");
 		h[j]->SetStats(kFALSE);
 
@@ -142,7 +156,7 @@ int making_muondaug_histo(){
 
 		// drawing the histograms
 		h[j]->SetTitle("");
-		h[j]->DrawClone("HIST C 9 SAME");
+		h[j]->DrawClone("HIST 9 SAME");
 		// Adding the legend
 		leg.AddEntry(h[j],particles[j][0].c_str(),"l");
  	}
