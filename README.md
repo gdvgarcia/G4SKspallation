@@ -17,6 +17,8 @@ The third simulation adds the photomultipliers to the tank...
 
 Geant4 default units : http://geant4.web.cern.ch/sites/geant4.web.cern.ch/files/geant4/collaboration/working_groups/electromagnetic/gallery/units/SystemOfUnits.html
 
+Geant4 Particle Data Group Integer Identifier : https://home.fnal.gov/~mrenna/lutp0613man2/node44.html or http://pdg.lbl.gov/2019/reviews/rpp2019-rev-monte-carlo-numbering.pdf - at the end of the document
+
 References:
 
 http://www-sk.icrr.u-tokyo.ac.jp/doc/sk/pub/sknimpaper.pdf
