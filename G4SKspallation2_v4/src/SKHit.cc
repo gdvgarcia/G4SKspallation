@@ -35,6 +35,8 @@
 #include "G4VisAttributes.hh"
 
 #include <iomanip>
+#include <vector>
+#include <string> 
 
 G4ThreadLocal G4Allocator<SKHit>* SKHitAllocator = 0;
 
@@ -43,29 +45,42 @@ G4ThreadLocal G4Allocator<SKHit>* SKHitAllocator = 0;
 SKHit::SKHit()
  : G4VHit(),
    // muon
-   fEdep(0.),
-   fEmu(0.),
-   fLmu(0.),
-   fxIni(0.), 	
-   fyIni(0.),
-   fzIni(0.),
-   fxFin(0.),
-   fyFin(0.),
-   fzFin(0.)
+   fEdep(0.), 			///< Energy deposit in the sensitive volume
+   fEmu(0.),			///< Initial kinetic energy of the muon
+   fLmu(0.),			///< Path lenght of the muon
+   fxIni(0.), 			///< x initial position  of the muon
+   fyIni(0.),			///< y initial position  of the muon
+   fzIni(0.),			///< z initial position  of the muon
+   fxFin(0.),			///< x initial position  of the muon
+   fyFin(0.),			///< y initial position  of the muon
+   fzFin(0.)			///< z initial position  of the muon
 { 
-// isotopes
-   fA.clear();
-   fZ.clear(); 
-   fxIso.clear(); 
-   fyIso.clear();
-   fzIso.clear();
-   fTransIso.clear(); 
-   fParentsCodes.clear(); 
-   // isotopes' parents
-   fParticleCode.clear();
-   fAdaug.clear();
-   fZdaug.clear(); 	
-   fEPar.clear();
+    //first generation daugther of the muon
+    fFirstGenCode.clear();	///< vector of the first generation particles codes
+    fEfisrtGen.clear();		///< vector of energies of first generation particles
+    // isotopes
+    fA.clear(); 		///< vector of atomic masses
+    fZ.clear(); 		///< vector of atomic numbers
+    fxIso.clear(); 		///< vector of x positions of the isotopes
+    fyIso.clear();		///< vector of y positions of the isotopes
+    fzIso.clear();		///< vector of z positions of the isotopes
+    fIsoDist.clear(); 		///< vector of transverse distances of the isotopes
+    fIsoParentCode.clear(); 	///< vector of the isotopes' parents codes
+    fIniTime.clear();		///< vector of initial times of the isotopes
+    fFinTime.clear(); 		///< vector of final times of the isotopes
+    fStable.clear(); 		///< vector of the stability(1) or instability(0) of isotopes
+    // isotopes' parents
+    fParentsCode.clear();	///< vector of the parent particle codes
+    fAdaug.clear(); 		//< vector of atomic masses of the daughters
+    fZdaug.clear(); 		///< vector of atomic numbers of the daughters
+    fEparent.clear();		///< vector of energy of parents
+    // path length
+    fPathLengthCode.clear();	///< vector of the particle codes 
+    fPathLengthE.clear();	///< vector of energies of particles
+    fStepLength.clear();	//< vector of steps lengths of particles for a given energy
+    // transverse distance
+    fTransCode.clear();		///< vector of the particle codes 
+    fTransDist.clear(); 	///< vector of the transverse distance
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -77,58 +92,84 @@ SKHit::~SKHit() {}
 SKHit::SKHit(const SKHit& right)
   : G4VHit()
 {
-   // muon
-   fEdep  		= right.fEdep;
-   fEmu 		= right.fEmu;
-   fLmu			= right.fLmu;
-   fxIni 		= right.fxIni;
-   fyIni 		= right.fyIni;
-   fzIni 		= right.fzIni;
-   fxFin 		= right.fxFin;
-   fyFin 		= right.fyFin;
-   fzFin 		= right.fzFin;
-   // isotopes
-   fA 			= right.fA;
-   fZ 			= right.fZ; 
-   fxIso 		= right.fxIso; 
-   fyIso 		= right.fyIso;
-   fzIso 		= right.fzIso;
-   fTransIso 		= right.fTransIso; 
-   fParentsCodes 	= right.fParentsCodes; 
-   // isotopes' parents
-   fParticleCode 	= right.fParticleCode;	
-   fAdaug 		= right.fAdaug;	
-   fZdaug 		= right.fAdaug;	
-   fEPar 		= right.fEPar;
+    // muon
+    fEdep  		= right.fEdep;		///< Energy deposit in the sensitive volume
+    fEmu 		= right.fEmu;		///< Initial kinetic energy of the muon
+    fLmu		= right.fLmu;		///< Path lenght of the muon
+    fxIni 		= right.fxIni;		///< x initial position  of the muon
+    fyIni 		= right.fyIni;		///< y initial position  of the muon
+    fzIni 		= right.fzIni;		///< z initial position  of the muon
+    fxFin 		= right.fxFin;		///< x initial position  of the muon
+    fyFin 		= right.fyFin;		///< y initial position  of the muon
+    fzFin 		= right.fzFin;		///< z initial position  of the muon
+    //first generation daugther of the muon
+    fFirstGenCode 	= right.fFirstGenCode;	///< vector of the first generation particles codes
+    fEfisrtGen 		= right.fEfisrtGen;		///< vector of energies of first generation particles
+    // isotopes
+    fA 			= right.fA; 		///< vector of atomic masses
+    fZ 			= right.fZ; 		///< vector of atomic numbers
+    fxIso 		= right.fxIso;		///< vector of x positions of the isotopes
+    fyIso 		= right.fyIso;		///< vector of y positions of the isotopes
+    fzIso 		= right.fzIso;		///< vector of z positions of the isotopes
+    fIsoDist 		= right.fIsoDist; 	///< vector of transverse distances of the isotopes
+    fIsoParentCode 	= right.fIsoParentCode; ///< vector of the isotopes' parents codes
+    fIniTime 		= right.fIniTime;	///< vector of initial times of the isotopes
+    fFinTime 		= right.fFinTime;	///< vector of final times of the isotopes
+    fStable 		= right.fStable; 	///< vector of the stability(1) or instability(0) of isotopes
+    // isotopes' parents
+    fParentsCode 	= right.fParentsCode;	///< vector of the parent particle codes
+    fAdaug		= right.fAdaug; 	//< vector of atomic masses of the daughters
+    fZdaug 		= right.fZdaug; 	///< vector of atomic numbers of the daughters
+    fEparent 		= right.fEparent;	///< vector of energy of parents
+    // path length
+    fPathLengthCode 	= right.fPathLengthCode;///< vector of the particle codes 
+    fPathLengthE 	= right.fPathLengthE;	///< vector of energies of particles
+    fStepLength 	= right.fStepLength;	//< vector of steps lengths of particles for a given energy
+    // transverse distance
+    fTransCode 		= right.fTransCode;	///< vector of the particle codes 
+    fTransDist 		= right.fTransDist;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 const SKHit& SKHit::operator=(const SKHit& right)
 {
-   // muon
-   fEdep  		= right.fEdep;
-   fEmu 		= right.fEmu;
-   fLmu			= right.fLmu;
-   fxIni 		= right.fxIni;
-   fyIni 		= right.fyIni;
-   fzIni 		= right.fzIni;
-   fxFin 		= right.fxFin;
-   fyFin 		= right.fyFin;
-   fzFin 		= right.fzFin;
-   // isotopes
-   fA 			= right.fA;
-   fZ 			= right.fZ; 
-   fxIso 		= right.fxIso; 
-   fyIso 		= right.fyIso;
-   fzIso 		= right.fzIso;
-   fTransIso 		= right.fTransIso; 
-   fParentsCodes 	= right.fParentsCodes; 
-   // isotopes' parents
-   fParticleCode 	= right.fParticleCode;	
-   fAdaug 		= right.fAdaug;	
-   fZdaug 		= right.fAdaug;	
-   fEPar 		= right.fEPar;
+    // muon
+    fEdep  		= right.fEdep;		///< Energy deposit in the sensitive volume
+    fEmu 		= right.fEmu;		///< Initial kinetic energy of the muon
+    fLmu		= right.fLmu;		///< Path lenght of the muon
+    fxIni 		= right.fxIni;		///< x initial position  of the muon
+    fyIni 		= right.fyIni;		///< y initial position  of the muon
+    fzIni 		= right.fzIni;		///< z initial position  of the muon
+    fxFin 		= right.fxFin;		///< x initial position  of the muon
+    fyFin 		= right.fyFin;		///< y initial position  of the muon
+    fzFin 		= right.fzFin;		///< z initial position  of the muon
+    //first generation daugther of the muon
+    fFirstGenCode 	= right.fFirstGenCode;	///< vector of the first generation particles codes
+    fEfisrtGen 		= right.fEfisrtGen;		///< vector of energies of first generation particles
+    // isotopes
+    fA 			= right.fA; 		///< vector of atomic masses
+    fZ 			= right.fZ; 		///< vector of atomic numbers
+    fxIso 		= right.fxIso;		///< vector of x positions of the isotopes
+    fyIso 		= right.fyIso;		///< vector of y positions of the isotopes
+    fzIso 		= right.fzIso;		///< vector of z positions of the isotopes
+    fIsoDist 		= right.fIsoDist; 	///< vector of transverse distances of the isotopes
+    fIsoParentCode 	= right.fIsoParentCode; ///< vector of the isotopes' parents codes
+    fIniTime 		= right.fIniTime;	///< vector of initial times of the isotopes
+    fFinTime 		= right.fFinTime;	///< vector of final times of the isotopes
+    fStable 		= right.fStable; 	///< vector of the stability(1) or instability(0) of isotopes
+    // isotopes' parents
+    fParentsCode 	= right.fParentsCode;	///< vector of the parent particle codes
+    fAdaug		= right.fAdaug; 	//< vector of atomic masses of the daughters
+    fZdaug 		= right.fZdaug; 	///< vector of atomic numbers of the daughters
+    fEparent 		= right.fEparent;	///< vector of energy of parents
+    // path length
+    fPathLengthCode 	= right.fPathLengthCode;///< vector of the particle codes 
+    fPathLengthE 	= right.fPathLengthE;	///< vector of energies of particles
+    fStepLength 	= right.fStepLength;	//< vector of steps lengths of particles for a given energy
+    // transverse distance
+    fTransCode 		= right.fTransCode;	///< vector of the particle codes 
+    fTransDist 		= right.fTransDist;
 
   return *this;
 }

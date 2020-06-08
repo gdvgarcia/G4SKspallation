@@ -50,133 +50,101 @@ SKRunAction::SKRunAction(SKEventAction* eventAction)
   // in SKAnalysis.hh
   auto analysisManager = G4AnalysisManager::Instance();
   G4cout << "Using " << analysisManager->GetType() << G4endl;
-
-  // Create directories 
-  //analysisManager->SetHistoDirectoryName("histograms");
-  //analysisManager->SetNtupleDirectoryName("ntuple");
   analysisManager->SetVerboseLevel(1);
   //analysisManager->SetNtupleMerging(true);
     // Note: merging ntuples is available only with Root output
 
+  //
   // Book histograms, ntuple
   //
   
   // Creating histograms
+  //
+  // 1D histograms
     analysisManager->CreateH1("Edep","Energy of deposited per event", 101, 0.5 , 100.5 * GeV //,"none", "none", "log"
 ); // ID 0
     analysisManager->CreateH1("KinEmu","Initial muon kinetic energy", 100, 0.1 , 1000.1 * GeV,"none", "none", "log"
 ); // ID 1
-    analysisManager->CreateH1("PathLmu","Initial muon path lenght", 40, 100. , 500. * cm//,"none", "none", "log"
+    analysisManager->CreateH1("PathLmu","Initial muon path lenght", 42, 0. , 42. * m//,"none", "none", "log"
 ); // ID 2
   // 2D histogram for A and Z quantities
   analysisManager->CreateH2("Isotopes", "Ions produced; Z values; A values", 150, 0.5, 150.5, 300, 0.5, 300.5); // ID 0
 
+  //
   // Creating the ntuple
   //
-  analysisManager->CreateNtuple("isotopes_data", "A, Z, position, parent particle, Kinetic Energy, Momentum direction and EventID");
-  // For the isotopes ntupleID=0
-  analysisManager->CreateNtupleSColumn(0 , "Name"); //column ID 0
-  analysisManager->CreateNtupleIColumn(0 , "A"); //column ID 1
-  analysisManager->CreateNtupleIColumn(0 , "Z"); //column ID 2
-  analysisManager->CreateNtupleDColumn(0 , "x"); //column ID 3
-  analysisManager->CreateNtupleDColumn(0 , "y"); //column ID 4
-  analysisManager->CreateNtupleDColumn(0 , "z"); //column ID 5
-  analysisManager->CreateNtupleDColumn(0 , "Transverse"); //column ID 6
-  analysisManager->CreateNtupleSColumn(0 , "Process"); //column ID 7
-  analysisManager->CreateNtupleSColumn(0 , "Parent"); //column ID 8
-  analysisManager->CreateNtupleDColumn(0 , "LifeTime"); //column ID 9
-  analysisManager->CreateNtupleDColumn(0 , "InitialTime"); //column ID 10
-  analysisManager->CreateNtupleDColumn(0 , "FinalTime"); //column ID 11
-  analysisManager->CreateNtupleSColumn(0 , "Daughters"); //column ID 12
-  //analysisManager->CreateNtupleDColumn(0 , "ParentsEnergy"); //column ID 13
-  //analysisManager->CreateNtupleDColumn(0 , "Energy"); //column ID 14 kinetic
-  //analysisManager->CreateNtupleDColumn(0 , "Px"); //column ID 15
-  //analysisManager->CreateNtupleDColumn(0 , "Py"); //column ID 16
-  //analysisManager->CreateNtupleDColumn(0 , "Pz"); //column ID 17
-  analysisManager->CreateNtupleIColumn(0 , "EventID"); //column ID 18 - 13
-  analysisManager->FinishNtuple(0);
+  analysisManager->CreateNtuple("event_data", "Muon initial and final position, muon initial energy, muon energy deposit, muon path length, muon first generation daugthers and their energies, isotopes vectors data and isotopes' parents vectors data, particles path length data and particles transverse distance");
 
-  analysisManager->CreateNtuple("muon_data", "Particle name, Kinetic Energy, position and EventID");
-  // For the muon ntupleID=1
-  analysisManager->CreateNtupleSColumn(1 , "Particle"); //column ID 0
-  analysisManager->CreateNtupleDColumn(1 , "Energy"); //column ID 1 kinetic
-  analysisManager->CreateNtupleDColumn(1 , "x"); //column ID 2
-  analysisManager->CreateNtupleDColumn(1 , "y"); //column ID 3
-  analysisManager->CreateNtupleDColumn(1 , "z"); //column ID 4
-  analysisManager->CreateNtupleIColumn(1 , "EventID"); //column ID 5
-  analysisManager->FinishNtuple(1);
+  //  muon data
+  analysisManager->CreateNtupleDColumn("Energy"); 	//column ID 0 - initial kinetic energy
+  analysisManager->CreateNtupleDColumn("xIni"); 	//column ID 1 - muon initial position
+  analysisManager->CreateNtupleDColumn("yIni"); 	//column ID 2 - muon initial position
+  analysisManager->CreateNtupleDColumn("zIni"); 	//column ID 3 - muon initial position
+  analysisManager->CreateNtupleDColumn("Edep"); 	//column ID 4 - total energy deposited per event
+  analysisManager->CreateNtupleDColumn("xFin"); 	//column ID 5 - muon final position
+  analysisManager->CreateNtupleDColumn("yFin"); 	//column ID 6 - muon final position
+  analysisManager->CreateNtupleDColumn("zFin"); 	//column ID 7 - muon final position
+  analysisManager->CreateNtupleDColumn("PathLength"); 	//column ID 8 - total muon path length 
 
-  analysisManager->CreateNtuple("particles_data", "Particle name, Kinetic Energy, Step length and event ID");
-  // For the particles ntupleID=2
-  analysisManager->CreateNtupleSColumn(2 , "Particle"); //column ID 0
-  analysisManager->CreateNtupleDColumn(2 , "Energy"); //column ID 1 kinetic
-  analysisManager->CreateNtupleDColumn(2 , "PathLenght"); //column ID 2
-  analysisManager->CreateNtupleIColumn(2 , "EventID"); //column ID 3
-  analysisManager->FinishNtuple(2);
+  // first generation daugther particles data
+  analysisManager->CreateNtupleIColumn("FirstGenSize"); 		//column ID 9  - size of the vectors 
+  analysisManager->CreateNtupleIColumn(
+        "FirstGenParticle",fEventAction->GetvectorFirstGenCode()); 	//column ID 10 - particle code
+  analysisManager->CreateNtupleDColumn(
+        "FirstGenEnergy", fEventAction->GetvectorEfisrtGen()); 		//column ID 11 - initial kinetic energy
+ 
+  // isotopes data
+  analysisManager->CreateNtupleIColumn( "IsotopesSize"); 	//column ID 12 - size of the vectors 
+  analysisManager->CreateNtupleIColumn(
+        "A", fEventAction->GetvectorA()); 			//column ID 13 - atomic mass
+  analysisManager->CreateNtupleIColumn(
+        "Z", fEventAction->GetvectorZ()); 			//column ID 14 - atomic number
+  analysisManager->CreateNtupleDColumn(
+        "x", fEventAction->Getvectorx()); 			//column ID 15 - final position
+  analysisManager->CreateNtupleDColumn(
+        "y", fEventAction->Getvectory()); 			//column ID 16 - final position
+  analysisManager->CreateNtupleDColumn(
+        "z", fEventAction->Getvectorz()); 			//column ID 17 - final position
+  analysisManager->CreateNtupleDColumn(
+        "TransverseDistance", fEventAction->GetvectorIsoDist());//column ID 18 - transverse distance
+  analysisManager->CreateNtupleIColumn(
+        "IsoParentCode",fEventAction->GetvectorIsoParentCode());//column ID 19 - parent particle code
+  analysisManager->CreateNtupleDColumn(
+        "InitialTime", fEventAction->GetvectorIniTime()); 	//column ID 20 - initial time when the isotope was created
+  analysisManager->CreateNtupleDColumn(
+        "FinalTime", fEventAction->GetvectorFinTime()); 		//column ID 21 - final time when it stopped being tracked
+  analysisManager->CreateNtupleIColumn(
+        "Stable1Instable0", fEventAction->GetvectorStable()); 	//column ID 22 - if stable it has 1 if instable is has 0
 
-  analysisManager->CreateNtuple("particles2_data", "Particle name, Transverse distance and event ID");
-  // For the particles ntupleID=3
-  analysisManager->CreateNtupleSColumn(3 , "Particle"); //column ID 0
-  analysisManager->CreateNtupleDColumn(3 , "TransverseDistance"); //column ID 1
-  analysisManager->CreateNtupleIColumn(3 , "EventID"); //column ID 2
-  analysisManager->FinishNtuple(3);
+  // isotopes' parents data
+  analysisManager->CreateNtupleIColumn("ParentsSize"); 		//column ID 23  - size of the vectors 
+  analysisManager->CreateNtupleIColumn(
+        "ParentsCode",fEventAction->GetvectorParentsCode()); 	//column ID 24 - particle code
+  analysisManager->CreateNtupleIColumn(
+        "Adaughter", fEventAction->GetvectorAdaug()); 		//column ID 25 - daugther atomic mass
+  analysisManager->CreateNtupleIColumn(
+        "Zdaughter", fEventAction->GetvectorZdaug()); 		//column ID 26 - daugther atomic number
+  analysisManager->CreateNtupleDColumn(
+        "ParentsEnergy", fEventAction->GetvectorEparent()); 	//column ID 27 - particle energy
 
-  analysisManager->CreateNtuple("parents_data", "name, daughter A, daughter  Z, process, Kinetic Energy and EventID");
-  // For the isotopes' parents ntupleID=4
-  analysisManager->CreateNtupleSColumn(4 , "Particle"); //column ID 0
-  analysisManager->CreateNtupleIColumn(4 , "A"); //column ID 1
-  analysisManager->CreateNtupleIColumn(4 , "Z"); //column ID 2
-  analysisManager->CreateNtupleSColumn(4 , "Process"); //column ID 3
-  //analysisManager->CreateNtupleSColumn(4 , "Parent"); //column ID 4
-  analysisManager->CreateNtupleDColumn(4 , "Energy"); //column ID 4 kinetic
-  analysisManager->CreateNtupleIColumn(4 , "EventID"); //column ID 5
-  analysisManager->FinishNtuple(4);
+  // all particles path length per energy data
+  analysisManager->CreateNtupleIColumn("PathLengthSize"); 		//column ID 28 - size of the vectors 
+  analysisManager->CreateNtupleIColumn(
+        "PathLengthCode",fEventAction->GetvectorPathLengthCode());	//column ID 29 - particle code
+  analysisManager->CreateNtupleDColumn(
+        "PathLengthEnergy", fEventAction->GetvectorPathLengthE()); 	//column ID 30 - particle energy
+  analysisManager->CreateNtupleDColumn(
+        "StepLength", fEventAction->GetvectorStepLength()); 		//column ID 31 - particle step length for this given energy
 
-  analysisManager->CreateNtuple("muondaug_data", "Particle name, Kinetic Energy and event ID");
-  // For the particles ntupleID=5
-  analysisManager->CreateNtupleSColumn(5 , "Particle"); //column ID 0
-  analysisManager->CreateNtupleDColumn(5 , "Energy"); //column ID 1 kinetic
-  analysisManager->CreateNtupleSColumn(5 , "Process"); //column ID 2
-  analysisManager->CreateNtupleIColumn(5 , "EventID"); //column ID 3
-  analysisManager->FinishNtuple(5);
+  // all particles transverse distance
+  analysisManager->CreateNtupleIColumn("TransParticlesSize"); 			//column ID 32 - size of the vectors 
+  analysisManager->CreateNtupleIColumn(
+        "TransParticlesCode",fEventAction->GetvectorTransParticlesCode());	//column ID 33 - particle code
+  analysisManager->CreateNtupleDColumn(
+        "TransParticlesDistance", fEventAction->GetvectorTransParticlesDist()); //column ID 34 - transverse distance
 
-  analysisManager->CreateNtuple("event_data", "Muon initial and final position, muon initial energy, muon energy deposit, muon path length, isotopes vectors data and isotopes' parents vectors data");
-  // For the particles ntupleID=6
-  analysisManager->CreateNtupleDColumn(6 , "Energy"); 		//column ID 0 kinetic
-  analysisManager->CreateNtupleDColumn(6 , "xIni"); 		//column ID 1
-  analysisManager->CreateNtupleDColumn(6 , "yIni"); 		//column ID 2
-  analysisManager->CreateNtupleDColumn(6 , "zIni"); 		//column ID 3
-  analysisManager->CreateNtupleDColumn(6 , "Edep"); 		//column ID 4
-  analysisManager->CreateNtupleDColumn(6 , "xFin"); 		//column ID 5
-  analysisManager->CreateNtupleDColumn(6 , "yFin"); 		//column ID 6
-  analysisManager->CreateNtupleDColumn(6 , "zFin"); 		//column ID 7
-  analysisManager->CreateNtupleDColumn(6 , "PathLength"); 	//column ID 8
-  analysisManager->CreateNtupleIColumn(6 , "IsotopesSize"); 	//column ID 9
-  analysisManager->CreateNtupleIColumn(6 , "ParentsSize"); 	//column ID 10
-  // vectors declaration
-  analysisManager->CreateNtupleIColumn(6 ,
-        "A", fEventAction->GetvectorA()); //column ID 11
-  analysisManager->CreateNtupleIColumn(6 ,
-        "Z", fEventAction->GetvectorZ()); //column ID 12
-  analysisManager->CreateNtupleDColumn(6 ,
-        "x", fEventAction->Getvectorx()); //column ID 13
-  analysisManager->CreateNtupleDColumn(6 ,
-        "y", fEventAction->Getvectory()); //column ID 14
-  analysisManager->CreateNtupleDColumn(6 ,
-        "z", fEventAction->Getvectorz()); //column ID 15
-  analysisManager->CreateNtupleDColumn(6 ,
-        "TransverseDistance", fEventAction->GetvectorDist()); //column ID 16
-  analysisManager->CreateNtupleIColumn(6 ,
-        "ParentCode",fEventAction->GetvectorParentCode()); //column ID 17
-  analysisManager->CreateNtupleIColumn(6 ,
-        "ParticleCode",fEventAction->GetvectorParticleCode()); //column ID 18
-  analysisManager->CreateNtupleIColumn(6 ,
-        "Adaughter", fEventAction->GetvectorAdaug()); //column ID 19
-  analysisManager->CreateNtupleIColumn(6 ,
-        "Zdaughter", fEventAction->GetvectorZdaug()); //column ID 20
-  analysisManager->CreateNtupleDColumn(6 ,
-        "ParticleEnergy", fEventAction->GetvectorEparent()); //column ID 21
-  analysisManager->FinishNtuple(6);
+  // finishing ntuple creation
+  analysisManager->FinishNtuple();
   
 }
 

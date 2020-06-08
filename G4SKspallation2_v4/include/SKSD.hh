@@ -70,20 +70,13 @@ class SKSD : public G4VSensitiveDetector
     std::vector< double > fMuonPositions; // keep the muon initial and final position so we can calculate the transverse distance of particles - ID 0 = x_ini , ID 1 = y_ini , ID 2 = z_ini , ID 3 = x_fin , ID 4 = y_fin , ID 5 = z_fin
 
     //
-    // Functions to make the code more userfriendly
+    // Extra functions
     //
     void loopForSecondariesEnergies(const std::vector<const G4Track*>* Secondaries , G4int n , //G4int TrackID,  
-    G4double Energy , G4String Process, G4String name , SKHit* hit, G4int code); // this is used to make a for loop in the secondaries per step vector - it fills the fParentsEnergy map - THE NTUPLE ACTUALLY
-    bool loopForSecondaries( G4TrackVector* Secondaries , G4int n , G4int TrackID, G4String name, G4int code); // this is used to make a for loop in the secondaries per track vector - it fills the fParents map with the names
-    void transverseFill( G4double x, G4double y , G4double z , G4String name ); // transverse distance calculator and ntuple filler
-    void muonFill( G4double E, G4double x , G4double y , G4double z , G4String name ); // muon ntuple filler
-    void isotopeFill( G4String name , G4int A, G4int Z, G4double x , G4double y , 
-    G4double z , G4int    ParentID,  G4String Process, G4double FinalTime, G4double LifeTime, G4String      
-    daughters  , G4int TrackID ); // isotopes ntuple filler
-    void particlesFill( G4String name , G4double Energy , G4double StepLength ); // particles ntuple filler
-    G4double transverseDistance( G4double x, G4double y, G4double z ); // transverse distance to the muon track line - suppose an "infinite" line 
+    G4double Energy , SKHit* hit, G4int Code); // this is used to make a for loop in the secondaries per step vector - it fills the fParentsEnergy map - THE NTUPLE ACTUALLY
+    bool loopForSecondaries( G4TrackVector* Secondaries , G4int n , G4int TrackID, G4String name, G4int Code); // this is used to make a for loop in the secondaries per track vector - it fills the fParents map with the names
+    G4double transverseDistance( G4double x, G4double y, G4double z ); // transverse distance to the muon track line - suppose an "infinite" line
     G4String loopForSecondariesNames(const std::vector<const G4Track*>* Secondaries , G4int n ); // this return secondaries names
-    void muonDaugFill( G4String name , G4double Energy , G4String Process); // muon's daughters ntuple filler
 
 };
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

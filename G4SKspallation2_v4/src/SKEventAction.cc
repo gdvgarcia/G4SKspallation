@@ -48,17 +48,32 @@ SKEventAction::SKEventAction()
  : G4UserEventAction(),
    fTankHCID(-1)
 {
+  // vectors for first generation daugthers of the muon data
+  fvectorFirstGenCode.clear();
+  fvectorEfisrtGen.clear();
+  // vectors for the isotopes data
   fvectorA.clear();
   fvectorZ.clear();
   fvectorx.clear();
   fvectory.clear();
   fvectorz.clear();
-  fvectorDist.clear();
-  fvectorParentCode.clear();
-  fvectorParticleCode.clear();
+  fvectorIsoDist.clear();
+  fvectorIsoParentCode.clear();
+  fvectorIniTime.clear();
+  fvectorFinTime.clear();
+  fvectorStable.clear();
+  // vectors for the isotopes' parents data
+  fvectorParentsCode.clear();
   fvectorAdaug.clear();
   fvectorZdaug.clear();
   fvectorEparent.clear();
+  // vectors for the path length data
+  fvectorPathLengthCode.clear();
+  fvectorPathLengthE.clear();
+  fvectorStepLength.clear();
+  // vectors for the transverse distance data
+  fvectorTransParticlesCode.clear();
+  fvectorTransParticlesDist.clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -138,18 +153,34 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
       tankHit->GetEdep(), tankHit->GetEmu(), tankHit->GetLmu());
   }  
 
-  // Get the data from the hits collection
-  fvectorA 		= tankHit->GetA();
-  fvectorZ 		= tankHit->GetZ();
-  fvectorx 		= tankHit->GetxIso();
-  fvectory 		= tankHit->GetyIso();
-  fvectorz 		= tankHit->GetzIso();
-  fvectorDist 		= tankHit->GetTransIso();
-  fvectorParentCode 	= tankHit->GetParentsCodes();
-  fvectorParticleCode 	= tankHit->GetParticleCode();
-  fvectorAdaug 		= tankHit->GetAdaug();
-  fvectorZdaug 		= tankHit->GetZdaug();
-  fvectorEparent 	= tankHit->GetEParf();
+  // Get the data from the hits collection to the variables of the ntuple
+  //
+  // vectors for first generation daugthers of the muon data
+  fvectorFirstGenCode 		= tankHit->GetFirstGenCode();
+  fvectorEfisrtGen		= tankHit->GetEfisrtGen();
+  // vectors for the isotopes data
+  fvectorA 			= tankHit->GetA();
+  fvectorZ 			= tankHit->GetZ();
+  fvectorx 			= tankHit->GetxIso();
+  fvectory 			= tankHit->GetyIso();
+  fvectorz			= tankHit->GetzIso();
+  fvectorIsoDist		= tankHit->GetIsoDist();
+  fvectorIsoParentCode		= tankHit->GetIsoParentCode();
+  fvectorIniTime		= tankHit->GetIniTime();
+  fvectorFinTime		= tankHit->GetFinTime();
+  fvectorStable			= tankHit->GetStable();
+  // vectors for the isotopes' parents data
+  fvectorParentsCode		= tankHit->GetParentsCode();
+  fvectorAdaug			= tankHit->GetAdaug();
+  fvectorZdaug			= tankHit->GetZdaug();
+  fvectorEparent		= tankHit->GetEparent();
+  // vectors for the path length data
+  fvectorPathLengthCode		= tankHit->GetPathLengthCode();
+  fvectorPathLengthE		= tankHit->GetPathLengthE();
+  fvectorStepLength		= tankHit->GetStepLength();
+  // vectors for the transverse distance data
+  fvectorTransParticlesCode	= tankHit->GetTransParticlesCode();
+  fvectorTransParticlesDist	= tankHit->GetTransParticlesDist();
   
   // Fill the histograms and the ntuple
   //
@@ -159,33 +190,52 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
   analysisManager->FillH1(0, tankHit->GetEdep());
   analysisManager->FillH1(1, tankHit->GetEmu());
   analysisManager->FillH1(2, tankHit->GetLmu());
-  // fill the ntupleGet
-  analysisManager->FillNtupleDColumn(6, 0, 	tankHit->GetEmu());// kinetic energy
-  analysisManager->FillNtupleDColumn(6, 1, 	tankHit->GetxIni()); 
-  analysisManager->FillNtupleDColumn(6, 2, 	tankHit->GetyIni());
-  analysisManager->FillNtupleDColumn(6, 3, 	tankHit->GetzIni());
-  analysisManager->FillNtupleDColumn(6, 4, 	tankHit->GetEdep());
-  analysisManager->FillNtupleDColumn(6, 5, 	tankHit->GetxFin());
-  analysisManager->FillNtupleDColumn(6, 6, 	tankHit->GetyFin());
-  analysisManager->FillNtupleDColumn(6, 7, 	tankHit->GetzFin());
-  analysisManager->FillNtupleDColumn(6, 8, 	tankHit->GetLmu());
-  analysisManager->FillNtupleIColumn(6, 9, 	fvectorParentCode.size());
-  analysisManager->FillNtupleIColumn(6, 10, 	fvectorA.size());
-  analysisManager->AddNtupleRow(6); 
+  // fill the ntuple single variables
+  analysisManager->FillNtupleDColumn( 0, 	tankHit->GetEmu());
+  analysisManager->FillNtupleDColumn( 1, 	tankHit->GetxIni()); 
+  analysisManager->FillNtupleDColumn( 2, 	tankHit->GetyIni());
+  analysisManager->FillNtupleDColumn( 3, 	tankHit->GetzIni());
+  analysisManager->FillNtupleDColumn( 4, 	tankHit->GetEdep());
+  analysisManager->FillNtupleDColumn( 5, 	tankHit->GetxFin());
+  analysisManager->FillNtupleDColumn( 6,	tankHit->GetyFin());
+  analysisManager->FillNtupleDColumn( 7, 	tankHit->GetzFin());
+  analysisManager->FillNtupleDColumn( 8, 	tankHit->GetLmu());
+  analysisManager->FillNtupleIColumn( 9, 	fvectorFirstGenCode.size());
+  analysisManager->FillNtupleIColumn(12, 	fvectorA.size());
+  analysisManager->FillNtupleIColumn(23, 	fvectorParentsCode.size());
+  analysisManager->FillNtupleIColumn(28, 	fvectorPathLengthCode.size());
+  analysisManager->FillNtupleIColumn(32, 	fvectorTransParticlesCode.size());
+  // adding the Row
+  analysisManager->AddNtupleRow(); 
 
 
   // cleaning the vectors
+  // vectors for first generation daugthers of the muon data
+  fvectorFirstGenCode.clear();
+  fvectorEfisrtGen.clear();
+  // vectors for the isotopes data
   fvectorA.clear();
   fvectorZ.clear();
   fvectorx.clear();
   fvectory.clear();
   fvectorz.clear();
-  fvectorDist.clear();
-  fvectorParentCode.clear();
-  fvectorParticleCode.clear();
+  fvectorIsoDist.clear();
+  fvectorIsoParentCode.clear();
+  fvectorIniTime.clear();
+  fvectorFinTime.clear();
+  fvectorStable.clear();
+  // vectors for the isotopes' parents data
+  fvectorParentsCode.clear();
   fvectorAdaug.clear();
   fvectorZdaug.clear();
   fvectorEparent.clear();
+  // vectors for the path length data
+  fvectorPathLengthCode.clear();
+  fvectorPathLengthE.clear();
+  fvectorStepLength.clear();
+  // vectors for the transverse distance data
+  fvectorTransParticlesCode.clear();
+  fvectorTransParticlesDist.clear();
    
 }  
 

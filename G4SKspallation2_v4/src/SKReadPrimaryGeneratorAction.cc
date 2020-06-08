@@ -83,6 +83,9 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   //This function is called at the begining of each event
   //
+
+  // Flag for cancelling the angles reader and only read energy spectrum
+  bool anglesflag = true;
   
   // getting the event ID to choose the right line
   int eventID = anEvent->GetEventID();
@@ -98,14 +101,25 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   // jumping the head lines
   getline(file, line, '\n');
+  // check if we deactivated the angles with a 0 in the start of the text file
+  if ( line.compare("") != 0 ){ //check if the line is not empty
+  	Split(line, '#', *words);
+	for( unsigned int k = 0; k < words->at(0).size(); k++){
+		if(words->at(0)[k] == '0'){
+			anglesflag = false;
+		}
+	}
+  }
+  // jumping the head lines
   getline(file, line, '\n');
   //for-loop to jump to the right line (other lines already used in previous events)
   for ( int i = 0; ( i < eventID) && ( !file.eof() ); i++){
 	getline(file, line, '\n');  // Grab the line
   }
 
-  // cleaning the string
+  // cleaning the strings
   line.clear();
+  words->clear();
   
   if( !file.eof() ){//check if we still have lines
 	getline(file, line, '\n');  // Grab the line
@@ -114,20 +128,24 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   // We are in the right line so we can collect the data
   // first we break the data into strings. Each string containing a piece of information                 
   if ( line.compare("") != 0 ){ //check if the line is not empty
-  Split(line, ' ', *words); 			// Splitting the line into words
-  // Convert the strings to numbers with the atof and saving the initial conditions variables
-  G4double KineticEnergy = atof(words->at(2).c_str()) - 0.1056583755; // Transform the total energy to Kinetic energy
-  G4double theta =  atof(words->at(0).c_str());
-  G4double phi =  atof(words->at(1).c_str());
+  	Split(line, ' ', *words); 			// Splitting the line into words
+  	// Convert the strings to numbers with the atof and saving the initial conditions variables
+  	G4double KineticEnergy = atof(words->at(2).c_str()) - 0.1056583755; // Transform the total energy to Kinetic energy
+    	// Filling the gun
+  	fParticleGun->SetParticleEnergy(KineticEnergy *GeV);
 
-  // Building the direction
-  G4double Px = cos( phi ) * sin( theta );
-  G4double Py = sin( phi ) * sin( theta );
-  G4double Pz = - cos( theta );
+  	if(anglesflag){ // check if we deactivated the angles
+  		G4double theta =  atof(words->at(0).c_str());
+  		G4double phi =  atof(words->at(1).c_str());
 
-  // Filling the gun
-  fParticleGun->SetParticleEnergy(KineticEnergy *GeV);
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector( Px, Py, Pz ));
+ 		 // Building the direction
+  		G4double Px = cos( phi ) * sin( theta );
+  		G4double Py = sin( phi ) * sin( theta );
+  		G4double Pz = - cos( theta );
+
+  		// Filling the gun
+  		fParticleGun->SetParticleMomentumDirection(G4ThreeVector( Px, Py, Pz ));
+  	}
   }
 
   // cleaning the string and closing file
@@ -139,14 +157,21 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4double TouterRadius = 19.5*m; 
   G4double Thz = 42.*m;
 
- // Here we make the gun shoot inside the SK tank with a uniform distribution
-  const G4double 	pi = 3.14159265358979323846264338328;
-  G4double 	theta =  2* pi * G4UniformRand();
-  G4double 	r =  TouterRadius * G4UniformRand();
-  //setting vertex position
-  G4double x0 = cos( theta ) * r;
-  G4double y0 = sin( theta ) * r;
+  //setting default vertex position
+  G4double x0 = 0;
+  G4double y0 = 0;
+  // on top of the tank
   G4double z0 = 0.5 * Thz;
+
+  if(anglesflag){ // check if we deactivated the angles - so no need for random position
+ 	// Here we make the gun shoot inside the SK tank with a uniform distribution
+  	const G4double 	pi = 3.14159265358979323846264338328;
+  	G4double 	theta =  2* pi * G4UniformRand();
+  	G4double 	r =  TouterRadius * G4UniformRand();
+  	//setting vertex position
+  	x0 = cos( theta ) * r;
+  	y0 = sin( theta ) * r;
+  }
 
   // Filling the gun
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
