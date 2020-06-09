@@ -55,6 +55,8 @@
 #include <iostream>
 #include <string>
 
+#include <chrono>  // for high_resolution_clock
+
 using namespace std;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -68,15 +70,29 @@ int main(int argc,char** argv)
     ui = new G4UIExecutive(argc, argv);
   }
 
-  // Optionally: choose a different Random engine...
-  // G4Random::setTheEngine(new CLHEP::MTwistEngine);
   
+  // Optionally: choose a different Random engine...
+  //G4Random::setTheEngine(new CLHEP::RanecuEngine);
+  //G4Random::setTheEngine(new CLHEP::MTwistEngine);
+
+  // Record start time
+  auto start = std::chrono::high_resolution_clock::now();
+  //std::time_t t_0 = std::chrono::system_clock::to_time_t(start);
+  //long seed = (long)t_0; // so we use it for the seed
+  // Setting your seed
+  //CLHEP::HepRandom::setTheSeed(seed);
+  //G4Random::setTheSeed(seed);
+
+
   // Construct the default run manager
   //
 #ifdef G4MULTITHREADED
   G4MTRunManager* runManager = new G4MTRunManager;
+  runManager->SetNumberOfThreads(2); // set your own number of threads
+  std::cout << "Multithreading mode : ON \n";
 #else
   G4RunManager* runManager = new G4RunManager;
+  std::cout << "Multithreading mode : OFF \n";
 #endif
 
   // Activate UI-command base scorer
@@ -90,8 +106,8 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(new SKDetectorConstruction());
 
   // Physics list
-  G4PhysListFactory  *physListFactory = new G4PhysListFactory(); 
-  G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP"); //default one
+  G4PhysListFactory  *physListFactory = new G4PhysListFactory();
+  G4VUserPhysicsList* physicsList = 0; // initialize
   // Detect if we are choosing a physics list (if there is a third argument)
   //
   if (  argc > 2 ) { 
@@ -120,6 +136,7 @@ int main(int argc,char** argv)
     		}
 	}
   }
+  else{physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP");} //default one
   physicsList->SetVerboseLevel(0);
   runManager->SetUserInitialization(physicsList);
     
@@ -140,6 +157,7 @@ int main(int argc,char** argv)
   // Get the pointer to the User Interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
+
   // Process macro or start UI session
   //
   if ( ! ui ) { 
@@ -147,6 +165,13 @@ int main(int argc,char** argv)
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
     UImanager->ApplyCommand(command+fileName);
+
+    // Record end time
+    auto finish = std::chrono::high_resolution_clock::now();
+
+    // Printing Elapsed time
+    std::chrono::duration<double> elapsed = finish - start;
+    std::cout << "Elapsed time: " << elapsed.count() << " s\n";
   }
   else { 
     // interactive mode
@@ -154,6 +179,7 @@ int main(int argc,char** argv)
     ui->SessionStart();
     delete ui;
   }
+
 
   // Job termination
   // Free the store: user actions, physics_list and detector_description are

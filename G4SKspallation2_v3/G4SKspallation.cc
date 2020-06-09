@@ -69,7 +69,16 @@ int main(int argc,char** argv)
   }
 
   // Optionally: choose a different Random engine...
-  // G4Random::setTheEngine(new CLHEP::MTwistEngine);
+  //G4Random::setTheEngine(new CLHEP::RanecuEngine);
+  //G4Random::setTheEngine(new CLHEP::MTwistEngine);
+
+  // Record start time
+  auto start = std::chrono::high_resolution_clock::now();
+  std::time_t t_0 = std::chrono::system_clock::to_time_t(start);
+  long seed = (long)t_0; // so we use it for the seed
+  // Setting your seed
+  CLHEP::HepRandom::setTheSeed(seed);
+  G4Random::setTheSeed(seed);
   
   // Construct the default run manager
   //

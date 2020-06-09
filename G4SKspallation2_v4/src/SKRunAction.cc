@@ -160,7 +160,7 @@ SKRunAction::~SKRunAction()
 void SKRunAction::BeginOfRunAction(const G4Run* /*run*/)
 { 
   //inform the runManager to save random number seed
-  //G4RunManager::GetRunManager()->SetRandomNumberStore(true);
+  G4RunManager::GetRunManager()->SetRandomNumberStore(false);
   
   // Get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
