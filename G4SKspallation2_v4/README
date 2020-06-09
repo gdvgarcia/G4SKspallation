@@ -68,7 +68,7 @@ with simple conditions for the geometry.
    use the QGSP_BERT_HP. If the third argument is "0", we keep the QGSP_BERT_HP. If it is "1", we 
    get the QGSP_BIC_HP. "2" brings the FTFP_BERT_HP and "3" the QGSP_INCLXX_HP. Any other number or
    value for the third argument will bring the default physics list. If the argument is "!", it just
-   keep the default one and you can add a fourth argument. Meaning that "!" is just a place holder. 
+   keep the default list and you can add a fourth argument. Meaning that "!" is just a place holder. 
    
  3- ACTION INITALIZATION
 
@@ -110,7 +110,7 @@ with simple conditions for the geometry.
    Sometimes one may only want to set up the energy spectrum for the primary muons and not the full angular 
    distribution. In this case, one can add a zero at the start of the ini_cond.txt - at the first line, for ex:
    "0 # MUON INITIAL CONDITION GENERATOR". This will make the particle gun read only the energies from this 
-   file and set the muon direction along the cylinder axis and its initial position also on the axis on top of
+   file and set the muon direction along the cylinder axis and its initial position also at the axis on top of
    the tank.  
 
    The SKReadPrimaryGeneratorAction class is the default class for the interactive mode.
@@ -125,7 +125,7 @@ with simple conditions for the geometry.
    G4ScoringManager * scManager = G4ScoringManager::GetScoringManager();  
    And then with scoring macros. You would have to build your own macro, but this is quite simple.
    The scoring macro available already have most of the examples needed for you to construct your
-   own personal macro. - This method is recommended for fast check as it is the most straight forward.
+   own personal macro. - This method is recommended for fast checks as it is the most straight forward.
 	***This method is desactivated(commented for now) in the main function - to activate only
 	   uncomment two lines in the G4SKspallation.cc
 
@@ -134,28 +134,28 @@ with simple conditions for the geometry.
    SKRunAction, SKEventAction, SKHits, SKSD, SKAnalysis.
    And also some changes in the action initialization and in the detector geometry classes.
    
-   The energy deposited in the SK tank is collected step by step in the SKSD and accumulated event 
-   by event in a SKHit class object. The tank being the sensitive detector defined (one can change 
-   the sensitive detector only to the fiducial volume by changing a few lines in the SKDetectorConstruction 
+   The energy deposited in the SK tank is collected step by step in the SKSD and accumulated for a event 
+   in a SKHit class object. The tank being the sensitive detector defined (one can change the sensitive
+   detector to be only the fiducial volume by changing a few lines in the SKDetectorConstruction 
    class). The muon initial kinetic energy is also kept in a SKHit class object as well as its total
    path length inside the detector. Some vectors for secondary particles information are also kept in the 
    SKHit class object.
 
-   At end of an event, the values acummulated in a SKHit class object are added to histograms in SKEventAction
-   and to the ntuple row for this event, which are created in the SKRunAction.
+   At end of an event, the values acummulated in a SKHit class object are added to histograms and to the ntuple
+   row corresponding this event in the SKEventAction. These histograms and the ntuple are created in the SKRunAction.
 
    Some data may also be added to histograms already whithin the SKSD::ProcessHits(G4Step* step,    	
    G4TouchableHistory* history) virtual function. This is done for the 2D histogram of atomic mass A
    and atomic number Z. 
 
    These histograms and the ntuple are all saved in a root file named "SK.root"(it can be changed to a csv or 
-   a xml file in the SKAnalysis).
+   a xml file in the SKAnalysis) in the SKRunAction at the end of a run.
 
    To change the information collected, you can change or add ntuple rows and histograms in the SKRunAction 
    class. Then you have to fill this data structures in the SKSD or SKEventAction classes. Usually you will 
    collect the information from the Step or Track object in the SKSD::ProcessHits virtual function. Then you 
    will either save it directly in the data structures or accumulate it per event in the SKHit class object 
-   and save it in the EventAction class at the end of the event. 
+   and save it in the EventAction class at the end of each event. 
 
    If you read a bit these four classes mentioned in the previous paragraph you will understand the logic 
    behind this data retrieving method and you will be able to collect the information you want. 
