@@ -100,7 +100,7 @@ int main(int argc,char** argv)
 
   // Physics list
   G4PhysListFactory  *physListFactory = new G4PhysListFactory(); 
-  G4VUserPhysicsList *physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP"); //default one
+  G4VUserPhysicsList *physicsList = 0;
   // Detect if we are choosing a physics list (if there is a third argument)
   //
   if (  argc > 2 ) { 
@@ -128,7 +128,7 @@ int main(int argc,char** argv)
 			}
     		}
 	}
-  }
+  }else{physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP");} //default one
   physicsList->SetVerboseLevel(0);
   runManager->SetUserInitialization(physicsList);
     

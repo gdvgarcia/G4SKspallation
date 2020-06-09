@@ -107,6 +107,12 @@ with simple conditions for the geometry.
    % ./G4SKspallation run2.mac ! yes
    The last argument "yes" could be anything.
 
+   Sometimes one may only want to set up the energy spectrum for the primary muons and not the full angular 
+   distribution. In this case, one can add a zero at the start of the ini_cond.txt - at the first line, for ex:
+   "0 # MUON INITIAL CONDITION GENERATOR". This will make the particle gun read only the energies from this 
+   file and set the muon direction along the cylinder axis and its initial position also on the axis on top of
+   the tank.  
+
    The SKReadPrimaryGeneratorAction class is the default class for the interactive mode.
 
    This default settings can be changed via the Geant4 built-in commands of the G4ParticleGun class.
@@ -132,22 +138,30 @@ with simple conditions for the geometry.
    by event in a SKHit class object. The tank being the sensitive detector defined (one can change 
    the sensitive detector only to the fiducial volume by changing a few lines in the SKDetectorConstruction 
    class). The muon initial kinetic energy is also kept in a SKHit class object as well as its total
-   path length inside the detector.
+   path length inside the detector. Some vectors for secondary particles information are also kept in the 
+   SKHit class object.
 
-   At end of an event, the values acummulated in a SKHit class object are added to histograms in SKEventAction.
+   At end of an event, the values acummulated in a SKHit class object are added to histograms in SKEventAction
+   and to the ntuple row for this event, which are created in the SKRunAction.
 
-   The rest of the data is only added to histograms and ntuples, which are created in the SKRunAction, already
-   whithin the SKSD::ProcessHits(G4Step* step, G4TouchableHistory* history) virtual function. These 
-   histograms and ntuples are all saved in a root file named "SK.root"(it can be changed to a csv or 
+   Some data may also be added to histograms already whithin the SKSD::ProcessHits(G4Step* step,    	
+   G4TouchableHistory* history) virtual function. This is done for the 2D histogram of atomic mass A
+   and atomic number Z. 
+
+   These histograms and the ntuple are all saved in a root file named "SK.root"(it can be changed to a csv or 
    a xml file in the SKAnalysis).
 
-   To change the information collected, you can change or add ntuples and histograms in the SKRunAction class. 
-   Then you have to fill this data structures in the SKSD or SKEventAction classes. Usually you will collect
-   the information from the Step or Track object in the SKSD::ProcessHits virtual function. Then you will either
-   save it directly in the data structures or accumulate it per event in the SKHit class object and save it in 
-   the EventAction class. If you read a bit this four classes mentioned you will understand the logic behid 
-   this data retrieving method. More information about the kind of information you can collect from the Track
-   or the Step objet can be found in the following source code websites :
+   To change the information collected, you can change or add ntuple rows and histograms in the SKRunAction 
+   class. Then you have to fill this data structures in the SKSD or SKEventAction classes. Usually you will 
+   collect the information from the Step or Track object in the SKSD::ProcessHits virtual function. Then you 
+   will either save it directly in the data structures or accumulate it per event in the SKHit class object 
+   and save it in the EventAction class at the end of the event. 
+
+   If you read a bit these four classes mentioned in the previous paragraph you will understand the logic 
+   behind this data retrieving method and you will be able to collect the information you want. 
+
+   More information about the kind of information you can collect from the Track or the Step objet can be
+   found in the following source code websites :
 
    Track object : https://geant4.kek.jp/lxr/source/track/include/G4Track.hh 
    Step object  : https://geant4.kek.jp/lxr/source/track/include/G4Step.hh 
@@ -226,10 +240,10 @@ with simple conditions for the geometry.
       (without visualization)
         % ./G4SKspallation run2.mac
 
-    - Change the physics list with a third argument : 1 for QGSP_BIC_HP , 2 for FTFP_BERT_HP 
-    and 3 for QGSP_INCLXX_HP.
+    - Change the physics list in the 'batch' mode with a third argument : 1 for QGSP_BIC_HP , 
+    2 for FTFP_BERT_HP and 3 for QGSP_INCLXX_HP.
 
-    - Give your initial conditions to the muon by adding a fourth argument. Any thing can be written
+    - Choose to read your initial conditions by adding a fourth argument. Any thing can be written
     for this argument.
 
     Example of a run in batch mode using a given initial conditions file, the FTFP_BERT_HP physics list
@@ -238,5 +252,19 @@ with simple conditions for the geometry.
     % ./G4SKspallation run2.mac 2 yes
 
     *** "yes" could be any other word or number
+
+    Run macros :
+
+    run1.mac - This is made for the interactive mode because it is a very small run, 4 events. These 4 muons
+    have energies and angles given by the ini_cond.txt and their trajectories will be drawn if you are using
+    a visualization and interactive mode.
+
+    run2.mac - This is made for the batch mode because it is a bit bigger, 10 events. These 10 muons will have
+    the conditions you want by choosing the arguments you give when calling the batch mode. This macro is 
+    generally used for testing the simulation in a fast way after building it.
+
+    run3.mac - This is made for the batch mode with no excuses, because this one is very big, 10000 events.
+    These 1k muons will have the conditions you want by choosing the arguments you give when calling the 
+    batch mode. This is generally used for having the first figures tests.
 
 End.

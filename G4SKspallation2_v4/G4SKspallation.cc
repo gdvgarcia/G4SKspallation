@@ -77,11 +77,11 @@ int main(int argc,char** argv)
 
   // Record start time
   auto start = std::chrono::high_resolution_clock::now();
-  //std::time_t t_0 = std::chrono::system_clock::to_time_t(start);
-  //long seed = (long)t_0; // so we use it for the seed
+  std::time_t t_0 = std::chrono::system_clock::to_time_t(start);
+  long seed = (long)t_0; // so we use it for the seed
   // Setting your seed
-  //CLHEP::HepRandom::setTheSeed(seed);
-  //G4Random::setTheSeed(seed);
+  CLHEP::HepRandom::setTheSeed(seed);
+  G4Random::setTheSeed(seed);
 
 
   // Construct the default run manager
@@ -133,10 +133,9 @@ int main(int argc,char** argv)
           			physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP"); //default
           			break;
 			}
-    		}
-	}
-  }
-  else{physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP");} //default one
+    		}else{physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP");} //default one
+	}else{physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP");} //default one
+  }else{physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP");} //default one
   physicsList->SetVerboseLevel(0);
   runManager->SetUserInitialization(physicsList);
     
