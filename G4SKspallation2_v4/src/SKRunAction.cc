@@ -71,7 +71,7 @@ SKRunAction::SKRunAction(SKEventAction* eventAction)
 ); // ID 0
     analysisManager->CreateH1("KinEmu","Initial muon kinetic energy", 100, 0.1 , 1000.1 * GeV,"none", "none", "log"
 ); // ID 1
-    analysisManager->CreateH1("PathLmu","Initial muon path lenght", 42, 0. , 42. * m//,"none", "none", "log"
+    analysisManager->CreateH1("PathLmu","Initial muon path lenght", 50, 0. , 50. * m//,"none", "none", "log"
 ); // ID 2
   // 2D histogram for A and Z quantities
   analysisManager->CreateH2("Isotopes", "Ions produced; Z values; A values", 150, 0.5, 150.5, 300, 0.5, 300.5); // ID 0
