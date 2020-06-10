@@ -51,7 +51,13 @@ SKRunAction::SKRunAction(SKEventAction* eventAction)
   auto analysisManager = G4AnalysisManager::Instance();
   G4cout << "Using " << analysisManager->GetType() << G4endl;
   analysisManager->SetVerboseLevel(1);
-  //analysisManager->SetNtupleMerging(true);
+  // we merge ntuples only for multithreading mode
+#ifdef G4MULTITHREADED
+  analysisManager->SetNtupleMerging(true);
+  std::cout << "Merging : ON \n";
+#else
+  std::cout << "Merging : OFF \n";
+#endif
     // Note: merging ntuples is available only with Root output
 
   //

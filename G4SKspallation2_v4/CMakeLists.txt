@@ -46,6 +46,7 @@ set(G4SKspallation_SCRIPTS
   init_vis.mac
   run1.mac
   run2.mac
+  run3.mac
   vis.mac
   scoring.mac
   ini_cond.txt
