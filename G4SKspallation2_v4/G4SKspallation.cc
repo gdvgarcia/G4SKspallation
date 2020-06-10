@@ -140,7 +140,7 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(physicsList);
     
   // User action initialization
-  // Detect if we want to read a initial condition file (if there is a forth argument)
+  // Detect if we want to read a initial condition file (if there is a forth argument or if we are in the interactive mode)
   //
   if (  argc > 3 || argc == 1 ) { 
   runManager->SetUserInitialization(new SKReadActionInitialization());

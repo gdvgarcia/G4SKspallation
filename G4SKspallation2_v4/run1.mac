@@ -23,9 +23,8 @@
 /process/verbose 0
 #
 # Genereating 4 muon
-#
 /run/beamOn 4
-# Dump scorers to a file
 #
+# Dump scorers to a file
 #/score/dumpQuantityToFile boxMesh_1 eDep eDep_run1.txt
 
