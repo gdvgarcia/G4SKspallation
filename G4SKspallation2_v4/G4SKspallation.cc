@@ -77,9 +77,7 @@ int main(int argc,char** argv)
   //G4Random::setTheEngine(new CLHEP::DRand48Engine);
   //G4Random::setTheEngine(new CLHEP::RandEngine);
   G4Random::setTheEngine( new CLHEP::HepJamesRandom ); 
-	
 		
-
   // Record start time
   auto start = std::chrono::high_resolution_clock::now();
   std::time_t t_0 = std::chrono::system_clock::to_time_t(start);
@@ -87,7 +85,7 @@ int main(int argc,char** argv)
   // Setting your seed
   G4Random::setTheSeed(seed);
 
-
+	
   // Construct the default run manager
   //
 #ifdef G4MULTITHREADED
@@ -101,11 +99,12 @@ int main(int argc,char** argv)
   std::cout << "Multithreading mode : OFF \n";
 #endif
 
+	
   // Activate UI-command base scorer
   //G4ScoringManager * scManager = G4ScoringManager::GetScoringManager();
   //scManager->SetVerboseLevel(0);
 
-
+	
   // Set mandatory initialization classes
   //
   // Detector construction
@@ -152,13 +151,15 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(new SKReadActionInitialization());
   }
   else{runManager->SetUserInitialization(new SKFixedActionInitialization());}
-  
+
+	
   // Initialize visualization
   //
   G4VisManager* visManager = new G4VisExecutive("Quiet");
   // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
   visManager->Initialize();
 
+	
   // Get the pointer to the User Interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
