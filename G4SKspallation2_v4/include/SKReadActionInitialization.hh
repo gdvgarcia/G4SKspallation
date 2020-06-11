@@ -26,6 +26,7 @@
 //
 /// \file SKReadActionInitialization.hh
 /// \brief Definition of the SKReadActionInitialization class
+/// This action initializes the primary generator which can read initial conditions from a text file
 
 #ifndef SKReadActionInitialization_h
 #define SKReadActionInitialization_h 1
