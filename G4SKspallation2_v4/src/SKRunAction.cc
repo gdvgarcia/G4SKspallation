@@ -46,7 +46,7 @@ SKRunAction::SKRunAction(SKEventAction* eventAction)
   G4RunManager::GetRunManager()->SetPrintProgress(1);     
 
   // Create analysis manager
-  // The choice of analysis technology is done via selectin of a namespace
+  // The choice of analysis technology is done via selection of a namespace
   // in SKAnalysis.hh
   auto analysisManager = G4AnalysisManager::Instance();
   G4cout << "Using " << analysisManager->GetType() << G4endl;
@@ -181,7 +181,7 @@ void SKRunAction::BeginOfRunAction(const G4Run* /*run*/)
 
 void SKRunAction::EndOfRunAction(const G4Run* /*run*/)
 {
-  // print some histogram statistics
+  // print some histogram statistics - make sure you keep two 1D histograms
   //
   auto analysisManager = G4AnalysisManager::Instance();
   if ( analysisManager->GetH1(1) ) {
