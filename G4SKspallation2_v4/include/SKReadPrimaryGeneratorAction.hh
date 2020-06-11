@@ -44,8 +44,7 @@ class G4Event;
 
 /// The primary generator action class with particle gun.
 ///
-/// It reads the initial energy from a ASCII file and the other default conditions are 
-/// a muon with downward velocity along the cylinder axis.
+/// It reads the initial energy and momentum direction from a ASCII file
 
 class SKReadPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
