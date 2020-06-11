@@ -32,3 +32,5 @@ track of all tags.
 - Now all the ntuples became only one ntuple containing a row per event.
 09/06/20 G. D. V. Garcia (G4SKspallation1)
 - Randon seed generated based on the initial time of the simulation. So we can avoid repeated results.
+11/06/20 G. D. V. Garcia (G4SKspallation1)
+- Multi-threading mode now is fully available.
