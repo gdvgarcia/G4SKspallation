@@ -25,7 +25,7 @@
 //
 //
 /// \file SKHit.cc
-/// \brief Implementation of the SKHit class
+/// \Implementation of the SKHit class
 
 #include "SKHit.hh"
 #include "G4UnitsTable.hh"
