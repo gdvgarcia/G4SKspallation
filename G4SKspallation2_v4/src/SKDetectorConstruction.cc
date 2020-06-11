@@ -26,7 +26,7 @@
 //
 /// \file SKDetectorConstruction.cc
 /// \Implementation of the SKDetectorConstruction class
-/// To analyse data only from the fiducial voluçe you have to uncomment lines
+/// To analyse data only from the fiducial volume you have to uncomment lines
 /// that create the fiducial volume and change the Sensitive Detector logical volume.
 
 #include "SKDetectorConstruction.hh"
