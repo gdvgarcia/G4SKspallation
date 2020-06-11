@@ -23,6 +23,8 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// THIS IS THE ACTION INITIALIZATION TO THE GENERATION OF A MUON WITH A GIVEN ENERGY(AVERAGE MUON ENERGY FOR SK) AND 
+// A GIVEN POSITION( ON THE TANK AXIS AND ON THE UPPER PART OF THE TANK )
 //
 /// \file SKFixedActionInitialization.cc
 /// \brief Implementation of the SKFixedActionInitialization class
