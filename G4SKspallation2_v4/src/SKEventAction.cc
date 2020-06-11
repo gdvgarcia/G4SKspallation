@@ -25,7 +25,7 @@
 //
 // 
 /// \file SKEventAction.cc
-/// \brief Implementation of the SKEventAction class
+/// \Implementation of the SKEventAction class
 
 #include "SKEventAction.hh"
 #include "SKSD.hh"
