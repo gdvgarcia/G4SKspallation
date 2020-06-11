@@ -25,7 +25,7 @@
 //
 // 
 /// \file SKEventAction.hh
-/// \brief Definition of the SKEventAction class
+/// \Definition of the SKEventAction class
 
 #ifndef SKEventAction_h
 #define SKEventAction_h 1
@@ -40,7 +40,8 @@
 ///
 /// In EndOfEventAction(), it prints the accumulated quantities of the energy 
 /// deposit of all particles in the SK tank
-/// stored in the hits collections.
+/// stored in the hits collections. It also add new rolls to the ntuple and some
+/// data to the histograms.
 
 class SKEventAction : public G4UserEventAction
 {
