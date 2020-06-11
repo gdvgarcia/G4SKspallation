@@ -38,14 +38,12 @@ class G4Run;
 
 /// Run action class
 ///
-/// It accumulates statistic and computes dispersion of the energy distribution 
-/// of some sencondary particles with use of analysis tools:
-/// H1D histograms and a  ntuple are created in BeginOfRunAction()
-/// The histograms and ntuple are saved in the output file in a format
+/// It accumulates statistic for the full run with use of analysis tools.
+/// H1D and H2D histograms and a ntuple are created in BeginOfRunAction()
+/// The histograms and ntuple are then saved in the output file in a format
 /// according to a selected technology in SKAnalysis.hh.
 ///
-/// In EndOfRunAction(), the accumulated statistic and computed 
-/// dispersion is printed.
+/// In EndOfRunAction(), the accumulated statistic is printed and saved in the SK file created.
 ///
 
 class SKRunAction : public G4UserRunAction
