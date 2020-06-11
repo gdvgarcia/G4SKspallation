@@ -26,6 +26,7 @@
 //
 /// \file SKFixedActionInitialization.hh
 /// \brief Definition of the SKFixedActionInitialization class
+/// This action initializes the fixed kinematic primary generator
 
 #ifndef SKFixedActionInitialization_h
 #define SKFixedActionInitialization_h 1
