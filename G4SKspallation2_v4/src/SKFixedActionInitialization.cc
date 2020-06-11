@@ -46,7 +46,7 @@ SKFixedActionInitialization::~SKFixedActionInitialization()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void SKFixedActionInitialization::BuildForMaster() const
-{
+{ // setting user's actions for the master in multi-threading mode
    SKEventAction* eventAction = new SKEventAction;
    SetUserAction(new SKRunAction(eventAction));
 }
@@ -54,7 +54,7 @@ void SKFixedActionInitialization::BuildForMaster() const
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void SKFixedActionInitialization::Build() const
-{
+{// setting user's actions for the workers in multi-threading mode or for the full run in sequential mode
   SetUserAction(new SKFixedPrimaryGeneratorAction);
 
   SKEventAction* eventAction = new SKEventAction;
