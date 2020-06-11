@@ -25,7 +25,7 @@
 //
 //
 /// \file SKRunAction.cc
-/// \brief Implementation of the SKRunAction class
+/// \Implementation of the SKRunAction class
 
 #include "SKRunAction.hh"
 #include "SKAnalysis.hh"
