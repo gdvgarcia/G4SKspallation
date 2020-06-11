@@ -88,7 +88,9 @@ int main(int argc,char** argv)
   //
 #ifdef G4MULTITHREADED
   G4MTRunManager* runManager = new G4MTRunManager;
-  runManager->SetNumberOfThreads(2); // set your own number of threads
+  // set your own number of threads, but G4Threading::GetNumberOfCores() returns the number of threads available on the machine. 
+  // This number includes the number of hyper threads
+  runManager->SetNumberOfThreads(G4Threading::GetNumberOfCores());  
   std::cout << "Multithreading mode : ON \n";
 #else
   G4RunManager* runManager = new G4RunManager;
