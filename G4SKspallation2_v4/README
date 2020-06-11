@@ -253,18 +253,33 @@ with simple conditions for the geometry.
 
     *** "yes" could be any other word or number
 
-    Run macros :
+ D - RUN MACROS
 
-    run1.mac - This is made for the interactive mode because it is a very small run, 4 events. These 4 muons
+    - run1.mac : This is made for the interactive mode because it is a very small run, 4 events. These 4 muons
     have energies and angles given by the ini_cond.txt and their trajectories will be drawn if you are using
     a visualization and interactive mode.
 
-    run2.mac - This is made for the batch mode because it is a bit bigger, 10 events. These 10 muons will have
+    - run2.mac : This is made for the batch mode because it is a bit bigger, 10 events. These 10 muons will have
     the conditions you want by choosing the arguments you give when calling the batch mode. This macro is 
     generally used for testing the simulation in a fast way after building it.
 
-    run3.mac - This is made for the batch mode with no excuses, because this one is very big, 10000 events.
+    - run3.mac : This is made for the batch mode with no excuses, because this one is very big, 10000 events.
     These 1k muons will have the conditions you want by choosing the arguments you give when calling the 
     batch mode. This is generally used for having the first figures tests.
-
+    
+ E - MuLTI-THREADING
+ 
+     - Please note that the pre-processor flag G4MULTITHREADED is set when the Geant4 library is built with the 
+     CMAKE option GEANT4_BUILD_MULTITHREADED=ON. So to activate the multi-threading mode you have to build your 
+     Geant4 with this cmake option ON : 
+     
+     $ -DGEANT4_BUILD_MULTITHREADED=ON .
+     
+     - With the multi-threading option ON, you can still build the simulation in sequential mode with small changes
+     in the G4SKspallation.cc code. For this, you may use the G4RunManager as run manager and not the G4MTRunManager.
+     
+     - If you do not activate the cmake option when building the Geant4, the simulation will run normally in sequential
+     mode with no need of further changes.
+     
+     
 End.
