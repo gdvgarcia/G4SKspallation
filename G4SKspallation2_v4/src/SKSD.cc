@@ -25,7 +25,7 @@
 //
 //
 /// \file SKSD.cc
-/// \brief Implementation of the SKSD class
+/// \Implementation of the SKSD class
 
 #include "SKSD.hh"
 #include "SKAnalysis.hh"
