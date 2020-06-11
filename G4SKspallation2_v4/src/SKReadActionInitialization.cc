@@ -23,6 +23,8 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// THIS IS THE ACTION INITIALIZATION TO THE GENERATION OF A MUON WITH ENERGY GIVEN BY AN ASCII FILE AND 
+// A GIVEN POSITION( ON THE TANK AXIS AND ON THE UPPER PART OF THE TANK )
 //
 /// \file SKReadActionInitialization.cc
 /// \brief Implementation of the SKReadActionInitialization class
@@ -46,7 +48,7 @@ SKReadActionInitialization::~SKReadActionInitialization()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void SKReadActionInitialization::BuildForMaster() const
-{
+{// setting user's actions for the master in multi-threading mode
    SKEventAction* eventAction = new SKEventAction;
    SetUserAction(new SKRunAction(eventAction));
 }
@@ -54,7 +56,7 @@ void SKReadActionInitialization::BuildForMaster() const
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void SKReadActionInitialization::Build() const
-{
+{// setting user's actions for the workers in multi-threading mode or for the full run in sequential mode
   SetUserAction(new SKReadPrimaryGeneratorAction);
 
   SKEventAction* eventAction = new SKEventAction;
