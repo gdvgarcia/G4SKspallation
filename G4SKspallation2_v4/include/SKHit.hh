@@ -25,7 +25,7 @@
 //
 //
 /// \file SKHit.hh
-/// \brief Definition of the SKHit class
+/// \Definition of the SKHit class
 
 #ifndef SKHit_h
 #define SKHit_h 1
@@ -41,9 +41,11 @@
 
 /// SK hit class
 ///
-/// It defines data members to store the the tootal energy deposit
-/// of all particles in a selected volume and the initial muon kinetic energy:
-/// - fEdep, fEmu
+/// It defines data members to store the the total energy deposit
+/// in the selected volume, the initial muon kinetic 
+/// energy and the muon total path length in the volume :
+/// - fEdep, fEmu, fLmu
+/// It also defines vectors to save the data for the other particles
 
 class SKHit : public G4VHit
 {
@@ -89,37 +91,37 @@ class SKHit : public G4VHit
     G4double GetEdep() 	const 	{ return fEdep; }
     G4double GetEmu() 	const 	{ return fEmu; 	}
     G4double GetLmu() 	const 	{ return fLmu; 	}
-    G4double GetxIni() 	const	{ return fxIni; }
-    G4double GetyIni() 	const	{ return fyIni; }
-    G4double GetzIni() 	const	{ return fzIni; }
-    G4double GetxFin() 	const	{ return fxFin; }
-    G4double GetyFin() 	const	{ return fyFin; }
-    G4double GetzFin() 	const	{ return fzFin; }
-    // for the first generation daugther of the muon
-    std::vector< G4int > 	GetFirstGenCode()	const 	{ return fFirstGenCode; 	}
-    std::vector< G4double > 	GetEfisrtGen()		const 	{ return fEfisrtGen; 		}
+    G4double GetxIni() 	const	  { return fxIni; }
+    G4double GetyIni() 	const	  { return fyIni; }
+    G4double GetzIni() 	const	  { return fzIni; }
+    G4double GetxFin() 	const	  { return fxFin; }
+    G4double GetyFin() 	const	  { return fyFin; }
+    G4double GetzFin() 	const	  { return fzFin; }
+    // for the first generation daugthers of the muon
+    std::vector< G4int > 	    GetFirstGenCode()	  const 	{ return fFirstGenCode; 	}
+    std::vector< G4double > 	GetEfisrtGen()		  const 	{ return fEfisrtGen; 		}
     // for the isotopes	
-    std::vector< G4int > 	GetA() 			const 	{ return fA; 			} 
-    std::vector< G4int >	GetZ() 			const 	{ return fZ; 			}
-    std::vector< G4double > 	GetxIso() 		const 	{ return fxIso; 		} 
-    std::vector< G4double > 	GetyIso() 		const 	{ return fyIso; 		}
-    std::vector< G4double > 	GetzIso() 		const 	{ return fzIso; 		} 
-    std::vector< G4double > 	GetIsoDist() 		const 	{ return fIsoDist; 		}
-    std::vector< G4int > 	GetIsoParentCode()	const 	{ return fIsoParentCode; 	}
-    std::vector< G4double > 	GetIniTime() 		const 	{ return fIniTime; 		} 
-    std::vector< G4double > 	GetFinTime() 		const 	{ return fFinTime; 		}
-    std::vector< G4int > 	GetStable()		const 	{ return fStable; 		}
+    std::vector< G4int > 	    GetA() 			        const 	{ return fA; 			} 
+    std::vector< G4int >	    GetZ() 			        const 	{ return fZ; 			}
+    std::vector< G4double > 	GetxIso() 		      const 	{ return fxIso; 		} 
+    std::vector< G4double > 	GetyIso() 		      const 	{ return fyIso; 		}
+    std::vector< G4double > 	GetzIso() 		      const 	{ return fzIso; 		} 
+    std::vector< G4double > 	GetIsoDist() 		    const 	{ return fIsoDist; 		}
+    std::vector< G4int > 	    GetIsoParentCode()	const 	{ return fIsoParentCode; 	}
+    std::vector< G4double > 	GetIniTime() 		    const 	{ return fIniTime; 		} 
+    std::vector< G4double > 	GetFinTime() 		    const 	{ return fFinTime; 		}
+    std::vector< G4int > 	    GetStable()		      const 	{ return fStable; 		}
     // for isotopes' parents
-    std::vector< G4int >	GetParentsCode()	const 	{ return fParentsCode; 		}
-    std::vector< G4int > 	GetAdaug() 		const 	{ return fAdaug; 		}
-    std::vector< G4int > 	GetZdaug() 		const 	{ return fZdaug; 		}
-    std::vector< G4double > 	GetEparent() 		const 	{ return fEparent; 		}
+    std::vector< G4int >	    GetParentsCode()	  const 	{ return fParentsCode; 		}
+    std::vector< G4int > 	    GetAdaug() 		      const 	{ return fAdaug; 		}
+    std::vector< G4int > 	    GetZdaug() 		      const 	{ return fZdaug; 		}
+    std::vector< G4double > 	GetEparent() 		    const 	{ return fEparent; 		}
     // for the path length data
-    std::vector< G4int >	GetPathLengthCode()	const 	{ return fPathLengthCode; 	} 
-    std::vector< G4double > 	GetPathLengthE() 	const 	{ return fPathLengthE; 		} 
-    std::vector< G4double > 	GetStepLength() 	const 	{ return fStepLength; 		}
+    std::vector< G4int >	    GetPathLengthCode()	const 	{ return fPathLengthCode; 	} 
+    std::vector< G4double > 	GetPathLengthE() 	  const 	{ return fPathLengthE; 		} 
+    std::vector< G4double > 	GetStepLength() 	  const 	{ return fStepLength; 		}
     // for the transverse distance data
-    std::vector< G4int >	GetTransParticlesCode()	const 	{ return fTransCode; 	}
+    std::vector< G4int >	    GetTransParticlesCode()	const 	{ return fTransCode; 	}
     std::vector< G4double >  	GetTransParticlesDist()	const 	{ return fTransDist; 	} 	
 
   private:
