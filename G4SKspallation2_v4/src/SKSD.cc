@@ -101,9 +101,9 @@ void SKSD::Initialize(G4HCofThisEvent* hce)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4bool SKSD::ProcessHits(G4Step* step, 
-                                     G4TouchableHistory*)
+                                     G4TouchableHistory*) // this is called every time a step is made inside the sensitive detector
 {
-  // Get hit for accounting the data
+  // Get the hit for accounting the data
   auto hit = (*fHitsCollection)[0];
 
 
@@ -119,7 +119,7 @@ G4bool SKSD::ProcessHits(G4Step* step,
   //----------------------------------------------
   //        Track
   //----------------------------------------------
-  // getting track to collect the data and some of its informtion about the current particle
+  // getting track object to collect some data and some of its informtion about its particle
   G4Track* Track = step->GetTrack();
   G4ParticleDefinition* thePartDef = Track->GetDefinition();
   G4String partType= thePartDef->GetParticleType();
@@ -137,7 +137,7 @@ G4bool SKSD::ProcessHits(G4Step* step,
   G4int size2 = Secondaries2->size();
 
   if ( size2 > 0){ // check if we have secondaries
-	// we loop over secondaries and save the information in a ntuple
+	// we loop over secondaries and save information in the hit object
 	for( int i = 0; i < size2; ++i){
 		loopForSecondariesEnergies( Secondaries2 , i , // TrackID,  
 			Track->GetKineticEnergy() , hit, thePartDef->GetPDGEncoding() );
@@ -148,11 +148,12 @@ G4bool SKSD::ProcessHits(G4Step* step,
   
   if ( ( Track->GetCurrentStepNumber() == 1) || ( step->IsFirstStepInVolume() ) ){ //- CHECK for newly produced particle. e.g. first step. or if it is an entering
 
+	  
   //----------------------------------------------
   //  Collect information for primarly daughters of the muon
   //----------------------------------------------
-  if(Track->GetParentID() == 1){ // check if it is our initial muon
-	// fill the first generation daughters hit
+  if(Track->GetParentID() == 1){ // check if its parents is our initial muon 
+	// fill the first generation daughters information in the hit
 	hit->FillFirstGen(Track->GetVertexKineticEnergy() , thePartDef->GetPDGEncoding());
   }
 
@@ -172,11 +173,10 @@ G4bool SKSD::ProcessHits(G4Step* step,
   if ( ( step->IsLastStepInVolume() ) || ( Track->GetTrackStatus() == fStopAndKill ) ){ // CHECK if is the end of the track
 
 
-
   //----------------------------------------------
   //  Collect names/codes for isotopes' parents
   //----------------------------------------------
-  // first take all the secondaries in a vector and its size
+  // first take all the secondaries in a vector and its size - as it is the end of the track, we have all the secondary produced by the current particles
   G4TrackVector* Secondaries = step->GetfSecondary();
   G4int size = Secondaries->size();
 
@@ -221,7 +221,7 @@ G4bool SKSD::ProcessHits(G4Step* step,
   	auto analysisManager = G4AnalysisManager::Instance(); // get analysis manager
   	analysisManager->FillH2(0, Z, A);
 
-	// filling the hit with the isotope data
+	// filling the hit with the isotope information
 	hit->FillIso( A, Z, xiso, yiso , ziso , transverseDistance( xiso, yiso, ziso ), fParentsCodes[TrackID],
  	fInitialTimes[TrackID], Track->GetGlobalTime(), thePartDef->GetPDGStable()); 
       
@@ -256,18 +256,17 @@ G4bool SKSD::ProcessHits(G4Step* step,
   	//----------------------------------------------
   	// getting the step length and adding it to the hit
   	hit->AddL(step->GetStepLength());
-
-	
-	//----------------------------------------------
-  	//        Muon info
-  	//----------------------------------------------
-	G4double x = Track->GetPosition().getX();
-	G4double y = Track->GetPosition().getY();
-	G4double z = Track->GetPosition().getZ();
 	
 
   	if ( ( step->IsLastStepInVolume() ) || 
 	( Track->GetTrackStatus() == fStopAndKill ) ){ // CHECK if it is leaving the tank or finishing the track
+		//----------------------------------------------
+  		//        Muon info
+  		//----------------------------------------------
+		G4double x = Track->GetPosition().getX();
+		G4double y = Track->GetPosition().getY();
+		G4double z = Track->GetPosition().getZ();
+		
 		// Setting muon position vector for transverse distance calculation
 		fMuonPositions.push_back (x);
 		fMuonPositions.push_back (y);
@@ -280,6 +279,13 @@ G4bool SKSD::ProcessHits(G4Step* step,
   	}
 
   	if( ( Track->GetCurrentStepNumber() == 1 ) || ( step->IsFirstStepInVolume() ) ){ // CHECK if it is entering the tank or is the first step
+		//----------------------------------------------
+  		//        Muon info
+  		//----------------------------------------------
+		G4double x = Track->GetPosition().getX();
+		G4double y = Track->GetPosition().getY();
+		G4double z = Track->GetPosition().getZ();
+		
 		// Setting muon position vector for transverse distance calculation
 		fMuonPositions.push_back (x);
 		fMuonPositions.push_back (y);
@@ -315,7 +321,7 @@ G4bool SKSD::ProcessHits(G4Step* step,
 
 void SKSD::EndOfEvent(G4HCofThisEvent*)
 {
-  if ( verboseLevel>1 ) { 
+  if ( verboseLevel>1 ) { // text about the event hit information only if asked - high verbosity
      auto nofHits = fHitsCollection->entries();
      G4cout
        << G4endl 
@@ -329,21 +335,16 @@ void SKSD::EndOfEvent(G4HCofThisEvent*)
 // Extra functions
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void SKSD::loopForSecondariesEnergies(
-             const std::vector<const G4Track*>* Secondaries , G4int n , //G4int TrackID,  
-G4double Energy , SKHit* hit, G4int Code  ) // it fills the fParentsEnergy map - ACTUALLY THE PARENTS NTUPLE 
+void SKSD::loopForSecondariesEnergies(const std::vector<const G4Track*>* Secondaries , 
+	G4int n , G4double Energy , SKHit* hit, G4int Code  ) // it fills the fParentsEnergy map - ACTUALLY THE PARENTS NTUPLE 
 {
   // getting the information about the secondary
   const G4Track* secondary = Secondaries->at(n);
   G4ParticleDefinition* secPartDef = secondary->GetDefinition();
   G4String secpartType = secPartDef->GetParticleType();
-  //G4int secID = secondary->GetTrackID(); - DELETE IF CAN NOT SOLVE IT
 
   // if we find a ion we save the parent information
   if ( secpartType == "nucleus"){
-	// Filling the map
-	//fParentsEnergy[TrackID][secID] = Energy; - DELETE IF CAN NOT SOLVE IT
-
 	//----------------------------------------------
 	//   daughter isotope info
 	//----------------------------------------------
@@ -358,17 +359,16 @@ G4double Energy , SKHit* hit, G4int Code  ) // it fills the fParentsEnergy map -
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
   bool SKSD::loopForSecondaries( G4TrackVector* Secondaries , G4int n , G4int TrackID, 
-G4String name , G4int Code ) // it fills the fParents map with the names
+G4String name , G4int Code ) // it fills the fParentsCodes map 
 {
   // getting the information about the secondary
   G4Track* secondary = Secondaries->at(n);
   G4ParticleDefinition* secPartDef = secondary->GetDefinition();
   G4String secpartType = secPartDef->GetParticleType();
 
-  // if we find a ion we save the parent information
+  // if we find an ion we save the parent information
   if ( secpartType == "nucleus"){
-	// Filling the maps
-	fParents[TrackID] = name;
+	// Filling the map
 	fParentsCodes[TrackID] = Code;
 	
 	return true; // so we can exit the for loop
@@ -394,11 +394,11 @@ G4double SKSD::transverseDistance( G4double x, G4double y, G4double z )// transv
   yc = zp * xm - xp * zm; 
   zc = xp * ym - yp * xm;
 
-  // taking the norms and returning the result
+  // taking the norms 
   G4double normMu = sqrt( xm*xm + ym*ym + zm*zm );
   G4double normc = sqrt( xc*xc + yc*yc + zc*zc );
 
-  return normc/normMu;
+  return normc/normMu;//returnin the trasverse distance
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
