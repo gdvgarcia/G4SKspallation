@@ -72,9 +72,13 @@ int main(int argc,char** argv)
 
   
   // Optionally: choose a different Random engine...
-  G4Random::setTheEngine(new CLHEP::RanecuEngine);
+  //G4Random::setTheEngine(new CLHEP::RanecuEngine);
   //G4Random::setTheEngine(new CLHEP::MTwistEngine);
-  //G4Random::setTheEngine( new CLHEP::HepJamesRandom ); 
+  //G4Random::setTheEngine(new CLHEP::DRand48Engine);
+  //G4Random::setTheEngine(new CLHEP::RandEngine);
+  G4Random::setTheEngine( new CLHEP::HepJamesRandom ); 
+	
+		
 
   // Record start time
   auto start = std::chrono::high_resolution_clock::now();
