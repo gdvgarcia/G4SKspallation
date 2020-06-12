@@ -31,14 +31,21 @@
 
 #include "SKReadActionInitialization.hh"
 #include "SKReadPrimaryGeneratorAction.hh"
-#include "SKRunAction.hh"
+#include "SKReadRunAction.hh"
 #include "SKEventAction.hh"
+#include "SKFileReader.hh"
+
+#include "G4AutoLock.hh"
+namespace { G4Mutex SKReadActionInitializationMutex = G4MUTEX_INITIALIZER; }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SKReadActionInitialization::SKReadActionInitialization()
  : G4VUserActionInitialization()
-{}
+{
+ G4AutoLock lock(&SKReadActionInitializationMutex);
+ if( !fileReader ) fileReader = new SKFileReader( "ini_cond.txt" ); // make sure you have the right file and with enough entries for your simulation
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -48,22 +55,24 @@ SKReadActionInitialization::~SKReadActionInitialization()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void SKReadActionInitialization::BuildForMaster() const
-{// setting user's actions for the master in multi-threading mode
+{  
+   // setting user's actions for the master in multi-threading mode
    SKEventAction* eventAction = new SKEventAction;
-   SetUserAction(new SKRunAction(eventAction));
+   SetUserAction(new SKReadRunAction(eventAction, fileReader));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void SKReadActionInitialization::Build() const
-{// setting user's actions for the workers in multi-threading mode or for the full run in sequential mode
-  SetUserAction(new SKReadPrimaryGeneratorAction);
+{
+  // setting user's actions for the workers in multi-threading mode or for the full run in sequential mode
+  SetUserAction(new SKReadPrimaryGeneratorAction(fileReader));
 
   SKEventAction* eventAction = new SKEventAction;
   SetUserAction(eventAction);
 
   
-  SetUserAction(new SKRunAction(eventAction));
+  SetUserAction(new SKReadRunAction(eventAction, fileReader));
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

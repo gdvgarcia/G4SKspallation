@@ -32,8 +32,11 @@
 #define SKReadActionInitialization_h 1
 
 #include "G4VUserActionInitialization.hh"
+#include "SKFileReader.hh"
 
 /// Action initialization class.
+
+class SKFileReader;
 
 class SKReadActionInitialization : public G4VUserActionInitialization
 {
@@ -43,6 +46,11 @@ class SKReadActionInitialization : public G4VUserActionInitialization
 
     virtual void BuildForMaster() const;
     virtual void Build() const;
+
+  SKFileReader* fileReader =0; // SK file reader to help save the information from the file of initial conditions
+
+  //private:
+    //SKFileReader* fileReader; // SK file reader to help save the information from the file of initial conditions
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

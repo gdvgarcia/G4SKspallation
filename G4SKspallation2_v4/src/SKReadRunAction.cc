@@ -24,10 +24,10 @@
 // ********************************************************************
 //
 //
-/// \file SKRunAction.cc
+/// \file SKReadRunAction.cc
 /// \Implementation of the SKRunAction class
 
-#include "SKRunAction.hh"
+#include "SKReadRunAction.hh"
 #include "SKAnalysis.hh"
 #include "SKEventAction.hh"
 
@@ -36,12 +36,27 @@
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
+#include <iostream>
+#include<string>
+
+#ifdef G4MULTITHREADED
+#include "G4Threading.hh"
+#endif
+
+#include "G4AutoLock.hh"
+namespace { G4Mutex SKReadRunActionMutex = G4MUTEX_INITIALIZER; }
+SKFileReader* SKReadRunAction::fFileReader = 0;
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SKRunAction::SKRunAction(SKEventAction* eventAction)
+SKReadRunAction::SKReadRunAction(SKEventAction* eventAction, SKFileReader* fileReader)
  : G4UserRunAction(),
    fEventAction(eventAction)
 { 
+  // getting the file reader and locking it to have no issues in multi-threading mode
+  G4AutoLock lock(&SKReadRunActionMutex);
+  fFileReader = fileReader;
+
   // set printing event number per each event
   G4RunManager::GetRunManager()->SetPrintProgress(1);     
 
@@ -156,30 +171,52 @@ SKRunAction::SKRunAction(SKEventAction* eventAction)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SKRunAction::~SKRunAction()
+SKReadRunAction::~SKReadRunAction()
 {
   delete G4AnalysisManager::Instance();  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void SKRunAction::BeginOfRunAction(const G4Run* /*run*/)
+void SKReadRunAction::BeginOfRunAction(const G4Run* run)
 { 
+
+ 
+  G4cout << "Gonna open again " << G4endl << G4endl;
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+
+//DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+
+  // Reading the right number of events from the initial conditions file
+#ifdef G4MULTITHREADED
+	G4AutoLock lock(&SKReadRunActionMutex);
+	if(! G4Threading::IsWorkerThread() ){
+		fFileReader->Read(run->GetNumberOfEventToBeProcessed());
+	}
+#else
+	G4AutoLock lock(&SKReadRunActionMutex);
+	fFileReader->Read(run->GetNumberOfEventToBeProcessed());
+#endif
+
+//DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
   
+
+  G4cout << "Did the read again " << G4endl << G4endl;
+
   // Get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
 
   // Open an output file where we save the data collected
   //
-  G4String fileName = "SK";
+  int runID = run->GetRunID();
+  G4String fileName = "SK" + std::to_string(runID);
   analysisManager->OpenFile(fileName);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void SKRunAction::EndOfRunAction(const G4Run* /*run*/)
+void SKReadRunAction::EndOfRunAction(const G4Run* /*run*/)
 {
   // print some histogram statistics - make sure you keep two 1D histograms
   //
@@ -208,6 +245,17 @@ void SKRunAction::EndOfRunAction(const G4Run* /*run*/)
   //
   analysisManager->Write();
   analysisManager->CloseFile();
+
+    // Cleaning the reader after ending run
+#ifdef G4MULTITHREADED
+	G4AutoLock lock(&SKReadRunActionMutex);
+	if(! G4Threading::IsWorkerThread() ){
+		fFileReader->Clear();
+	}
+#else
+	G4AutoLock lock(&SKReadRunActionMutex);
+	fFileReader->Clear();
+#endif
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

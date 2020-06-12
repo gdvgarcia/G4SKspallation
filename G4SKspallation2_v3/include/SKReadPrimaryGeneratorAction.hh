@@ -44,8 +44,7 @@ class G4Event;
 
 /// The primary generator action class with particle gun.
 ///
-/// It reads the initial energy from a ASCII file and the other default conditions are 
-/// a muon with downward velocity along the cylinder axis.
+/// It reads the initial energy and momentum direction from a ASCII file
 
 class SKReadPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
@@ -62,7 +61,7 @@ class SKReadPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   private:
     G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
 
-    // Funtion to split the line so we can take the data and put in the vector
+    // Funtion to split the lines of the file so we can take the data and put in a string vector
     void Split(const string& line, char divisionchart, vector<string>& words) ;
 };
 

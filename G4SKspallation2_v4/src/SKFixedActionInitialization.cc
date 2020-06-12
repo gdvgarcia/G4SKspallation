@@ -31,7 +31,7 @@
 
 #include "SKFixedActionInitialization.hh"
 #include "SKFixedPrimaryGeneratorAction.hh"
-#include "SKRunAction.hh"
+#include "SKFixedRunAction.hh"
 #include "SKEventAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -50,7 +50,7 @@ SKFixedActionInitialization::~SKFixedActionInitialization()
 void SKFixedActionInitialization::BuildForMaster() const
 { // setting user's actions for the master in multi-threading mode
    SKEventAction* eventAction = new SKEventAction;
-   SetUserAction(new SKRunAction(eventAction));
+   SetUserAction(new SKFixedRunAction(eventAction));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -63,7 +63,7 @@ void SKFixedActionInitialization::Build() const
   SetUserAction(eventAction);
 
   
-  SetUserAction(new SKRunAction(eventAction));
+  SetUserAction(new SKFixedRunAction(eventAction));
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

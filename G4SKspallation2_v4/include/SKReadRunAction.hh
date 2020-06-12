@@ -24,15 +24,18 @@
 // ********************************************************************
 //
 // 
-/// \file SKRunAction.hh
-/// \brief Definition of the SKRunAction class
+/// \file SKReadRunAction.hh
+/// \brief Definition of the SKReadRunAction class
 
-#ifndef SKRunAction_h
-#define SKRunAction_h 1
+#ifndef SKReadRunAction_h
+#define SKReadRunAction_h 1
 
 #include "G4UserRunAction.hh"
 #include "globals.hh"
 #include "SKEventAction.hh"
+#include "SKFileReader.hh"
+
+class SKFileReader;
 
 class G4Run;
 
@@ -46,11 +49,11 @@ class G4Run;
 /// In EndOfRunAction(), the accumulated statistic is printed and saved in the SK file created.
 ///
 
-class SKRunAction : public G4UserRunAction
+class SKReadRunAction : public G4UserRunAction
 {
   public:
-    SKRunAction( SKEventAction* eventAction );
-    virtual ~SKRunAction();
+    SKReadRunAction( SKEventAction* eventAction, SKFileReader* fileReader);
+    virtual ~SKReadRunAction();
 
     virtual void BeginOfRunAction(const G4Run*);
     virtual void   EndOfRunAction(const G4Run*);
@@ -58,6 +61,7 @@ class SKRunAction : public G4UserRunAction
 
     private:
     SKEventAction* fEventAction;
+    static SKFileReader* fFileReader; // SK file reader to help save the information from the file of initial conditions
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -37,6 +37,7 @@
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
+#include "SKFileReader.hh"
 
 #include "cmath" // to have the cosine and sine math functions
 
@@ -46,17 +47,26 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <list>
+#include "G4AutoLock.hh"
+
+namespace { G4Mutex SKReadPrimarynMutex = G4MUTEX_INITIALIZER; }
+SKFileReader* SKReadPrimaryGeneratorAction::fFileReader = 0;
 
 using namespace std;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SKReadPrimaryGeneratorAction::SKReadPrimaryGeneratorAction()
+SKReadPrimaryGeneratorAction::SKReadPrimaryGeneratorAction(SKFileReader* fileReader)
 : G4VUserPrimaryGeneratorAction(),
   fParticleGun(0)
 {
   G4int n_particle = 1;
   fParticleGun  = new G4ParticleGun(n_particle);
+
+  // getting the file reader and locking it to have no issues in multi-threading mode
+  G4AutoLock lock(&SKReadPrimarynMutex);
+  fFileReader = fileReader;
 
   // default particle kinematic
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
@@ -74,6 +84,9 @@ SKReadPrimaryGeneratorAction::SKReadPrimaryGeneratorAction()
 
 SKReadPrimaryGeneratorAction::~SKReadPrimaryGeneratorAction()
 {
+  G4AutoLock lock(&SKReadPrimarynMutex);
+  
+  if( fFileReader ) { delete fFileReader; fFileReader = 0; }
   delete fParticleGun;
 }
 
@@ -85,75 +98,35 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   //
 
   // Flag for cancelling the angles reader and only read energy spectrum
-  bool anglesflag = true;
+  bool anglesflag = false;
+
+  // Variable for the energy from the file
+  G4double KinEnergy = 1.;
+
+   // getting the value from the file reader and anglesflag
+  if(fFileReader)
+  {
+    	G4AutoLock lock(&SKReadPrimarynMutex);
+    	anglesflag = fFileReader->DoAngles();
+    	KinEnergy = fFileReader->GetOneValue();
+  }
   
-  // getting the event ID to choose the right line
-  int eventID = anEvent->GetEventID();
-  
-  // open the ASCII file
-  ifstream file;
-  file.open ("ini_cond.txt"); //make sure to have a large file, so you do not run out of events
+  fParticleGun->SetParticleEnergy( KinEnergy *GeV);
 
-	
-  //  Fill the Particle Gun with the data from the ASCII file :
-	
-  // variables used to read the file
-  vector<string>* words = new vector<string>();
-  string line;
+  if(anglesflag){ // check if we deactivated the angles
+	// Convert the strings to numbers with the atof and saving the initial conditions variables
+  	G4double theta 	= fFileReader->GetOneValue();
+  	G4double phi 	= fFileReader->GetOneValue();
 
-  // jumping the head lines
-  getline(file, line, '\n');
-  // check if we deactivated the angles with a 0 in the start of the text file
-  if ( line.compare("") != 0 ){ //check if the line is not empty
-  	Split(line, '#', *words);
-	for( unsigned int k = 0; k < words->at(0).size(); k++){
-		if(words->at(0)[k] == '0'){ // check if we find a zero
-			anglesflag = false; // desactivate angles reader
-		}
-	}
-  }
-  // keep jumping the head lines
-  getline(file, line, '\n');
-	
-  //for-loop to jump to the right line (other lines already used in previous events)
-  for ( int i = 0; ( i < eventID) && ( !file.eof() ); i++){
-	getline(file, line, '\n');  // Grab the line
+ 		// Building the direction
+  	G4double Px = cos( phi ) * sin( theta );
+  	G4double Py = sin( phi ) * sin( theta );
+  	G4double Pz = - cos( theta );
+
+  	// Filling the gun
+  	fParticleGun->SetParticleMomentumDirection(G4ThreeVector( Px, Py, Pz ));
   }
 
-  // cleaning the strings
-  line.clear();
-  words->clear();
-  
-  if( !file.eof() ){//check if we still have lines
-	getline(file, line, '\n');  // Grab the line
-  }
- 
-  // We are in the right line so we can collect the data
-  // first we break the data into strings. Each string containing a piece of information                 
-  if ( line.compare("") != 0 ){ //check if the line is not empty
-  	Split(line, ' ', *words); 			// Splitting the line into words
-  	// Convert the strings to numbers with the atof and saving the initial conditions variables
-  	G4double KineticEnergy = atof(words->at(2).c_str()) - 0.1056583755; // Transform the total energy to Kinetic energy
-    	// Filling the gun
-  	fParticleGun->SetParticleEnergy(KineticEnergy *GeV);
-
-  	if(anglesflag){ // check if we deactivated the angles
-		// Convert the strings to numbers with the atof and saving the initial conditions variables
-  		G4double theta =  atof(words->at(0).c_str());
-  		G4double phi =  atof(words->at(1).c_str());
-
- 		 // Building the direction
-  		G4double Px = cos( phi ) * sin( theta );
-  		G4double Py = sin( phi ) * sin( theta );
-  		G4double Pz = - cos( theta );
-
-  		// Filling the gun
-  		fParticleGun->SetParticleMomentumDirection(G4ThreeVector( Px, Py, Pz ));
-  	}
-  }
-
-  // cleaning the string and closing file
-  file.close();
 
   //Building the GUN in the right position 
 
@@ -184,22 +157,3 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-//function used to split the line so we can take the data and put in the vector of strings
-void SKReadPrimaryGeneratorAction::Split(const string& line, char divisionchart, vector<string>& words) {
-   int i = 0;
-   int j = line.find(divisionchart);
-
-   while (j >= 0) {
-      words.push_back(line.substr(i, j-i));
-      i = ++j;
-      j = line.find(divisionchart, j);
-
-      if (j < 0) {
-         words.push_back(line.substr(i, line.length()));
-      }
-   }
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-

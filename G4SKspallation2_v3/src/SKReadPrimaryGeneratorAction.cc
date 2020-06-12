@@ -23,8 +23,8 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// HERE WE GENERATE A MUON WITH ENERGY GIVEN BY AN ASCII FILE AND 
-// A GIVEN POSITION( ON THE TANK AXIS AND ON THE UPPER PART OF THE TANK )
+// HERE WE GENERATE A MUON WITH ENERGY AND MOMENTUM DIRECTION GIVEN BY AN ASCII FILE AND 
+// A RANDOM POSITION( ON THE UPPER PART OF THE TANK )
 //
 /// \file SKReadPrimaryGeneratorAction.cc
 /// \brief Implementation of the SKReadPrimaryGeneratorAction class
@@ -94,7 +94,9 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   ifstream file;
   file.open ("ini_cond.txt"); //make sure to have a large file, so you do not run out of events
 
-  //  Fill the Particle Gun with the data from the ASCII file
+	
+  //  Fill the Particle Gun with the data from the ASCII file :
+	
   // variables used to read the file
   vector<string>* words = new vector<string>();
   string line;
@@ -105,13 +107,14 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   if ( line.compare("") != 0 ){ //check if the line is not empty
   	Split(line, '#', *words);
 	for( unsigned int k = 0; k < words->at(0).size(); k++){
-		if(words->at(0)[k] == '0'){
-			anglesflag = false;
+		if(words->at(0)[k] == '0'){ // check if we find a zero
+			anglesflag = false; // desactivate angles reader
 		}
 	}
   }
-  // jumping the head lines
+  // keep jumping the head lines
   getline(file, line, '\n');
+	
   //for-loop to jump to the right line (other lines already used in previous events)
   for ( int i = 0; ( i < eventID) && ( !file.eof() ); i++){
 	getline(file, line, '\n');  // Grab the line
@@ -135,6 +138,7 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   	fParticleGun->SetParticleEnergy(KineticEnergy *GeV);
 
   	if(anglesflag){ // check if we deactivated the angles
+		// Convert the strings to numbers with the atof and saving the initial conditions variables
   		G4double theta =  atof(words->at(0).c_str());
   		G4double phi =  atof(words->at(1).c_str());
 
@@ -153,7 +157,7 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   //Building the GUN in the right position 
 
-  //SK tank parameters to set up the gun in the right height
+  //SK tank parameters to set up the gun in on top of the tank randomly
   G4double TouterRadius = 19.5*m; 
   G4double Thz = 42.*m;
 
@@ -181,7 +185,7 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-//function used to split the line so we can take the data and put in the vector
+//function used to split the line so we can take the data and put in the vector of strings
 void SKReadPrimaryGeneratorAction::Split(const string& line, char divisionchart, vector<string>& words) {
    int i = 0;
    int j = line.find(divisionchart);

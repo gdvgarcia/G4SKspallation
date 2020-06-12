@@ -33,9 +33,11 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 #include "globals.hh"
+#include "SKFileReader.hh"
 
 #include <string>
 #include <vector>
+#include <list>
 
 using namespace std;
 
@@ -46,10 +48,12 @@ class G4Event;
 ///
 /// It reads the initial energy and momentum direction from a ASCII file
 
+class SKFileReader;
+
 class SKReadPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   public:
-    SKReadPrimaryGeneratorAction();    
+    SKReadPrimaryGeneratorAction(SKFileReader* fileReader);    
     virtual ~SKReadPrimaryGeneratorAction();
 
     // method from the base class
@@ -59,10 +63,8 @@ class SKReadPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
   
   private:
-    G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
-
-    // Funtion to split the lines of the file so we can take the data and put in a string vector
-    void Split(const string& line, char divisionchart, vector<string>& words) ;
+    G4ParticleGun*  		fParticleGun; 	// pointer a to G4 gun class
+    static SKFileReader * 	fFileReader; 	// file reader object used to read data from the file of initial conditions
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
