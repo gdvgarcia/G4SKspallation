@@ -182,29 +182,11 @@ G4bool SKSD::ProcessHits(G4Step* step,
 
 
 
-  //----------------------------------------------
+  //-----------------------------------------------------
   //  Collect information for isotopes
   //  generated from an interaction with the water tank
-  //----------------------------------------------
+  //-----------------------------------------------------
   if ( partType == "nucleus" ){  //check if it is an ion
-	// DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-	// DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-	// DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-	
-	// Building the daugthers string
-	G4String daughters = name + "--> ";
-        // first take all the secondaries in a vector and its size
-  	const std::vector<const G4Track*>* Secondaries3 = step->GetSecondaryInCurrentStep();
- 	G4int size3 = Secondaries2->size();
-	// we loop over secondaries and make the string
-	for( int i = 0; i < size3; ++i){
-		daughters = "+" + loopForSecondariesNames( Secondaries3 , i ) + " ";
-	}
-
-	// DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-	// DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-	// DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-
 	// isotope information
 	G4double 	xiso = 	Track->GetPosition().getX();
 	G4double 	yiso = 	Track->GetPosition().getY();
@@ -396,15 +378,4 @@ G4double SKSD::transverseDistance( G4double x, G4double y, G4double z )// transv
 
   return dis;
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-  G4String SKSD::loopForSecondariesNames(const std::vector<const G4Track*>* Secondaries , G4int n ) // this return secondaries names
-{
- // getting the information about the secondary
-  const G4Track* secondary = Secondaries->at(n);
-  G4ParticleDefinition* secPartDef = secondary->GetDefinition();
-
-  return secPartDef->GetParticleName();
-}
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

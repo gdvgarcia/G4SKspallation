@@ -74,7 +74,6 @@ class SKSD : public G4VSensitiveDetector
     G4double Energy , SKHit* hit, G4int Code); // this is used to make a for loop in the secondaries per step vector - it fills the parents ntuple
     bool loopForSecondaries( G4TrackVector* Secondaries , G4int n , G4int TrackID, G4int Code); // this is used to make a for loop in the secondaries per track vector - it fills the fParentsCodes map with the parent particle codes
     G4double transverseDistance( G4double x, G4double y, G4double z ); // transverse distance to the muon track line - suppose an "infinite" line to do the calculation
-    G4String loopForSecondariesNames(const std::vector<const G4Track*>* Secondaries , G4int n ); // this return secondaries names
 
 };
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
