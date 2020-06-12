@@ -10,7 +10,7 @@
 #include <bits/stdc++.h> 
 using namespace std; 
 
-int making_isodistance_histo(){
+int isodistance_histo(){
 	// Opening a file
 	TFile* inputFile = new TFile("SK.root");
 	// checking if the file is open correctly
@@ -74,8 +74,8 @@ int making_isodistance_histo(){
 		Long64_t tentry = DataTree->LoadTree(i);
 		bIso->GetEntry(tentry);
 
-		for( int j =0; j < IsotopesSize - 1; j++){//running through the vetors
-			double distance = TransverseDistance->at(j) / 10; // to convert mm to cm
+		for( int j =0; j < IsotopesSize ; j++){//running through the vetors
+			double distance = TransverseDistance->at(j) / 10.; // to convert mm to cm
 			h1->Fill(distance);
 			if(A->at(j) == 16 && Z->at(j) == 7){h2->Fill(distance);}//N16 - Z = 7 
 			if(A->at(j) == 8 && Z->at(j) == 5){h3->Fill(distance);}//B8 - Z = 5

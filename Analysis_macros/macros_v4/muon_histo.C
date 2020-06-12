@@ -7,7 +7,7 @@
 #include "TFile.h"
 #include "TLegend.h"
 
-int making_muon_histo(){
+int muon_histo(){
 	// Opening a file
 	TFile* inputFile = new TFile("SK.root");
 	// checking if the file is open correctly
@@ -21,7 +21,7 @@ int making_muon_histo(){
 
 	// Getting the tree
 	TTree* DataTree;
-	inputFile->GetObject("muon_data",DataTree);
+	inputFile->GetObject("event_data",DataTree);
 	int nentries = (int)DataTree->GetEntries();
 	cout << "Number of entries in the Tree: " << nentries << endl;
 	if( nentries < 1 ){
@@ -30,19 +30,21 @@ int making_muon_histo(){
 	}
 
 	// creating variables for the branches
-	double Energy, Energy1, x, y;
-	int EventID, EventID1, nmuclose; //nmuclose number of muons less than 30 cm away from straight line path
+	double Energy, Edep;//, xIni, yIni, zIni, xFin, yFin, zFin;
+	//int nmuclose; //nmuclose number of muons less than 30 cm away from straight line path - this was only useful for testing downward muons
 	// Attaching to branches
 	DataTree->SetBranchAddress("Energy",&Energy);
-	DataTree->SetBranchAddress("x",&x);
-	DataTree->SetBranchAddress("y",&y);
-	DataTree->SetBranchAddress("EventID",&EventID);
+	//DataTree->SetBranchAddress("xIni",&xIni);
+	//DataTree->SetBranchAddress("yIni",&yIni);
+	//DataTree->SetBranchAddress("zIni",&zIni);
+	//DataTree->SetBranchAddress("xFin",&xFin);
+	//DataTree->SetBranchAddress("yFin",&yFin);
+	//DataTree->SetBranchAddress("zFin",&zFin);
+	DataTree->SetBranchAddress("Edep",&Edep);
 
 	
 	// Getting the number of muons simulated
-	DataTree->GetEntry( nentries - 1 );
-	int nmuons = EventID;
-	cout << "Number of muons simulated: " << nmuons << endl;
+	cout << "Number of muons simulated: " << nentries << endl;
 
 	// Create a new file
 	string filename = "MuonHists.root";
@@ -58,36 +60,23 @@ int making_muon_histo(){
 	//Declaring the histograms
 	TH1* h1 = new TH1D("hspec", "Muon spectrum", 1000, 0.1, 10000);
 	TH1* h2 = new TH1D("hdep", "Muon energy loss", 60, 5, 20);
-	// Building log binning for h1l
-	const Int_t nbins = 500;
-   	//Double_t xmin = 1e-1;
-   	//Double_t xmax = 1e4;
-   	//Double_t logxmin = TMath::Log10(xmin);
-   	//Double_t logxmax = TMath::Log10(xmax);
-   	//Double_t binwidth = (logxmax-logxmin)/nbins;
-   	//Double_t xbins[nbins+1];
-   	//xbins[0] = xmin;
-   	//for (Int_t i=1;i<=nbins;i++) {
-      	//	xbins[i] = xmin + TMath::Power(10,logxmin+i*binwidth);
-   	//}
-   	//TH1F *h1l = new TH1F("hspecl","Muon spectrum with log bins",nbins,xbins);
 
 	// Making the canvas we will draw in
 	TCanvas *c1 = new TCanvas();
 
 	// Running through the tree and filling the histogram
-	for( int i =0; i < nentries - 1; i = i + 2){
+	for( int i =0; i < nentries; i ++){
 		DataTree->GetEntry(i);
-		Energy1 = Energy;
-		EventID1 = EventID;
-		DataTree->GetEntry(i + 1);
-		if ( EventID1 == EventID){
-			h1->Fill(Energy1/1000, Energy1/1000); // fill with the energy normalized by the energy - divide per 1000 to convert to GeV
-			//h1l->Fill(Energy1/1000, Energy1/1000); // fill with the energy normalized by the energy - divide per 1000 to convert to GeV
-			h2->Fill((Energy1 - Energy)/1000); // divide per 1000 to convert to GeV
-			if ( x*x + y*y < 90000 ){ nmuclose ++;} //if displaced less than 30 cm
-		}		
+		h1->Fill(Energy/1000., Energy/1000.); // fill with the energy normalized by the energy - divide per 1000 to convert to GeV
+		h2->Fill((Edep)/1000.); // divide per 1000 to convert to GeV
+		//if ( x*x + y*y < 90000 ){ nmuclose ++;} //if displaced less than 30 cm	
 	}
+
+	// Checking if the histogram was filled
+	cout << "Number of entries in the h1gram : " << h1->GetEntries() << endl;
+
+	// Checking if the histogram was filled
+	cout << "Number of entries in the h1gram : " << h2->GetEntries() << endl;
 				
 	// Histograms attributes
    	h1->SetLineColor(4);
@@ -101,17 +90,7 @@ int making_muon_histo(){
 	h1->GetXaxis()->SetTitleSize(.045);
 	h1->GetYaxis()->SetTitleSize(.045);
 	h1->SetStats(kFALSE);
-	//h1l->SetLineColor(4);
-    	//h1l->SetLineWidth(2);
-    	//h1l->SetLineStyle(1);
-	//h1l->GetXaxis()->SetTitle("Energy [GeV]");
-	//h1l->GetYaxis()->SetTitle("Energy x flux per energy [cm^{-2} s^{-1} ]");
-	//h1l->GetYaxis()->SetTitleOffset(1.);
-	//h1l->GetXaxis()->SetLabelSize(.035);
-	//h1l->GetYaxis()->SetLabelSize(.04);
-	//h1l->GetXaxis()->SetTitleSize(.045);
-	//h1l->GetYaxis()->SetTitleSize(.045);
-	//h1l->SetStats(kFALSE);
+	
 	h2->SetLineColor(4);
     	h2->SetLineWidth(2);
     	h2->SetLineStyle(1);
@@ -143,13 +122,8 @@ int making_muon_histo(){
 	gPad->SetLogy();
 	c1->SaveAs("MuonSpectra.png");
 
-	//c1->Clear();
-	//h1l->SetTitle("");
-	//h1l->DrawClone("HIST C 9");
-	// finilizing the figure and saving it
-	//c1->SaveAs("MuonSpectraLogbin.png");
 
-	cout << "Percentage of muons with less than 30 cm displacement : " << nmuclose/(1. * nmuons) << endl;
+	//cout << "Percentage of muons with less than 30 cm displacement : " << nmuclose/(1. * nentries) << endl;
 
 
 	// Closing hist file

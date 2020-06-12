@@ -58,8 +58,7 @@ SKSD::SKSD(
                             const G4String& name, 
                             const G4String& hitsCollectionName)
  : G4VSensitiveDetector(name),
-   fHitsCollection(nullptr),
-   fEventID(0)
+   fHitsCollection(nullptr)
 {
   collectionName.insert(hitsCollectionName);
 }
@@ -85,17 +84,13 @@ void SKSD::Initialize(G4HCofThisEvent* hce)
   // Create hits
   fHitsCollection->insert(new SKHit());
 
-  // keeping track of the event 
-  fEventID = fEventID + 1;
-
   // Leave the muon vecotr empty for starting a new event
   fMuonPositions.clear();
 
   // Leave the maps empty for starting a new event
-  fParents.clear();
   fParentsCodes.clear();
   fInitialTimes.clear();
-  //fParentsEnergy.clear(); - DELETE IF CAN NOT SOLVE IT
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -174,7 +169,7 @@ G4bool SKSD::ProcessHits(G4Step* step,
 
 
   //----------------------------------------------
-  //  Collect names/codes for isotopes' parents
+  //  Collect codes for isotopes' parents
   //----------------------------------------------
   // first take all the secondaries in a vector and its size - as it is the end of the track, we have all the secondary produced by the current particles
   G4TrackVector* Secondaries = step->GetfSecondary();
@@ -182,8 +177,8 @@ G4bool SKSD::ProcessHits(G4Step* step,
 
   if ( size > 0){ // check if we have secondaries
 	// we loop over secondaries and fill in the map
-	for( int i = 0; i < size && !(loopForSecondaries( Secondaries , i ,TrackID, name, thePartDef->GetPDGEncoding() ) ); ++i){;}
-  } //---------------------------------------------- END isotopes' parents names
+	for( int i = 0; i < size && !(loopForSecondaries( Secondaries , i ,TrackID, thePartDef->GetPDGEncoding() ) ); ++i){;}
+  } //---------------------------------------------- END isotopes' parents codes
 
 
 
@@ -212,8 +207,8 @@ G4bool SKSD::ProcessHits(G4Step* step,
 
 	// isotope information
 	G4double 	xiso = 	Track->GetPosition().getX();
-	G4double 	yiso = 	Track->GetPosition().getX();
-	G4double 	ziso = 	Track->GetPosition().getX();
+	G4double 	yiso = 	Track->GetPosition().getY();
+	G4double 	ziso = 	Track->GetPosition().getZ();
 	G4int 		A =	thePartDef->GetAtomicMass();
 	G4int 		Z =	thePartDef->GetAtomicNumber();
 
@@ -336,7 +331,7 @@ void SKSD::EndOfEvent(G4HCofThisEvent*)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void SKSD::loopForSecondariesEnergies(const std::vector<const G4Track*>* Secondaries , 
-	G4int n , G4double Energy , SKHit* hit, G4int Code  ) // it fills the fParentsEnergy map - ACTUALLY THE PARENTS NTUPLE 
+	G4int n , G4double Energy , SKHit* hit, G4int Code  ) // it fills the parents ntuple
 {
   // getting the information about the secondary
   const G4Track* secondary = Secondaries->at(n);
@@ -358,8 +353,7 @@ void SKSD::loopForSecondariesEnergies(const std::vector<const G4Track*>* Seconda
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-  bool SKSD::loopForSecondaries( G4TrackVector* Secondaries , G4int n , G4int TrackID, 
-G4String name , G4int Code ) // it fills the fParentsCodes map 
+  bool SKSD::loopForSecondaries( G4TrackVector* Secondaries , G4int n , G4int TrackID, G4int Code ) // it fills the fParentsCodes map 
 {
   // getting the information about the secondary
   G4Track* secondary = Secondaries->at(n);
@@ -384,9 +378,9 @@ G4double SKSD::transverseDistance( G4double x, G4double y, G4double z )// transv
   G4double xp = x - fMuonPositions[0];
   G4double yp = y - fMuonPositions[1];
   G4double zp = z - fMuonPositions[2];
-  G4double xm = fMuonPositions[0] - fMuonPositions[3];
-  G4double ym = fMuonPositions[1] - fMuonPositions[4];
-  G4double zm = fMuonPositions[2] - fMuonPositions[5];
+  G4double xm = fMuonPositions[3] - fMuonPositions[0];
+  G4double ym = fMuonPositions[4] - fMuonPositions[1];
+  G4double zm = fMuonPositions[5] - fMuonPositions[2];
 
   // taking the cross product
   G4double xc, yc, zc; 
@@ -395,10 +389,12 @@ G4double SKSD::transverseDistance( G4double x, G4double y, G4double z )// transv
   zc = xp * ym - yp * xm;
 
   // taking the norms 
-  G4double normMu = sqrt( xm*xm + ym*ym + zm*zm );
-  G4double normc = sqrt( xc*xc + yc*yc + zc*zc );
+  G4double normMu	= sqrt( xm*xm + ym*ym + zm*zm );
+  G4double normc 	= sqrt( xc*xc + yc*yc + zc*zc );
 
-  return normc/normMu;//returnin the trasverse distance
+  G4double dis = normc/normMu; //the trasverse distance
+
+  return dis;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

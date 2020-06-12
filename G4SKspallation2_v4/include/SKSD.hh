@@ -62,18 +62,17 @@ class SKSD : public G4VSensitiveDetector
 
   private:
     SKHitsCollection* fHitsCollection;
-    G4int fEventID; // keep track of the event number
-    std::map< int, std::string> fParents; // keep parents' trackIDs so we can recover parents' names
     std::map< int, int > fParentsCodes; // keep parents' trackIDs so we can recover parents' codes
     std::map< int, double> fInitialTimes; // keep isotopes' initial time
     std::vector< double > fMuonPositions; // keep the muon initial and final position so we can calculate the transverse distance of particles - ID 0 = x_ini , ID 1 = y_ini , ID 2 = z_ini , ID 3 = x_fin , ID 4 = y_fin , ID 5 = z_fin
+
 
     //
     // Extra functions
     //
     void loopForSecondariesEnergies(const std::vector<const G4Track*>* Secondaries , G4int n ,  
     G4double Energy , SKHit* hit, G4int Code); // this is used to make a for loop in the secondaries per step vector - it fills the parents ntuple
-    bool loopForSecondaries( G4TrackVector* Secondaries , G4int n , G4int TrackID, G4String name, G4int Code); // this is used to make a for loop in the secondaries per track vector - it fills the fParentsCodes map with the parent particle codes
+    bool loopForSecondaries( G4TrackVector* Secondaries , G4int n , G4int TrackID, G4int Code); // this is used to make a for loop in the secondaries per track vector - it fills the fParentsCodes map with the parent particle codes
     G4double transverseDistance( G4double x, G4double y, G4double z ); // transverse distance to the muon track line - suppose an "infinite" line to do the calculation
     G4String loopForSecondariesNames(const std::vector<const G4Track*>* Secondaries , G4int n ); // this return secondaries names
 

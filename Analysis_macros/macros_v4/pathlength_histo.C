@@ -7,7 +7,7 @@
 #include "TFile.h"
 #include "TLegend.h"
 
-int making_pathlenght_histo(){
+int pathlength_histo(){
 	// Opening a file
 	TFile* inputFile = new TFile("SK.root");
 	// checking if the file is open correctly
@@ -21,7 +21,7 @@ int making_pathlenght_histo(){
 
 	// Getting the tree
 	TTree* DataTree;
-	inputFile->GetObject("particles_data",DataTree);
+	inputFile->GetObject("event_data",DataTree);
 	int nentries = (int)DataTree->GetEntries();
 	cout << "Number of entries in the Tree: " << nentries << endl;
 	if( nentries < 1 ){
@@ -30,41 +30,47 @@ int making_pathlenght_histo(){
 	}
 
 	// creating variables for the branches
-	Char_t Particle [25]; // contains the particle name
-	double Energy, PathLenght;
-	int EventID;
+	vector<double>* StepLength =0;
+	vector<double>* PathLengthEnergy =0;
+	vector<int>* PathLengthCode =0;
+	int PathLengthSize;
+
+	// brench to attach
+	TBranch *bPath = 0;
+
 	// Attaching to branches
-	DataTree->SetBranchAddress("Particle",&Particle);
-	DataTree->SetBranchAddress("Energy",&Energy);
-	DataTree->SetBranchAddress("PathLenght",&PathLenght);
-	DataTree->SetBranchAddress("EventID",&EventID);
+	DataTree->SetBranchAddress("PathLengthSize",&PathLengthSize);
+	DataTree->SetBranchAddress("StepLength",&StepLength, &bPath);
+	DataTree->SetBranchAddress("PathLengthEnergy",&PathLengthEnergy, &bPath);
+	DataTree->SetBranchAddress("PathLengthCode",&PathLengthCode, &bPath);
 
-	
-	// Getting the number of muons simulated
-	DataTree->GetEntry( nentries - 1 );
-	int nmuons = EventID;
-	cout << "Number of muons simulated: " << nmuons << endl;
 
-	// create container for particles names
-    	string particles[6][3]; 
-    	particles[0][0] = "e-";
-	particles[0][1] = "e+";
-	particles[0][2] = "eMinusePlus";
-	particles[1][0] = "gamma";
-	particles[1][1] = "none";
-	particles[1][2] = "gamma";
-	particles[2][0] = "neutron";
-	particles[2][1] = "none";
-	particles[2][2] = "neutron";
-	particles[3][0] = "proton";
-	particles[3][1] = "none";
-	particles[3][2] = "proton";
-	particles[4][0] = "pi+";
-	particles[4][1] = "none";
-	particles[4][2] = "piPlus";
-	particles[5][0] = "pi-";
-	particles[5][1] = "none";
-	particles[5][2] = "piMinus";
+	// create container for particles names // convertiong to string later with stoi(str1)
+    	string particles[6][4]; 
+    	particles[0][0] =  "11"; // "e-"; 
+	particles[0][1] = "-11"; // "e+";
+	particles[0][2] = "electrons&positrons";
+	particles[0][3] = "e^{#pm}";
+	particles[1][0] = "22"; // "gamma";
+	particles[1][1] = "0"; //"none";
+	particles[1][2] = "gammas";
+	particles[1][3] = "#gamma";
+	particles[2][0] = "2112"; //"neutron";
+	particles[2][1] = "0"; //"none";
+	particles[2][2] = "neutrons";
+	particles[2][3] = "n";
+	particles[3][0] = "2212"; //"proton";
+	particles[3][1] = "0"; //"none";
+	particles[3][2] = "protons";
+	particles[3][3] = "p";
+	particles[4][0] = "211"; //"pi+";
+	particles[4][1] = "0"; //"none";
+	particles[4][2] = "pionsplus";
+	particles[4][3] = "#pi^{+}";
+	particles[5][0] = "-211"; //"pi-";
+	particles[5][1] = "0"; //"none";
+	particles[5][2] = "pionsminus";
+	particles[5][3] = "#pi^{-}";
 
 	// create container for colors of the particles histograms
 	int colors[6] = {8,4,2,13,7,6};
@@ -87,35 +93,37 @@ int making_pathlenght_histo(){
 	TCanvas *c1 = new TCanvas();
 
 	// Build a legend - x1,y1,x2,y2 
-	TLegend leg(.55 ,.75 ,.9 ,.9);
+	TLegend leg(.65 ,.7 ,.9 ,.9);
 	leg.SetFillColor(0);
 	leg.SetNColumns(2);
 
+	// naming the histograms
 	for( int j =0; j < 6 ; ++j){
-		if( particles[j][1].compare("none") != 0 ){// selecting the particles
-			//Creating the histogram
-			string histtitle = "Path Length spectra for " + particles[j][0] + " + " + particles[j][1];
-			string histname = "h" + particles[j][2];
-			h[j] = new TH1D(histname.c_str(), histtitle.c_str(), 500, 0.0, 500.0);
-		}
-		else{
-			//Creating the histogram
-			string histtitle = "Path Length spectra for " + particles[j][0];
-			string histname = "h" + particles[j][2];
-			h[j] = new TH1D(histname.c_str(), histtitle.c_str(), 500, 0.0, 500.0);
-
-		}
+		//Creating the histogram
+		string histtitle = "Path Length spectra for " + particles[j][2];
+		string histname = "h" + particles[j][2];
+		h[j] = new TH1D(histname.c_str(), histtitle.c_str(), 500, 0.0, 500.0);
+			
 	}
 
-		// Running through the tree and filling the histogram
-		for( int i =0; i < nentries; ++i){
+	// Running through the tree and filling the histogram
+	for( int i =0; i < nentries; ++i){
+		DataTree->GetEntry(i);
+		// getting the branch i
+		Long64_t tentry = DataTree->LoadTree(i);
+		bPath->GetEntry(tentry);
+
+		for( int k =0; k < PathLengthSize ; k++){//running through the vetors
+
 			for( int j =0; j < 6 ; ++j){
-			DataTree->GetEntry(i);
-			if( (particles[j][0].compare(Particle) == 0) || (particles[j][1].compare(Particle) == 0) ){ // if desired particle		
-				double Weight = (PathLenght/nmuons)/10; // divided by ten to get the result in cm and divided by the number of muons simulated	
-				h[j]->Fill(Energy, Weight);} // fill with path lenght weight devided by the number of events
+				if( (stoi(particles[j][0]) == PathLengthCode->at(k)) || (stoi(particles[j][1])  == PathLengthCode->at(k))  ){ // if desired particle		
+					double Weight = (StepLength->at(k)/nentries)/10.; // divided by ten to get the result in cm and divided by the number of muons simulated	
+					h[j]->Fill(PathLengthEnergy->at(k), Weight); // fill with path lenght and weight 
+				}
 			}
  		}
+	}
+
 
 	for( int j =0; j < 6 ; ++j){
 	
@@ -144,7 +152,7 @@ int making_pathlenght_histo(){
 		h[j]->SetTitle("");
 		h[j]->DrawClone("HIST C 9 SAME");
 		// Adding the legend
-		leg.AddEntry(h[j],particles[j][0].c_str(),"l");
+		leg.AddEntry(h[j],particles[j][3].c_str(),"l");
  	}
 
 	// Draw a legend 
