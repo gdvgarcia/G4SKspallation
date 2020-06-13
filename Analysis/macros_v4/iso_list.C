@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <vector> 
 using namespace std;
 
 int iso_list(){
@@ -34,18 +35,15 @@ int iso_list(){
 	}
 
 	// creating variables for the branches
-	vector<int>* A =0; 
-	vector<int>* Z =0;
+	vector<int>* A = new vector<int>();
+	vector<int>* Z = new vector<int>();
 	int IsotopesSize;
-
-	// brench to attach
-	TBranch *bIso = 0;
 
 
 	// Attaching to branches
 	DataTree->SetBranchAddress("IsotopesSize",&IsotopesSize);
-	DataTree->SetBranchAddress("A",&A, &bIso);
-	DataTree->SetBranchAddress("Z",&Z, &bIso);
+	DataTree->SetBranchAddress("A",&A);
+	DataTree->SetBranchAddress("Z",&Z);
 
 
 	// create container for particles isotopes
@@ -66,9 +64,6 @@ int iso_list(){
 	// Running through the tree and filling the histogram
 	for( int i =0; i < nentries; ++i){
 		DataTree->GetEntry(i);
-		// getting the branch i
-		Long64_t tentry = DataTree->LoadTree(i);
-		bIso->GetEntry(tentry);
 
 		for( int j =0; j < IsotopesSize ; j++){//running through the vetors
 			if(A->at(j) > 7){

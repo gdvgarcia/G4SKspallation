@@ -6,6 +6,7 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TLegend.h"
+#include <vector> 
 
 int pathlength_histo(){
 	// Opening a file
@@ -30,19 +31,16 @@ int pathlength_histo(){
 	}
 
 	// creating variables for the branches
-	vector<double>* StepLength =0;
-	vector<double>* PathLengthEnergy =0;
-	vector<int>* PathLengthCode =0;
-	int PathLengthSize;
-
-	// brench to attach
-	TBranch *bPath = 0;
+	vector<double>* StepLength  		= new vector<double>();
+	vector<double>* PathLengthEnergy  	= new vector<double>();
+	vector<int>* 	PathLengthCode 		= new vector<int>();
+	int 		PathLengthSize;
 
 	// Attaching to branches
 	DataTree->SetBranchAddress("PathLengthSize",&PathLengthSize);
-	DataTree->SetBranchAddress("StepLength",&StepLength, &bPath);
-	DataTree->SetBranchAddress("PathLengthEnergy",&PathLengthEnergy, &bPath);
-	DataTree->SetBranchAddress("PathLengthCode",&PathLengthCode, &bPath);
+	DataTree->SetBranchAddress("StepLength",&StepLength);
+	DataTree->SetBranchAddress("PathLengthEnergy",&PathLengthEnergy);
+	DataTree->SetBranchAddress("PathLengthCode",&PathLengthCode);
 
 
 	// create container for particles names // convertiong to string later with stoi(str1)
@@ -90,10 +88,10 @@ int pathlength_histo(){
 	TH1* h[6];
 
 	// Making the canvas we will draw in
-	TCanvas *c1 = new TCanvas();
+	auto c1 = new TCanvas("c1","c1",10,10,650,600);
 
 	// Build a legend - x1,y1,x2,y2 
-	TLegend leg(.65 ,.7 ,.9 ,.9);
+	TLegend leg(.6 ,.65 ,.9 ,.9);
 	leg.SetFillColor(0);
 	leg.SetNColumns(2);
 
@@ -109,9 +107,6 @@ int pathlength_histo(){
 	// Running through the tree and filling the histogram
 	for( int i =0; i < nentries; ++i){
 		DataTree->GetEntry(i);
-		// getting the branch i
-		Long64_t tentry = DataTree->LoadTree(i);
-		bPath->GetEntry(tentry);
 
 		for( int k =0; k < PathLengthSize ; k++){//running through the vetors
 
@@ -137,11 +132,11 @@ int pathlength_histo(){
     		h[j]->SetLineStyle(2);
 		h[j]->GetXaxis()->SetTitle("Energy [MeV]");
 		h[j]->GetYaxis()->SetTitle("Path  length [cm MeV^{-1} ]");
-		h[j]->GetYaxis()->SetTitleOffset(1.);
-		h[j]->GetXaxis()->SetLabelSize(.04);
-		h[j]->GetYaxis()->SetLabelSize(.045);
-		h[j]->GetXaxis()->SetTitleSize(.045);
-		h[j]->GetYaxis()->SetTitleSize(.045);
+		h[j]->GetYaxis()->SetTitleOffset(1.15);
+		h[j]->GetXaxis()->SetLabelSize(.038);
+		h[j]->GetYaxis()->SetLabelSize(.038);
+		h[j]->GetXaxis()->SetTitleSize(.038);
+		h[j]->GetYaxis()->SetTitleSize(.042);
 		h[j]->SetAxisRange(0.001, 1000.,"Y");
 		h[j]->SetStats(kFALSE);
 

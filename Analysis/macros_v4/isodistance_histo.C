@@ -6,8 +6,9 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TLegend.h"
+ 
+#include <vector> 
 
-#include <bits/stdc++.h> 
 using namespace std; 
 
 int isodistance_histo(){
@@ -33,19 +34,17 @@ int isodistance_histo(){
 	}
 
 	// creating variables for the branches
-	vector<double>* TransverseDistance =0;
-	vector<int>* A =0; 
-	vector<int>* Z =0;
-	int IsotopesSize;
+	vector<double>* TransverseDistance  	= new vector<double>();
+	vector<int>* 	A 			= new vector<int>();
+	vector<int>* 	Z 			= new vector<int>();
+	int 		IsotopesSize;
 
-	// brench to attach
-	TBranch *bIso = 0;
 
 	// Attaching to branches
 	DataTree->SetBranchAddress("IsotopesSize",&IsotopesSize);
-	DataTree->SetBranchAddress("A",&A, &bIso);
-	DataTree->SetBranchAddress("Z",&Z, &bIso);
-	DataTree->SetBranchAddress("TransverseDistance",&TransverseDistance, &bIso);
+	DataTree->SetBranchAddress("A",&A);
+	DataTree->SetBranchAddress("Z",&Z);
+	DataTree->SetBranchAddress("TransverseDistance",&TransverseDistance);
 
 
 	// Create a new file
@@ -65,14 +64,12 @@ int isodistance_histo(){
 	TH1* h3 = new TH1D("TransverseDistanceBoron", "Transverse Distance for B8", 300, 0.0, 300.0);
 
 	// Making the canvas we will draw in
-	TCanvas *c1 = new TCanvas();
+	auto c1 = new TCanvas("c1","c1",10,10,650,600);
+
 
 	// Running through the tree and filling the histograms
 	for( int i =0; i < nentries; ++i){
 		DataTree->GetEntry(i);
-		// getting the branch i
-		Long64_t tentry = DataTree->LoadTree(i);
-		bIso->GetEntry(tentry);
 
 		for( int j =0; j < IsotopesSize ; j++){//running through the vetors
 			double distance = TransverseDistance->at(j) / 10.; // to convert mm to cm
@@ -82,15 +79,13 @@ int isodistance_histo(){
 		}
  	}
 
-	DataTree->ResetBranchAddresses();	
-	
 	// Checking if the histograms were filled
 	cout << "Number of entries in the h1gram : " << h1->GetEntries() << endl;
 	cout << "Number of entries in the h1gram : " << h2->GetEntries() << endl;
 	cout << "Number of entries in the h1gram : " << h3->GetEntries() << endl;
 
 	// Build a legend - x1,y1,x2,y2 
-	TLegend leg(.55 ,.75 ,.9 ,.9);
+	TLegend leg(.65 ,.1 ,.9 ,.35);
 	leg.SetFillColor(0);
 
 	// drawing the comulative distribution 1
@@ -100,7 +95,7 @@ int isodistance_histo(){
     	hc->SetLineWidth(2);
 	hc->GetXaxis()->SetTitle("Isotope distance to muon track  [cm]");
 	hc->GetYaxis()->SetTitle("Probability");
-	hc->GetYaxis()->SetTitleOffset(1.1);
+	hc->GetYaxis()->SetTitleOffset(1.);
 	hc->GetXaxis()->SetLabelSize(.04);
 	hc->GetYaxis()->SetLabelSize(.045);
 	hc->GetXaxis()->SetTitleSize(.045);
@@ -111,7 +106,7 @@ int isodistance_histo(){
 	// Saving the histogram	
 	hc->Write();
 	// Adding the legend
-	leg.AddEntry(hc,"total","l");
+	leg.AddEntry(hc,"   total","l");
 
 	// drawing the comulative distribution 3
 	hc = h3->GetCumulative();
@@ -125,7 +120,7 @@ int isodistance_histo(){
 	// Saving the histogram	
 	hc->Write();
 	// Adding the legend
-	leg.AddEntry(hc,"^{8}B","l");
+	leg.AddEntry(hc,"   ^{8}B","l");
 
 	// drawing the comulative distribution 2
 	hc = h2->GetCumulative();
@@ -139,7 +134,7 @@ int isodistance_histo(){
 	// Saving the histogram	
 	hc->Write();
 	// Adding the legend
-	leg.AddEntry(hc,"^{16}N","l");
+	leg.AddEntry(hc,"  ^{16}N","l");
 
 
 	// Draw a legend 

@@ -6,6 +6,7 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TLegend.h"
+#include <vector> 
 
 int parents_histo(){
 	// Opening a file
@@ -29,18 +30,15 @@ int parents_histo(){
 		return 0;
 	}
 
-// creating variables for the branches
-	vector<double>* ParentsEnergy =0;
-	vector<int>* ParentsCode =0;
-	int ParentsSize;
-
-	// brench to attach
-	TBranch *bParents = 0;
+	// creating variables for the branches
+	vector<double>* ParentsEnergy 	= new vector<double>();
+	vector<int>* 	ParentsCode 	= new vector<int>();
+	int 		ParentsSize;
 
 	// Attaching to branches
 	DataTree->SetBranchAddress("ParentsSize",&ParentsSize);
-	DataTree->SetBranchAddress("ParentsCode",&ParentsCode, &bParents);
-	DataTree->SetBranchAddress("ParentsEnergy",&ParentsEnergy, &bParents);
+	DataTree->SetBranchAddress("ParentsCode",&ParentsCode);
+	DataTree->SetBranchAddress("ParentsEnergy",&ParentsEnergy);
 
 
 	
@@ -92,12 +90,13 @@ int parents_histo(){
 	TH1* h[6];
 
 	// Making the canvas we will draw in
-	TCanvas *c1 = new TCanvas();
+	auto c1 = new TCanvas("c1","c1",10,10,650,600);
 
 	// Build a legend - x1,y1,x2,y2 
-	TLegend leg(.65 ,.7 ,.9 ,.9);
+	TLegend leg(.6 ,.65 ,.9 ,.9);
 	leg.SetFillColor(0);
 	leg.SetNColumns(2);
+
 
 
 	// naming the histograms
@@ -112,17 +111,13 @@ int parents_histo(){
 	// Running through the tree and filling the histogram
 	for( int i =0; i < nentries; ++i){
 		DataTree->GetEntry(i);
-		// getting the branch i
-		Long64_t tentry = DataTree->LoadTree(i);
-		bParents->GetEntry(tentry);
 
 		for( int k =0; k < ParentsSize ; k++){//running through the vetors
 
 			for( int j =0; j < 6 ; ++j){
-				DataTree->GetEntry(i);
 				if( (stoi(particles[j][0]) == ParentsCode->at(k)) || (stoi(particles[j][1])  == ParentsCode->at(k)) ){ // if desired particle		
-					double Weight = (1./nentries)*100.; // divided by the number of muons simulated	to normalize + arbitrary normalization
-					h[j]->Fill(ParentsEnergy->at(k), Weight); // divided by 1000 to convert to GeV fill with energy weight divided by the number of events
+					double Weight = (1./nentries); // divided by the number of muons simulated	to normalize + arbitrary normalization
+					h[j]->Fill(ParentsEnergy->at(k), Weight); // fill with energy weight divided by the number of events
 				}
 			}
 		}
@@ -139,13 +134,13 @@ int parents_histo(){
     		h[j]->SetLineWidth(2);
     		h[j]->SetLineStyle(2);
 		h[j]->GetXaxis()->SetTitle("Energy [MeV]");
-		h[j]->GetYaxis()->SetTitle("Number of events per muon x cst");
-		h[j]->GetYaxis()->SetTitleOffset(1.);
-		h[j]->GetXaxis()->SetLabelSize(.04);
-		h[j]->GetYaxis()->SetLabelSize(.045);
-		h[j]->GetXaxis()->SetTitleSize(.045);
-		h[j]->GetYaxis()->SetTitleSize(.045);
-		h[j]->SetAxisRange(1., 1000000.,"Y");
+		h[j]->GetYaxis()->SetTitle("Number of events per muon");
+		h[j]->GetYaxis()->SetTitleOffset(1.15);
+		h[j]->GetXaxis()->SetLabelSize(.038);
+		h[j]->GetYaxis()->SetLabelSize(.038);
+		h[j]->GetXaxis()->SetTitleSize(.038);
+		h[j]->GetYaxis()->SetTitleSize(.042);
+		h[j]->SetAxisRange(0.01, 10000.,"Y");
 		h[j]->SetStats(kFALSE);
 
 		// Saving the histogram	

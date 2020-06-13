@@ -58,11 +58,11 @@ int muon_histo(){
   	}
 	
 	//Declaring the histograms
-	TH1* h1 = new TH1D("hspec", "Muon spectrum", 1000, 0.1, 10000);
+	TH1* h1 = new TH1D("hspec", "Muon spectrum", 10000, 0.1, 10000);
 	TH1* h2 = new TH1D("hdep", "Muon energy loss", 60, 5, 20);
 
 	// Making the canvas we will draw in
-	TCanvas *c1 = new TCanvas();
+	auto c1 = new TCanvas("c1","c1",10,10,650,600);
 
 	// Running through the tree and filling the histogram
 	for( int i =0; i < nentries; i ++){
@@ -84,11 +84,11 @@ int muon_histo(){
     	h1->SetLineStyle(1);
 	h1->GetXaxis()->SetTitle("Energy [GeV]");
 	h1->GetYaxis()->SetTitle("Energy x flux per energy [cm^{-2} s^{-1} ]");
-	h1->GetYaxis()->SetTitleOffset(1.);
+	h1->GetYaxis()->SetTitleOffset(1.2);
 	h1->GetXaxis()->SetLabelSize(.035);
-	h1->GetYaxis()->SetLabelSize(.04);
-	h1->GetXaxis()->SetTitleSize(.045);
-	h1->GetYaxis()->SetTitleSize(.045);
+	h1->GetYaxis()->SetLabelSize(.035);
+	h1->GetXaxis()->SetTitleSize(.04);
+	h1->GetYaxis()->SetTitleSize(.04);
 	h1->SetStats(kFALSE);
 	
 	h2->SetLineColor(4);
@@ -96,11 +96,11 @@ int muon_histo(){
     	h2->SetLineStyle(1);
 	h2->GetXaxis()->SetTitle("Muon energy loss [GeV]");
 	h2->GetYaxis()->SetTitle("Normalized probability");
-	h2->GetYaxis()->SetTitleOffset(1.);
-	h2->GetXaxis()->SetLabelSize(.04);
-	h2->GetYaxis()->SetLabelSize(.045);
-	h2->GetXaxis()->SetTitleSize(.045);
-	h2->GetYaxis()->SetTitleSize(.045);
+	h2->GetYaxis()->SetTitleOffset(1.2);
+	h2->GetXaxis()->SetLabelSize(.035);
+	h2->GetYaxis()->SetLabelSize(.035);
+	h2->GetXaxis()->SetTitleSize(.04);
+	h2->GetYaxis()->SetTitleSize(.04);
 	h2->SetStats(kFALSE);
 
 	// Saving histograms	

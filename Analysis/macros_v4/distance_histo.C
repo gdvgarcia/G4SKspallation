@@ -8,7 +8,8 @@
 #include "TLegend.h"
 
 #include <iostream> 
-#include <bits/stdc++.h> 
+#include <vector> 
+
 int distance_histo(){
 	// Opening a file
 	TFile* inputFile = new TFile("SK.root");
@@ -32,17 +33,15 @@ int distance_histo(){
 	}
 
 	// creating variables for the branches
-	vector<double>* TransParticlesDistance =0;
-	vector<int>* TransParticlesCode =0;
+	vector<double>* TransParticlesDistance = new vector<double>();
+	vector<int>* TransParticlesCode = new vector<int>();
 	int TransParticlesSize;
 
-	// brench to attach
-	TBranch *bTrans = 0;
 
 	// Attaching to branches
 	DataTree->SetBranchAddress("TransParticlesSize",&TransParticlesSize);
-	DataTree->SetBranchAddress("TransParticlesCode",&TransParticlesCode, &bTrans);
-	DataTree->SetBranchAddress("TransParticlesDistance",&TransParticlesDistance, &bTrans);
+	DataTree->SetBranchAddress("TransParticlesCode",&TransParticlesCode);
+	DataTree->SetBranchAddress("TransParticlesDistance",&TransParticlesDistance);
 
 
 	// create container for particles names // convertiong to string later with stoi(str1)
@@ -90,10 +89,10 @@ int distance_histo(){
 	TH1* h[6];
 
 	// Making the canvas we will draw in
-	TCanvas *c1 = new TCanvas();
+	auto c1 = new TCanvas("c1","c1",10,10,650,600);
 
 	// Build a legend - x1,y1,x2,y2 
-	TLegend leg(.65 ,.7 ,.9 ,.9);
+	TLegend leg(.6 ,.65 ,.9 ,.9);
 	leg.SetFillColor(0);
 	leg.SetNColumns(2);
 
@@ -109,9 +108,6 @@ int distance_histo(){
 	// Running through the tree and filling the histograms
 	for( int i =0; i < nentries; ++i){
 		DataTree->GetEntry(i);
-		// getting the branch i
-		Long64_t tentry = DataTree->LoadTree(i);
-		bTrans->GetEntry(tentry);
 
 		for( int k =0; k < TransParticlesSize ; k++){//running through the vetors
 
@@ -124,8 +120,6 @@ int distance_histo(){
 		}
  	}
 
-	DataTree->ResetBranchAddresses();	
-
 
 	// Checking if the histogram was filled
 	for( int j =0; j < 6; ++j){
@@ -134,15 +128,15 @@ int distance_histo(){
 			
 		// Histogram attributes
    		h[j]->SetLineColor(colors[j]);
-    		h[j]->SetLineWidth(2);
+    		h[j]->SetLineWidth(3);
     		h[j]->SetLineStyle(2);
 		h[j]->GetXaxis()->SetTitle("Distance to muon track  [cm]");
 		h[j]->GetYaxis()->SetTitle("Normalized probability");
-		h[j]->GetYaxis()->SetTitleOffset(1.1);
-		h[j]->GetXaxis()->SetLabelSize(.04);
-		h[j]->GetYaxis()->SetLabelSize(.045);
-		h[j]->GetXaxis()->SetTitleSize(.045);
-		h[j]->GetYaxis()->SetTitleSize(.045);
+		h[j]->GetYaxis()->SetTitleOffset(1.15);
+		h[j]->GetXaxis()->SetLabelSize(.038);
+		h[j]->GetYaxis()->SetLabelSize(.038);
+		h[j]->GetXaxis()->SetTitleSize(.038);
+		h[j]->GetYaxis()->SetTitleSize(.042);
 		h[j]->SetStats(kFALSE);
 
 		// Saving the histogram	
