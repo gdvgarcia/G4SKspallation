@@ -155,9 +155,13 @@ void SKFileReader::Print()
 { 
   if(!fValues.empty()){//if it is not empty
   std::cout << '\n';
-  for (std::list< double >::iterator it=fValues.begin(); it != fValues.end(); ++it)
-  std::cout << ' ' << *it;
+  int size = 0;
+  for (std::list< double >::iterator it=fValues.begin(); it != fValues.end(); ++it){
+  	std::cout << ' ' << *it;
+  	size++;
+  }
   std::cout << '\n';
+  std::cout << " Size of the file reader vector " << size << '\n';
   }
   else{
   std::cout << "File reader empty";
