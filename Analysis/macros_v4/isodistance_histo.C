@@ -60,8 +60,8 @@ int isodistance_histo(){
 	
 	//Creating the histograms
 	TH1* h1 = new TH1D("TransverseDistanceIsotopes", "Transverse Distance for all the isotopes", 300, 0.0, 300.0);
-	TH1* h2 = new TH1D("TransverseDistanceNitrogen", "Transverse Distance for N16", 300, 0.0, 300.0);
-	TH1* h3 = new TH1D("TransverseDistanceBoron", "Transverse Distance for B8", 300, 0.0, 300.0);
+	TH1* h2 = new TH1D("TransverseDistanceNitrogen", "Transverse Distance for N16", 30, 0.0, 300.0);
+	TH1* h3 = new TH1D("TransverseDistanceBoron", "Transverse Distance for B8", 30, 0.0, 300.0);
 
 	// Making the canvas we will draw in
 	auto c1 = new TCanvas("c1","c1",10,10,650,600);
@@ -102,7 +102,7 @@ int isodistance_histo(){
 	hc->GetYaxis()->SetTitleSize(.045);
 	hc->SetStats(kFALSE);
 	hc->Scale(1/h1->GetEntries()); //normalizing
-	hc->Draw("HIST9");
+	hc->Draw("HIST C 9");
 	// Saving the histogram	
 	hc->Write();
 	// Adding the legend
@@ -116,7 +116,7 @@ int isodistance_histo(){
     	hc->SetLineStyle(2);
 	hc->SetStats(kFALSE);
 	hc->Scale(1/h3->GetEntries()); //normalizing
-	hc->Draw("SAME");
+	hc->Draw("HIST C 9 SAME");
 	// Saving the histogram	
 	hc->Write();
 	// Adding the legend
@@ -130,7 +130,7 @@ int isodistance_histo(){
     	hc->SetLineStyle(9);
 	hc->SetStats(kFALSE);
 	hc->Scale(1/h2->GetEntries()); //normalizing
-	hc->Draw("SAME");
+	hc->Draw("HIST C 9 SAME");
 	// Saving the histogram	
 	hc->Write();
 	// Adding the legend

@@ -104,7 +104,7 @@ int parents_histo(){
 		//Creating the histogram
 		string histtitle = "Parents spectra for " + particles[j][2];
 		string histname = "h" + particles[j][2];
-		h[j] = new TH1D(histname.c_str(), histtitle.c_str(), 125, 0.0, 500.0);
+		h[j] = new TH1D(histname.c_str(), histtitle.c_str(), 255, -10., 500.0);
 	}
 
 
@@ -140,7 +140,7 @@ int parents_histo(){
 		h[j]->GetYaxis()->SetLabelSize(.038);
 		h[j]->GetXaxis()->SetTitleSize(.038);
 		h[j]->GetYaxis()->SetTitleSize(.042);
-		h[j]->SetAxisRange(0.01, 10000.,"Y");
+		h[j]->SetAxisRange(0.00001, 10.,"Y");
 		h[j]->SetStats(kFALSE);
 
 		// Saving the histogram	
