@@ -51,7 +51,7 @@ SKFileReader::SKFileReader( string fileName)
 SKFileReader::~SKFileReader()
 { inputFile.close(); 
 			std::cout << '\n';
-  		std::cout << "File closed";
+  		std::cout << "Initial conditions file is closed.";
   		std::cout << '\n';
 }
 
@@ -69,7 +69,6 @@ double SKFileReader::GetOneValue()
 
 void SKFileReader::Read( int numberOfEvents )
 {
-
  // variables used to read the file
   vector<string>* words = new vector<string>();
   string line;
@@ -77,6 +76,7 @@ void SKFileReader::Read( int numberOfEvents )
 
   // jumping the head lines
   getline(inputFile, line, '\n');
+
   // check if we deactivated the angles with a 0 in the start of the text file
   if ( line.compare("") != 0 ){ //check if the line is not empty
   	Split(line, '#', *words);
@@ -92,7 +92,8 @@ void SKFileReader::Read( int numberOfEvents )
   // cleaning the strings
   line.clear();
   words->clear();
-	
+
+
   //for-loop to collect the data into the list
   for ( int i = 0; ( i < numberOfEvents) && ( !inputFile.eof() ); i++){
 	getline(inputFile, line, '\n');  // Grab the line
@@ -121,6 +122,10 @@ void SKFileReader::Read( int numberOfEvents )
   	line.clear();
   	words->clear();
   }
+
+  // reseting the get line position - returning to the start of the file
+  inputFile.seekg(0,std::ios::beg);
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

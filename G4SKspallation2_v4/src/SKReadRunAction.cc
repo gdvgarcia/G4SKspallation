@@ -184,25 +184,19 @@ void SKReadRunAction::BeginOfRunAction(const G4Run* run)
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
 
-//DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 
   // Reading the right number of events from the initial conditions file
 #ifdef G4MULTITHREADED
-	G4cout << "Gonna start a run " << G4endl << G4endl;
 	G4AutoLock lock(&SKReadRunActionMutex);
 	if(! G4Threading::IsWorkerThread() ){
 		fFileReader->Read(run->GetNumberOfEventToBeProcessed());
- 		G4cout << "Did the file reader(only for master)" << G4endl << G4endl;
+ 		G4cout << "Read(only for master) the initial conditions file into a list for " << run->GetNumberOfEventToBeProcessed() << " events." << G4endl;
 	}
 #else
-	G4cout << "Gonna start a run" << G4endl << G4endl;
 	G4AutoLock lock(&SKReadRunActionMutex);
 	fFileReader->Read(run->GetNumberOfEventToBeProcessed());
- 	G4cout << "Did the file reader" << G4endl << G4endl;
+ 	G4cout << "Read the initial conditions file into a list for " << run->GetNumberOfEventToBeProcessed() << " events." << G4endl;
 #endif
-
-//DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-  
 
 
   // Get analysis manager
@@ -252,10 +246,12 @@ void SKReadRunAction::EndOfRunAction(const G4Run* /*run*/)
 	G4AutoLock lock(&SKReadRunActionMutex);
 	if(! G4Threading::IsWorkerThread() ){
 		fFileReader->Clear();
+ 		G4cout << "File reader is clear." << G4endl << G4endl;
 	}
 #else
 	G4AutoLock lock(&SKReadRunActionMutex);
 	fFileReader->Clear();
+ 		G4cout << "File reader is clear." << G4endl << G4endl;
 #endif
 }
 
