@@ -42,7 +42,7 @@
 #include "G4UImanager.hh"
 #include "G4ScoringManager.hh"
 #include "QGSP_BERT_HP.hh"  //physics list that will be used by default ID 0
-#include "QGSP_BIC_HP.hh"  // ID 1
+#include "QGSP_BIC_HP.hh"   // ID 1
 #include "FTFP_BERT_HP.hh"  // ID 2
 #include "QGSP_INCLXX_HP.hh"  // ID 3
 #include "G4PhysListFactory.hh"
@@ -79,21 +79,23 @@ int main(int argc,char** argv)
   //G4Random::setTheEngine(new CLHEP::RandEngine);
   G4Random::setTheEngine( new CLHEP::HepJamesRandom ); 
 		
-  // Record start time
-  auto start = std::chrono::high_resolution_clock::now();
-  std::time_t t_0 = std::chrono::system_clock::to_time_t(start);
-  long seed = (long)t_0; // so we use it for the seed
+  // Record starting time
+  auto start = std::chrono::high_resolution_clock::now(); // getting the time now
+  // converting the time into an int taking the milisecs into account 
+  double t_1 = std::chrono::duration_cast<std::chrono::duration<double>>(start.time_since_epoch()).count();
+  t_1 = t_1 * 1000. - 1592000000000.; // multiplied by 1 000  to get milisecs precision and removing the large unnecessary number of 1592000000000 secs - so this simulation has a maximum of around 30 years validation - Now 2020 
+  long seed = (long)t_1; // so we use the time for the seed
   // Setting your seed
   G4Random::setTheSeed(seed);
+  std::cout << "Initial random seed is : " << seed << " \n";
 
 	
   // Construct the default run manager
   //
 #ifdef G4MULTITHREADED
   G4MTRunManager* runManager = new G4MTRunManager;
-  // set your own number of threads, but G4Threading::GetNumberOfCores() returns the number of threads available on the machine. 
+  // you can set your own number of threads - G4Threading::GetNumberOfCores() returns the number of threads available on the machine(This number includes the number of hyper threads)
   G4int numberOfcores =  G4Threading::G4GetNumberOfCores();
-  // This number includes the number of hyper threads
   runManager->SetNumberOfThreads(numberOfcores);  
   std::cout << "Multithreading mode : ON \n";
 #else

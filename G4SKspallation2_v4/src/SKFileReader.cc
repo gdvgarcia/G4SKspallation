@@ -82,7 +82,10 @@ void SKFileReader::Read( int numberOfEvents )
   	Split(line, '#', *words);
 	for( unsigned int k = 0; k < words->at(0).size(); k++){
 		if(words->at(0)[k] == '0'){ // check if we find a zero
-			angles = false; // desactivate angles reader
+			angles = false; // deactivate angles reader
+			std::cout << '\n';
+  			std::cout << "Reading angles deactivated.";
+  			std::cout << '\n';
 		}
 	}
   }

@@ -186,7 +186,7 @@ void SKReadRunAction::BeginOfRunAction(const G4Run* run)
 
 
   // Reading the right number of events from the initial conditions file
-#ifdef G4MULTITHREADED
+#ifdef G4MULTITHREADED // making sure we only read once for the Master thread
 	G4AutoLock lock(&SKReadRunActionMutex);
 	if(! G4Threading::IsWorkerThread() ){
 		fFileReader->Read(run->GetNumberOfEventToBeProcessed());
@@ -242,7 +242,7 @@ void SKReadRunAction::EndOfRunAction(const G4Run* /*run*/)
   analysisManager->CloseFile();
 
     // Cleaning the reader after ending run
-#ifdef G4MULTITHREADED
+#ifdef G4MULTITHREADED // we only clean once for the master
 	G4AutoLock lock(&SKReadRunActionMutex);
 	if(! G4Threading::IsWorkerThread() ){
 		fFileReader->Clear();

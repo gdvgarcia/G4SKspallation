@@ -23,14 +23,20 @@ track of all tags.
 13/05/20 G. D. V. Garcia (G4SKspallation1)
 - Primary generator simplified for muons on top of the tank, centered and with fixed energy of 271 GeV which is the average muon energy for SK.
 15/05/20 G. D. V. Garcia (G4SKspallation1)
-- Addition of histograms and ntuples with data simulated from each run and removal (commenting its creation lines) of the fiducial volume and of the scoring manager. 
-21/05/20 G. D. V. Garcia (G4SKspallation1)
+- Addition of histograms and ntuples with data simulated from each run and removal (commenting its creation lines) of the fiducial volume and of the scoring manager.
+21/05/20 G. D. V. Garcia (G4SKspallation1 -> G4SKspallation2)
+- Now the simulation became the version 2. 
+21/05/20 G. D. V. Garcia (G4SKspallation2)
 - Now muons have initial energies and angles given by an ASCII file that can be turned on by using extra arguments when calling the macro to run. 
-26/05/20 G. D. V. Garcia (G4SKspallation1)
+26/05/20 G. D. V. Garcia (G4SKspallation2)
 - Now the physics list may be chosen by using extra arguments when calling the macro to run. 
-03/06/20 G. D. V. Garcia (G4SKspallation1)
+03/06/20 G. D. V. Garcia (G4SKspallation2)
 - Now all the ntuples became only one ntuple containing a row per event.
-09/06/20 G. D. V. Garcia (G4SKspallation1)
+06/06/20 G. D. V. Garcia (G4SKspallation2)
+- The angles for the initial conditions can be deactivated with the addition of a tolken("0") at the start of the ASCII initial conditions file.
+09/06/20 G. D. V. Garcia (G4SKspallation2)
 - Randon seed generated based on the initial time of the simulation. So we can avoid repeated results.
-11/06/20 G. D. V. Garcia (G4SKspallation1)
+11/06/20 G. D. V. Garcia (G4SKspallation2)
 - Multi-threading mode now is fully available.
+16/06/20 G. D. V. Garcia (G4SKspallation2)
+- New way of reading the ASCII file. This way only reads the file once and requires a new class, the SKFileReader class. 
