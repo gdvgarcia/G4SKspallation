@@ -261,7 +261,7 @@ int histos(){
 
 
 	// Running through the tree and filling the histograms
-	for( int i =0; i < 10; ++i){
+	for( int i =0; i < nentries; ++i){
 		DataTree->GetEntry(i);
 
 		
@@ -339,7 +339,7 @@ int histos(){
 	//
 	// Checking if the histogram was filled for the trans distance
 	for( int j =0; j < 6; ++j){
-		cout << "Number of entries in the h1gram : " << h[0][j]->GetEntries() << endl;
+		cout << "Number of entries in the trans dist hist " << particles[j][2]  << " : " << h[0][j]->GetEntries() << endl;
 
 			
 		// Histogram attributes
@@ -396,9 +396,9 @@ int histos(){
 	// MAKING THE ISO DISTANCE FIGURE
 	//
 	// Checking if the histograms were filled for the isodistance
-	cout << "Number of entries in the h1gram : " << h1->GetEntries() << endl;
-	cout << "Number of entries in the h1gram : " << h2->GetEntries() << endl;
-	cout << "Number of entries in the h1gram : " << h3->GetEntries() << endl;
+	cout << "Number of entries in the iso dist all hist : " << h1->GetEntries() << endl;
+	cout << "Number of entries in the iso dist N hist : " << h2->GetEntries() << endl;
+	cout << "Number of entries in the iso dist B hist : " << h3->GetEntries() << endl;
 
 
 	// drawing the comulative distribution 1
@@ -477,7 +477,7 @@ int histos(){
 	for( int j =0; j < 6 ; ++j){ // path length plotting
 	
 		// Checking if the histogram was filled
-		cout << "Number of entries in the h1gram : " << h[1][j]->GetEntries() << endl;
+		cout << "Number of entries in the path length hist " << particles[j][2]  << " : " << h[1][j]->GetEntries() << endl;
 
 			
 		// Histogram attributes
@@ -535,7 +535,7 @@ int histos(){
 	for( int j =0; j < 4 ; ++j){ // path length plotting
 	
 		// Checking if the histogram was filled
-		cout << "Number of entries in the h1gram : " << hm[j]->GetEntries() << endl;
+		cout << "Number of entries in the muon daug hist " << particles[j+6][2]  << " : " << hm[j]->GetEntries() << endl;
 
 			
 		// Histogram attributes
@@ -594,10 +594,10 @@ int histos(){
 	// MAKING THE MUON FIGURE
 	//
 	// Checking if the histogram was filled for the muon
-	cout << "Number of entries in the h1gram : " << hm1->GetEntries() << endl;
+	cout << "Number of entries in the muon spec hist : " << hm1->GetEntries() << endl;
 
 	// Checking if the histogram was filled for the muon
-	cout << "Number of entries in the h1gram : " << hm2->GetEntries() << endl;
+	cout << "Number of entries in the muon ener loss hist : " << hm2->GetEntries() << endl;
 				
 
 	// Histograms attributes 
@@ -664,7 +664,7 @@ int histos(){
 	for( int j =0; j < 6 ; ++j){
 	
 		// Checking if the histogram was filled
-		cout << "Number of entries in the h1gram : " << h[2][j]->GetEntries() << endl;
+		cout << "Number of entries in the parents hist " << particles[j][2]  << " : " << h[2][j]->GetEntries() << endl;
 
 			
 		// Histogram attributes
