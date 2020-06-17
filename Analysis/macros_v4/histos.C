@@ -173,6 +173,7 @@ int histos(){
 	//Declaring the histograms for the muon
 	TH1* hm1 = new TH1D("hspec", "Muon spectrum", 10000, 0.1, 10000);
 	TH1* hm2 = new TH1D("hdep", "Muon energy loss", 60, 5, 20);
+	TH1* hm1S = new TH1D("hspecS", "Muon spectrum", 10000, 0.1, 10000);
 
 
 
@@ -317,6 +318,7 @@ int histos(){
 	
 		hm1->Fill(Energy/1000., Energy/1000.); // fill with the energy normalized by the energy - divide per 1000 to convert to GeV
 		hm2->Fill((Edep)/1000.); // divide per 1000 to convert to GeV
+		hm1S->Fill(Energy/1000.); // fill with the energy normalized by the energy - divide per 1000 to convert to GeV
 
 
 
@@ -630,7 +632,9 @@ int histos(){
 	hm1->Write();		
 	//h1l->Write();
 	hm2->Write();		
-
+	//h1l->Write();
+	hm1S->Write();		
+	cout << "Mean Energy Loss " << hm1S->GetMean() << endl;
 
 	// drawing the histograms
 	hm2->SetTitle("");
