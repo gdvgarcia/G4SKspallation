@@ -261,7 +261,7 @@ int histos(){
 
 
 	// Running through the tree and filling the histograms
-	for( int i =0; i < nentries; ++i){
+	for( int i =0; i < 10; ++i){
 		DataTree->GetEntry(i);
 
 		
@@ -329,6 +329,8 @@ int histos(){
 				}
 			}
 		}
+		
+		cout << "Event " << i << " has been processed." << endl;
  	}
 
 
@@ -379,13 +381,15 @@ int histos(){
 
 
 	// finilizing the figure and saving it
-	gPad->SetLogy();
+	gPad->SetLogy(1);
 	c1->SaveAs("TrasverseDistance.png");
 
 
 
 	// clean for the next figure
 	c1->Clear();
+	gPad->SetLogx(0);
+	gPad->SetLogy(0);
 
 
 	//
@@ -463,6 +467,8 @@ int histos(){
 
 	// clean for the next figure
 	c1->Clear();
+	gPad->SetLogx(0);
+	gPad->SetLogy(0);
 
 
 	//
@@ -519,6 +525,8 @@ int histos(){
 
 	// clean for the next figure
 	c1->Clear();
+	gPad->SetLogx(0); 
+	gPad->SetLogy(0);;
 
 
 	//
@@ -578,6 +586,8 @@ int histos(){
 
 	// clean for the next figure
 	c1->Clear();
+	gPad->SetLogx(0); 
+	gPad->SetLogy(0);;
 
 
 	//
@@ -643,6 +653,8 @@ int histos(){
 
 	// clean for the next figure
 	c1->Clear();
+	gPad->SetLogx(0); 
+	gPad->SetLogy(0);;
 
 
 	//
