@@ -158,9 +158,15 @@ void SKDetectorConstruction::ConstructSDandField()
   // 
   // Creating the sensitive detector for the fiducial volume - comment the above lines
   // so we only have one detector
+<<<<<<< HEAD
   auto fiduSD = new SKSD("FiduSD", "TankHitsCollection");
   G4SDManager::GetSDMpointer()->AddNewDetector(fiduSD);
   SetSensitiveDetector("FiducialLV", fiduSD);
+=======
+  //auto fiduSD = new SKSD("FiduSD", "TankHitsCollection");
+  //G4SDManager::GetSDMpointer()->AddNewDetector(fiduSD);
+  //SetSensitiveDetector("FiducialLV", fiduSD);
+>>>>>>> 0efa2d678e0f4e006e15acbd4589d67a4b37a4d5
 
 }
 
