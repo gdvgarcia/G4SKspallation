@@ -354,7 +354,10 @@ int histos(){
 	
 		hm1->Fill(Energy/1000., 1./(1.*nentries)); // divide per 1000 to convert to GeV - normalized by the size of the simulation
 		meanSpec = Energy/1000. + meanSpec; // somming up for the mean
-		if (Energy < 1000.){ cout << "Petit " << Energy/1000. << endl;}
+		if (Energy < 0.){ 
+			cerr << "Negative Kinetic Energy Value found : " << Energy/1000. << "GeV" << endl; 
+    			return 0;
+		}
 		hm2->Fill((Edep)/1000., 15./(1.*nbinhm2)); // divide per 1000 to convert to GeV and normalize by the bin size
 		meanLost = Edep/1000. + meanLost; // somming up for the mean
 
