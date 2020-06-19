@@ -11,8 +11,6 @@
 #include <vector> 
 
 int histos(){
-
-
 	// Opening the file with the tree
 	TFile* inputFile = new TFile("SK.root");
 	// checking if the file is open correctly
@@ -144,8 +142,17 @@ int histos(){
 
 
 	// create the data collector for isotopes list
-	map<int, int > multiplicity [118];
-	map<int, bool> Isstable [118];	
+	map<int, int > multiplicity [118]; // for the total
+	map<int, int > multiplicityEvent [118]; // to collect per event data 
+	map<int, vector<int> > multiplicityEvents [118]; // to collect many events data in the vector
+	map<int, double > multiplicityError [118]; // to save the erros
+	map<int, bool> Isstable [118];
+
+
+	
+	// variables for the mean
+	double meanSpec = 0.;
+	double meanLost = 0.;
 
 
 
@@ -166,13 +173,14 @@ int histos(){
 	TH1* h[3][6];
 	//Creating the histograms for isodistance
 	TH1* h1 = new TH1D("TransverseDistanceIsotopes", "Transverse Distance for all the isotopes", 300, 0.0, 300.0);
-	TH1* h2 = new TH1D("TransverseDistanceNitrogen", "Transverse Distance for N16", 30, 0.0, 300.0);
-	TH1* h3 = new TH1D("TransverseDistanceBoron", "Transverse Distance for B8", 30, 0.0, 300.0);
+	TH1* h2 = new TH1D("TransverseDistanceNitrogen", "Transverse Distance for N16", 60, 0.0, 300.0);
+	TH1* h3 = new TH1D("TransverseDistanceBoron", "Transverse Distance for B8", 60, 0.0, 300.0);
 	//Declaring the histogram for muons daughters
 	TH1* hm[4];
 	//Declaring the histograms for the muon
-	TH1* hm1 = new TH1D("hspec", "Muon spectrum", 10000, 0.1, 10000);
-	TH1* hm2 = new TH1D("hdep", "Muon energy loss", 60, 5, 20);
+	TH1* hm1;
+	int nbinhm2 = 60; // number of bins for the energy loss
+	TH1* hm2 = new TH1D("hdep", "Muon energy loss", nbinhm2, 5, 20);
 
 
 
@@ -207,7 +215,7 @@ int histos(){
 		//Creating the histogram
 		histtitle = "Transverse distance for " + particles[j][2];
 		histname = "h" + particles[j][2] + "0";
-		h[0][j] = new TH1D(histname.c_str(), histtitle.c_str(), 300, 0.0, 300.0);
+		h[0][j] = new TH1D(histname.c_str(), histtitle.c_str(), 200, 0.0, 300.0);
 			
 	}
 
@@ -217,13 +225,13 @@ int histos(){
 		//Creating the histogram
 		histtitle = "Path Length spectra for " + particles[j][2];
 		histname = "h" + particles[j][2]  + "1";
-		h[1][j] = new TH1D(histname.c_str(), histtitle.c_str(), 500, 0.0, 500.0);
+		h[1][j] = new TH1D(histname.c_str(), histtitle.c_str(), 350, 0.0, 500.0);
 			
 	}
 
 
 	// Building log binning for muon daug hists
-	const Int_t nbins = 100;
+	const Int_t nbins = 1000;
    	Double_t xmin = 1e-2;
    	Double_t xmax = 1e2;
    	Double_t logxmin = TMath::Log10(xmin);
@@ -251,13 +259,33 @@ int histos(){
 		//Creating the histogram
 		histtitle = "Parents spectra for " + particles[j][2];
 		histname = "h" + particles[j][2] + "2";
-		h[2][j] = new TH1D(histname.c_str(), histtitle.c_str(), 255, -10., 500.0);
+		h[2][j] = new TH1D(histname.c_str(), histtitle.c_str(), 153, -10., 500.0);
 	}
+
+
+	// Building log binning for the muon spec
+	const Int_t nbins2= 500;
+   	Double_t xmin2 = 0.5e-2;
+   	Double_t xmax2 = 5.0e4;
+   	Double_t logxmin2 = TMath::Log10(xmin2);
+   	Double_t logxmax2 = TMath::Log10(xmax2);
+   	Double_t binwidth2 = (logxmax2-logxmin2)/nbins2;
+   	Double_t xbins2[nbins2+1];
+   	xbins2[0] = xmin2;
+   	for (Int_t i=1;i<=nbins2;i++) {
+      		xbins2[i] = xmin2 + TMath::Power(10,logxmin2+i*binwidth2);
+   	}
+
+
+	//Creating the histogram for the muon
+	hm1 = new TH1D("hspec", "Muon spectrum",nbins2,xbins2);
+
 
 
 
 	// variables for the running tree
 	double distance, Weight;
+	map<int, int>::iterator itr2;
 
 
 	// Running through the tree and filling the histograms
@@ -286,8 +314,17 @@ int histos(){
 			// running for the iso list
 			if(A->at(j) > 7){
 				multiplicity[Z->at(j)-1][A->at(j)] += 1; // the defult initializition is 0
+				multiplicityEvent[Z->at(j)-1][A->at(j)] += 1; // the defult initializition is 0
 				Isstable[Z->at(j)-1][A->at(j)] = stable->at(j);
 			}
+		}
+
+		// filling the multiplicityEvents
+		for( int i = 0; i < 118; i++){
+    		for (itr2 = multiplicityEvent[i].begin(); itr2 != multiplicityEvent[i].end(); ++itr2) { // i = Z , itr->first = A and itr->second = quantity
+			multiplicityEvents[i][itr2->first].push_back(itr2->second);
+		}
+		multiplicityEvent[i].clear();
 		}
 
 
@@ -296,7 +333,7 @@ int histos(){
 
 			for( int j =0; j < 6 ; ++j){
 				if( (stoi(particles[j][0]) == PathLengthCode->at(k)) || (stoi(particles[j][1])  == PathLengthCode->at(k))  ){ // if desired particle		
-					Weight = (StepLength->at(k)/nentries)/10.; // divided by ten to get the result in cm and divided by the number of muons simulated	
+					Weight = (StepLength->at(k)/( nentries ))/10.; // divided by ten to get the result in cm and divided by the number of muons simulated	
 					h[1][j]->Fill(PathLengthEnergy->at(k), Weight); // fill with path lenght and weight 
 				}
 			}
@@ -308,15 +345,17 @@ int histos(){
 
 			for( int j =0; j < 4 ; ++j){
 				if( (stoi(particles[j+6][0]) == FirstGenParticle->at(k)) || (stoi(particles[j+6][1])  == FirstGenParticle->at(k)) ){ // if desired particle		
-					Weight = (1./nentries); // divided by the number of muons simulated to normalize	
+					Weight = (1./( nentries )); // divided by the number of muons simulated to normalize	
 					hm[j]->Fill(FirstGenEnergy->at(k)/1000., Weight); // divided by 1000 to convert to GeV fill with energy and weight divided by the number of events
 				}
 			}
 		}
 	
 	
-		hm1->Fill(Energy/1000., Energy/1000.); // fill with the energy normalized by the energy - divide per 1000 to convert to GeV
-		hm2->Fill((Edep)/1000.); // divide per 1000 to convert to GeV
+		hm1->Fill(Energy/1000.); // divide per 1000 to convert to GeV
+		meanSpec = Energy/1000. + meanSpec; // somming up for the mean
+		hm2->Fill((Edep)/1000., 15./(1.*nbinhm2)); // divide per 1000 to convert to GeV and normalize by the bin size
+		meanLost = Edep/1000. + meanLost; // somming up for the mean
 
 
 
@@ -324,7 +363,7 @@ int histos(){
 
 			for( int j =0; j < 6 ; ++j){
 				if( (stoi(particles[j][0]) == ParentsCode->at(k)) || (stoi(particles[j][1])  == ParentsCode->at(k)) ){ // if desired particle		
-					Weight = (1./nentries); // divided by the number of muons simulated	to normalize + arbitrary normalization
+					Weight = (1./( nentries )); // divided by the number of muons simulated	to normalize + arbitrary normalization
 					h[2][j]->Fill(ParentsEnergy->at(k), Weight); // fill with energy weight divided by the number of events
 				}
 			}
@@ -333,13 +372,17 @@ int histos(){
 		cout << "Event " << i << " has been processed." << endl;
  	}
 
+	// Closing hist file
+	inputFile->Close();
+
+
 
 	//
 	// MAKING THE TRANS DISTANCE FIGURE
 	//
 	// Checking if the histogram was filled for the trans distance
 	for( int j =0; j < 6; ++j){
-		cout << "Number of entries in the h1gram : " << h[0][j]->GetEntries() << endl;
+		cout << "Number of entries in the trans dist hist " << particles[j][2]  << " : " << h[0][j]->GetEntries() << endl;
 
 			
 		// Histogram attributes
@@ -367,7 +410,7 @@ int histos(){
 
 		// drawing the histograms
 		h[0][j]->SetTitle("");
-		h[0][j]->Draw(" HIST SAME C 9");
+		h[0][j]->Draw(" HIST SAME 9");
 		h[0][j]->SetAxisRange(0.0001, 0.1,"Y");
 
 
@@ -396,9 +439,9 @@ int histos(){
 	// MAKING THE ISO DISTANCE FIGURE
 	//
 	// Checking if the histograms were filled for the isodistance
-	cout << "Number of entries in the h1gram : " << h1->GetEntries() << endl;
-	cout << "Number of entries in the h1gram : " << h2->GetEntries() << endl;
-	cout << "Number of entries in the h1gram : " << h3->GetEntries() << endl;
+	cout << "Number of entries in the iso dist all hist : " << h1->GetEntries() << endl;
+	cout << "Number of entries in the iso dist N hist : " << h2->GetEntries() << endl;
+	cout << "Number of entries in the iso dist B hist : " << h3->GetEntries() << endl;
 
 
 	// drawing the comulative distribution 1
@@ -415,7 +458,7 @@ int histos(){
 	hc->GetYaxis()->SetTitleSize(.045);
 	hc->SetStats(kFALSE);
 	hc->Scale(1/h1->GetEntries()); //normalizing
-	hc->Draw("HIST C 9");
+	hc->Draw("HIST 9");
 
 
 	// Saving the histogram	
@@ -434,7 +477,7 @@ int histos(){
     	hc->SetLineStyle(2);
 	hc->SetStats(kFALSE);
 	hc->Scale(1/h3->GetEntries()); //normalizing
-	hc->Draw("HIST C 9 SAME");
+	hc->Draw("HIST 9 SAME");
 	// Saving the histogram	
 	hc->Write();
 	// Adding the legend
@@ -449,7 +492,7 @@ int histos(){
     	hc->SetLineStyle(9);
 	hc->SetStats(kFALSE);
 	hc->Scale(1/h2->GetEntries()); //normalizing
-	hc->Draw("HIST C 9 SAME");
+	hc->Draw("HIST 9 SAME");
 	// Saving the histogram	
 	hc->Write();
 	// Adding the legend
@@ -477,7 +520,7 @@ int histos(){
 	for( int j =0; j < 6 ; ++j){ // path length plotting
 	
 		// Checking if the histogram was filled
-		cout << "Number of entries in the h1gram : " << h[1][j]->GetEntries() << endl;
+		cout << "Number of entries in the path length hist " << particles[j][2]  << " : " << h[1][j]->GetEntries() << endl;
 
 			
 		// Histogram attributes
@@ -500,10 +543,10 @@ int histos(){
 		// drawing the histograms
 		h[1][j]->SetTitle("");
 		if( j == 0){
-			h[1][j]->DrawClone("HIST C 9");
+			h[1][j]->DrawClone("HIST 9");
 		}
 		else{
-			h[1][j]->DrawClone("HIST C 9 SAME");
+			h[1][j]->DrawClone("HIST 9 SAME");
 		}
 		// Adding the legend
 		leg[1]->AddEntry(h[1][j],particles[j][3].c_str(),"l");
@@ -535,7 +578,7 @@ int histos(){
 	for( int j =0; j < 4 ; ++j){ // path length plotting
 	
 		// Checking if the histogram was filled
-		cout << "Number of entries in the h1gram : " << hm[j]->GetEntries() << endl;
+		cout << "Number of entries in the muon daug hist " << particles[j+6][2]  << " : " << hm[j]->GetEntries() << endl;
 
 			
 		// Histogram attributes
@@ -560,10 +603,10 @@ int histos(){
 		// drawing the histograms
 		hm[j]->SetTitle("");
 		if( j == 0){
-			hm[j]->DrawClone("HIST C 9");
+			hm[j]->DrawClone("HIST 9");
 		}
 		else{
-			hm[j]->DrawClone("HIST C 9 SAME");
+			hm[j]->DrawClone("HIST 9 SAME");
 		}
 		// Adding the legend
 		leg[3]->AddEntry(hm[j],particles[j+6][3].c_str(),"l");
@@ -594,10 +637,20 @@ int histos(){
 	// MAKING THE MUON FIGURE
 	//
 	// Checking if the histogram was filled for the muon
-	cout << "Number of entries in the h1gram : " << hm1->GetEntries() << endl;
+	cout << "Number of entries in the muon spec hist : " << hm1->GetEntries() << endl;
 
 	// Checking if the histogram was filled for the muon
-	cout << "Number of entries in the h1gram : " << hm2->GetEntries() << endl;
+	cout << "Number of entries in the muon ener loss hist : " << hm2->GetEntries() << endl;
+
+	
+	// calculating the mean
+	meanSpec = meanSpec/( nentries ); // dividing by the n of muons
+	meanLost = meanLost/( nentries ); // dividing by the n of muons
+
+
+	// printing the mean values
+	cout << "Mean energy of the spectrum : " << meanSpec << endl;
+	cout << "Mean energy loss : " << meanLost << endl;
 				
 
 	// Histograms attributes 
@@ -631,7 +684,6 @@ int histos(){
 	//h1l->Write();
 	hm2->Write();		
 
-
 	// drawing the histograms
 	hm2->SetTitle("");
 	hm2->DrawNormalized("HIST 9");
@@ -664,7 +716,7 @@ int histos(){
 	for( int j =0; j < 6 ; ++j){
 	
 		// Checking if the histogram was filled
-		cout << "Number of entries in the h1gram : " << h[2][j]->GetEntries() << endl;
+		cout << "Number of entries in the parents hist " << particles[j][2]  << " : " << h[2][j]->GetEntries() << endl;
 
 			
 		// Histogram attributes
@@ -689,10 +741,10 @@ int histos(){
 		// drawing the histograms
 		h[2][j]->SetTitle("");
 		if( j == 0){
-			h[2][j]->DrawClone("HIST C 9");
+			h[2][j]->DrawClone("HIST 9");
 		}
 		else{
-			h[2][j]->DrawClone("HIST C 9 SAME");
+			h[2][j]->DrawClone("HIST 9 SAME");
 		}
  	}
 
@@ -721,26 +773,50 @@ int histos(){
 
 
 
+	// calculating the errors
+	map<int, int>::iterator itr3;
+	for( int i = 0; i < 118; i++){
+    	for (itr3 = multiplicity[i].begin(); itr3 != multiplicity[i].end(); ++itr3) { // i = Z , itr3->first = A and itr3->second = quantity
+		multiplicityEvents[i][itr3->first].push_back(itr3->second);
+		for(int j =0; j < nentries ; j++){//running through events
+			if( j < multiplicityEvents[i][itr3->first].size() ){
+			multiplicityError[i][itr3->first] += (
+(multiplicityEvents[i][itr3->first].at(j)-((itr3->second*1.)/(1.*( nentries ))))*
+(multiplicityEvents[i][itr3->first].at(j)-((itr3->second*1.)/(1.*( nentries )))
+) / ( ( nentries ) -1.) );
+			}
+			else{
+				multiplicityError[i][itr3->first] += (((itr3->second*1.)/(1.*( nentries )))*
+((itr3->second*1.)/(1.*( nentries )))
+) / ( ( nentries ) -1.) ;
+			}
+		}
+	}
+	}
+
+
+
 	// vectors to fix the order of print
-	std::vector<std::vector<int>* > * stables 	= new std::vector<std::vector<int>*  >;
-	std::vector<std::vector<int>* > * unstables 	= new std::vector<std::vector<int>*  >;
+	std::vector<std::vector<double>* > * stables 	= new std::vector<std::vector<double>*  >;
+	std::vector<std::vector<double>* > * unstables 	= new std::vector<std::vector<double>*  >;
 
 
 
 	map<int, int>::iterator itr;
-	std::vector<int>* arrays = new std::vector<int>;
+	std::vector<double>* arrays = new std::vector<double>;
 	for( int i = 0; i < 118; i++){
     		for (itr = multiplicity[i].begin(); itr != multiplicity[i].end(); ++itr) { // i = Z , itr->first = A and itr->second = quantity
-			arrays = new std::vector<int>;
+			arrays = new std::vector<double>;
 			arrays->push_back(i);
 			arrays->push_back(itr->first);
 			arrays->push_back(itr->second);
+			arrays->push_back(sqrt(multiplicityError[i][itr->first])/sqrt(nentries));
 			if ( Isstable[i][itr->first] ){
-				cout << elements[i] << itr->first << " is " << Isstable[i][itr->first] <<" and has " << itr->second << endl ;
+				cout << elements[i] << itr->first << " is " << Isstable[i][itr->first] <<" and has " << itr->second << " \\pm " << multiplicityError[i][itr->first] << endl ;
 				stables->push_back(arrays);
 			}
 			else{
-				cout << elements[i] << itr->first << " is " << Isstable[i][itr->first] <<" and has " << itr->second << endl ;
+				cout << elements[i] << itr->first << " is " << Isstable[i][itr->first] <<" and has " << itr->second << " \\pm " << multiplicityError[i][itr->first] << endl ;
 				unstables->push_back(arrays);
 			}
 		}
@@ -761,8 +837,8 @@ int histos(){
 				location = j;
 			}
 		}
-		outfile << '\t' << "$^{"  << stables->at(location)->at(1) << "}$" << elements[stables->at(location)->at(0)]
-             	<< '\t' << '&' << '\t' << max/(3200.* nentries) * 10000000. << '\t' << "\\\\" <<'\n';  // dividing per the number of muons, the distance of the muon track and by the water density 1 * g * cm^{-3} and multiplyin by 10^{7}
+		outfile << '\t' << "$^{"  << stables->at(location)->at(1) << "}$" << elements[(int)stables->at(location)->at(0)]
+             	<< '\t' << '&' << '\t' << max/(3200.* ( nentries )) * 10000000. << '\t' << '&' << '\t' << " \\pm " << stables->at(location)->at(3)/(3200.) * 10000000.  << '\t' << "\\\\" <<'\n';  // dividing per the number of muons, the distance of the muon track and by the water density 1 * g * cm^{-3} and multiplyin by 10^{7}
 		stables->erase (stables->begin()+location); //removing the maximum from the vector
 		max = -1;
 	}
@@ -782,8 +858,8 @@ int histos(){
 				location = j;
 			}
 		}
-		outfile << '\t' << "$^{"  << unstables->at(location)->at(1) << "}$" << elements[unstables->at(location)->at(0)]
-             	<< '\t' << '&' << '\t' << max/(3200.* nentries) * 10000000. << '\t' << "\\\\" <<'\n';  // dividing per the number of muons, the distance of the muon track and by the water density 1 * g * cm^{-3} and multiplyin by 10^{7}
+		outfile << '\t' << "$^{"  << unstables->at(location)->at(1) << "}$" << elements[(int)unstables->at(location)->at(0)]
+             	<< '\t' << '&' << '\t' << max/(3200.* ( nentries )) * 10000000. << '\t' << '&' << '\t' << " \\pm " << unstables->at(location)->at(3)/(3200.) * 10000000.  << '\t' << "\\\\" <<'\n';  // dividing per the number of muons, the distance of the muon track and by the water density 1 * g * cm^{-3} and multiplyin by 10^{7}
 		unstables->erase (unstables->begin()+location); //removing the maximum from the vector
 		max = -1;
 	}
@@ -794,8 +870,7 @@ int histos(){
 
 
 
-	// Closing hist file
-	inputFile->Close();
+	
 	//outputFile->Close();
 
 	return 1;
