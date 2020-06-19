@@ -261,7 +261,7 @@ int histos(){
 
 
 	// Running through the tree and filling the histograms
-	for( int i =0; i < 10; ++i){
+	for( int i =0; i < nentries; ++i){
 		DataTree->GetEntry(i);
 
 		
