@@ -264,9 +264,9 @@ int histos(){
 
 
 	// Building log binning for the muon spec
-	const Int_t nbins2= 500;
-   	Double_t xmin2 = 0.5e-2;
-   	Double_t xmax2 = 5.0e4;
+	const Int_t nbins2= 100;
+   	Double_t xmin2 = 1.e-1;
+   	Double_t xmax2 = 1.0e4;
    	Double_t logxmin2 = TMath::Log10(xmin2);
    	Double_t logxmax2 = TMath::Log10(xmax2);
    	Double_t binwidth2 = (logxmax2-logxmin2)/nbins2;
@@ -354,6 +354,7 @@ int histos(){
 	
 		hm1->Fill(Energy/1000.); // divide per 1000 to convert to GeV
 		meanSpec = Energy/1000. + meanSpec; // somming up for the mean
+		if (Energy < 1.){ cout << "Petit" << Energy << endl;}
 		hm2->Fill((Edep)/1000., 15./(1.*nbinhm2)); // divide per 1000 to convert to GeV and normalize by the bin size
 		meanLost = Edep/1000. + meanLost; // somming up for the mean
 
@@ -693,7 +694,7 @@ int histos(){
 
 	c1->Clear();
 	hm1->SetTitle("");
-	hm1->DrawNormalized("HIST C 9");
+	hm1->DrawNormalized("HIST 9");
 
 
 	// finilizing the figure and saving it

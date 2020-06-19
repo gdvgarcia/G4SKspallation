@@ -43,6 +43,7 @@ using namespace std;
 
 class G4ParticleGun;
 class G4Event;
+class G4Tubs;
 
 /// The primary generator action class with particle gun.
 ///
@@ -64,7 +65,8 @@ class SKReadPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   
   private:
     G4ParticleGun*  		fParticleGun; 	// pointer a to G4 gun class
-    static SKFileReader * 	fFileReader; 	// file reader object used to read data from the file of initial conditions
+    static SKFileReader* 	fFileReader; 	// file reader object used to read data from the file of initial conditions
+    G4Tubs* 			fEnvelopeTub;	// it points to either the fiducial or the tank volume
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

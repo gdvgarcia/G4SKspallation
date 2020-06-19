@@ -41,7 +41,8 @@
 
 #include "G4UImanager.hh"
 #include "G4ScoringManager.hh"
-#include "QGSP_BERT_HP.hh"  //physics list that will be used by default ID 0
+#include "QGSP_BERT_HP.hh"  //physics list that will be used by default 
+#include "QGSP_BERT.hh"  // ID 0
 #include "QGSP_BIC_HP.hh"   // ID 1
 #include "FTFP_BERT_HP.hh"  // ID 2
 #include "QGSP_INCLXX_HP.hh"  // ID 3
@@ -127,7 +128,7 @@ int main(int argc,char** argv)
 			// taking the phys list by its ID
   			switch(ID) {
       			case 0:
-         			physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP");
+         			physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT");
       	        		break;
       			case 1:
           			physicsList =  physListFactory->GetReferencePhysList("QGSP_BIC_HP");

@@ -65,7 +65,8 @@ with simple conditions for the geometry.
 
    The physics list can be chosen by adding an extra argument when opening the application
    in batch mode. The third argument corresponds to the physics list choice. By default we 
-   use the QGSP_BERT_HP. If the third argument is "0", we keep the QGSP_BERT_HP. If it is "1", we 
+   use the QGSP_BERT_HP. If the third argument is "0", we keep the QGSP_BERT_HP but without the 
+   neutrons precision package, so actually we have the QGSP_BERT physics list. If it is "1", we 
    get the QGSP_BIC_HP. "2" brings the FTFP_BERT_HP and "3" the QGSP_INCLXX_HP. Any other number or
    value for the third argument will bring the default physics list. If the argument is "!", it just
    keep the default list and you can add a fourth argument. Meaning that "!" is just a place holder. 
