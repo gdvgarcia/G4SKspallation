@@ -94,44 +94,44 @@ int histos(){
     	particles[0][0] =  "11"; // "e-"; 
 	particles[0][1] = "-11"; // "e+";
 	particles[0][2] = "electrons&positrons";
-	particles[0][3] = "  e^{#pm}";
+	particles[0][3] = " e^{#pm}";
 	particles[1][0] = "22"; // "gamma";
 	particles[1][1] = "0"; //"none";
 	particles[1][2] = "gammas";
-	particles[1][3] = "  #gamma";
+	particles[1][3] = " #gamma";
 	particles[2][0] = "2112"; //"neutron";
 	particles[2][1] = "0"; //"none";
 	particles[2][2] = "neutrons";
-	particles[2][3] = "  n";
+	particles[2][3] = " n";
 	particles[3][0] = "2212"; //"proton";
 	particles[3][1] = "0"; //"none";
 	particles[3][2] = "protons";
-	particles[3][3] = "  p";
+	particles[3][3] = " p";
 	particles[4][0] = "211"; //"pi+";
 	particles[4][1] = "0"; //"none";
 	particles[4][2] = "pionsplus";
-	particles[4][3] = "  #pi^{+}";
+	particles[4][3] = " #pi^{+}";
 	particles[5][0] = "-211"; //"pi-";
 	particles[5][1] = "0"; //"none";
 	particles[5][2] = "pionsminus";
-	particles[5][3] = "  #pi^{-}";
+	particles[5][3] = " #pi^{-}";
 	// part for the muon daugh
     	particles[6][0] =  "11"; // "e-"; 
 	particles[6][1] = "0"; // "none";
 	particles[6][2] = "electrons";
-	particles[6][3] = "  e^{-}";
+	particles[6][3] = " e^{-}";
 	particles[7][0] = "-11"; // "e+";
 	particles[7][1] = "0"; //"none";
 	particles[7][2] = "positrons";
-	particles[7][3] = "  e^{+}";
+	particles[7][3] = " e^{+}";
 	particles[8][0] = "22"; //"gamma";
 	particles[8][1] = "0"; //"none";
 	particles[8][2] = "gammas";
-	particles[8][3] = "  #gamma";
+	particles[8][3] = " #gamma";
 	particles[9][0] = "211"; //"pi+";
 	particles[9][1] = "-211"; //"pi-";
 	particles[9][2] = "pionsplusminus";
-	particles[9][3] = "  #pi^{#pm}";
+	particles[9][3] = " #pi^{#pm}";
 
 
 	// create container for colors of the particles histograms
@@ -195,15 +195,15 @@ int histos(){
 	TLegend* leg[4] = {0,0,0,0};
 	// build legends to pathlength and trans distance
 	for( int i = 0; i < 2 ; i++){
-	leg[i] = new TLegend(.6 ,.65 ,.9 ,.9);
+	leg[i] = new TLegend(.7 ,.65 ,.9 ,.9);
 	leg[i]->SetFillColor(0);
 	leg[i]->SetNColumns(2);
 	}
 	// Build a legend - x1,y1,x2,y2  for isodista
-	leg[2] = new TLegend(.65 ,.2 ,.9 ,.45);
+	leg[2] = new TLegend(.675 ,.2 ,.9 ,.45);
 	leg[2]->SetFillColor(0);
 	// Build a legend - x1,y1,x2,y2 for muon daughters
-	leg[3] = new TLegend(.65 ,.725 ,.9 ,.9);
+	leg[3] = new TLegend(.7 ,.725 ,.9 ,.9);
 	leg[3]->SetFillColor(0);
 	leg[3]->SetNColumns(2);
 
@@ -292,7 +292,7 @@ int histos(){
 
 
 	// Running through the tree and filling the histograms
-	for( int i =0; i < 100; ++i){
+	for( int i =0; i < nentries; ++i){
 		DataTree->GetEntry(i);
 
 		
@@ -426,7 +426,7 @@ int histos(){
 
 
 		// Adding the legend
-		leg[0]->AddEntry(h[0][j], particles[j][3].c_str(),"l");
+		leg[0]->AddEntry(h[0][j], particles[j][3].c_str(),"E");
  	}
 
 
@@ -482,7 +482,7 @@ int histos(){
 
 
 	// Adding the legend
-	leg[2]->AddEntry(hc,"   total","l");
+	leg[2]->AddEntry(hc,"   total","L");
 
 
 	// drawing the comulative distribution 3
@@ -498,7 +498,7 @@ int histos(){
 	// Saving the histogram	
 	hc->Write();
 	// Adding the legend
-	leg[2]->AddEntry(hc,"   ^{8}B","l");
+	leg[2]->AddEntry(hc,"   ^{8}B","L");
 
 
 	// drawing the comulative distribution 2
@@ -514,7 +514,7 @@ int histos(){
 	// Saving the histogram	
 	hc->Write();
 	// Adding the legend
-	leg[2]->AddEntry(hc,"  ^{16}N","l");
+	leg[2]->AddEntry(hc,"  ^{16}N","L");
 
 
 	// Draw a legend 
@@ -568,7 +568,7 @@ int histos(){
 			h[1][j]->DrawClone("HIST 9 SAME");
 		}
 		// Adding the legend
-		leg[1]->AddEntry(h[1][j],particles[j][3].c_str(),"l");
+		leg[1]->AddEntry(h[1][j],particles[j][3].c_str(),"E");
  	}
 
 
@@ -629,7 +629,7 @@ int histos(){
 			hm[j]->DrawClone("HIST 9 SAME");
 		}
 		// Adding the legend
-		leg[3]->AddEntry(hm[j],particles[j+6][3].c_str(),"l");
+		leg[3]->AddEntry(hm[j],particles[j+6][3].c_str(),"E");
  	}
 
 
