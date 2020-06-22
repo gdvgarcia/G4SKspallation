@@ -31,9 +31,6 @@
 
 #include "SKReadPrimaryGeneratorAction.hh"
 
-#include "G4LogicalVolumeStore.hh"
-#include "G4LogicalVolume.hh"
-#include "G4Tubs.hh"
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4ParticleGun.hh"
@@ -62,9 +59,7 @@ using namespace std;
 
 SKReadPrimaryGeneratorAction::SKReadPrimaryGeneratorAction(SKFileReader* fileReader)
 : G4VUserPrimaryGeneratorAction(),
-  fParticleGun(0), 
-  fThzHalf(-1.),
-  fTouterRadius(-1.)
+  fParticleGun(0)
 {
   G4int n_particle = 1;
   fParticleGun  = new G4ParticleGun(n_particle);
@@ -102,39 +97,6 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   //This function is called at the begining of each event
   //
 
-
-  // In order to avoid dependence of PrimaryGeneratorAction
-  // on DetectorConstruction class we get Envelope volume
-  // from G4LogicalVolumeStore.
-
-
-  // getting the volume and then getting its parameters
-  if(fThzHalf < 0){
-  G4Tubs* EnvelopeTub = 0;
-  	G4LogicalVolume* envLV
-  	  = G4LogicalVolumeStore::GetInstance()->GetVolume("FiducialLV");
-  	if ( envLV ) {EnvelopeTub = dynamic_cast<G4Tubs*>(envLV->GetSolid());}
-  	else{ 
-		envLV = G4LogicalVolumeStore::GetInstance()->GetVolume("TankLV");
-		if ( envLV ) {EnvelopeTub = dynamic_cast<G4Tubs*>(envLV->GetSolid());}
-  	}
-  
-
-  if ( EnvelopeTub ) {
-    fTouterRadius 	= EnvelopeTub->GetRMax 		();
-    fThzHalf 		= EnvelopeTub->GetZHalfLength 	();
-  }  
-  else  {
-    G4ExceptionDescription msg;
-    msg << "Envelope volume of tub shape not found.\n"; 
-    msg << "Perhaps you have changed geometry.\n";
-    msg << "The gun will be place at the center.";
-    G4Exception("SKReadPrimaryGeneratorAction::GeneratePrimaries()",
-     "MyCode0002",JustWarning,msg);
-  }
-  }
-
-
   // Flag for cancelling the angles reader and only read energy spectrum
   bool anglesflag = false;
 
@@ -151,80 +113,41 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   
   fParticleGun->SetParticleEnergy( KinEnergy *GeV);
 
-  //Building the GUN in the right position 
-
-  //setting default vertex position
-  G4double x0 = 0;
-  G4double y0 = 0;
-  // on top of the tank
-  G4double z0 = fThzHalf;
-
   if(anglesflag){ // check if we deactivated the angles
-	// first the direction
-
 	// Convert the strings to numbers with the atof and saving the initial conditions variables
   	G4double theta 	= fFileReader->GetOneValue();
   	G4double phi 	= fFileReader->GetOneValue();
 
- 	// Building the direction
+ 		// Building the direction
   	G4double Px = cos( phi ) * sin( theta );
   	G4double Py = sin( phi ) * sin( theta );
   	G4double Pz = - cos( theta );
 
   	// Filling the gun
   	fParticleGun->SetParticleMomentumDirection(G4ThreeVector( Px, Py, Pz ));
+  }
 
-	// then the location
 
- 	// Here we choose a point inside the SK tank with a uniform distribution, this point will be crossed by the muon
+  //Building the GUN in the right position 
+
+  //SK tank parameters to set up the gun in on top of the tank randomly
+  G4double TouterRadius = 19.5*m; 
+  G4double Thz = 42.*m;
+
+  //setting default vertex position
+  G4double x0 = 0;
+  G4double y0 = 0;
+  // on top of the tank
+  G4double z0 = 0.5 * Thz;
+
+  if(anglesflag){ // check if we deactivated the angles - so no need for random position
+ 	// Here we make the gun shoot inside the SK tank with a uniform distribution
   	const G4double 	pi = 3.14159265358979323846264338328;
-  	G4double 	theta2 =  2* pi * G4UniformRand();
-  	G4double 	r =  fTouterRadius * G4UniformRand();
-  	// setting the point
-  	G4double x1 	= cos( theta2 ) * r;
-  	G4double y1 	= sin( theta2 ) * r;
-	G4double z1 	= fThzHalf * 2 * (0.5 - G4UniformRand());
-	// initialize
-	G4double D 	= 0.;
-
-	// projecting our point into the cylinder surface in the inverse direction of its momentum
-
-	// we break it down in 2 possibilities to find the distance from the point to the cylinder along its past trajectory
-
-	if ( Pz < 1 ){
-		// first the X & Y plan
-		D = ( sqrt( ( Px * x1 + Py * y1 )* ( Px * x1 + Py * y1 ) - (Px * Px + Py * Py) * ( x1 * x1 + y1 * y1 - fTouterRadius * fTouterRadius ) ) +  ( Px * x1 + Py * y1 ) ) / ( (Px * Px + Py * Py) ) ;
-		// setting the vertex
-		x0 = x1 - Px * D;
-		y0 = y1 - Py * D;
-		z0 = z1 - Pz * ( D/ sin( theta ) );
-
-	}
-
-	if ( ( z0  > fThzHalf + 1  ) ){
-		// second in radius & Z  
-		D =  (  fThzHalf - z1 ) / cos( theta);
-		// setting the vertex
-		x0 = x1 - Px * D;
-		y0 = y1 - Py * D;
-		z0 = z1 - Pz * D;
-	}
-
-
-	if ( z0 > fThzHalf + 1) {
-		cerr << "Error in finding the projection. Z error. Z = " << z0 << " and Zmax = " << fThzHalf << endl;
-		x0 = 0;
-		y0 = 0;
-		z0 = 0;
-	}
-	
-	if ( x0*x0 + y0*y0 > fTouterRadius*fTouterRadius  + 1){
-		cerr << "Error in finding the projection. Radius error. R = " << sqrt(x0*x0 + y0*y0) << " and Rmax = " << fTouterRadius << endl;
-		x0 = 0;
-		y0 = 0;
-		z0 = 0;
-	}
-
+  	G4double 	theta =  2* pi * G4UniformRand();
+  	G4double 	r =  TouterRadius * G4UniformRand();
+  	//setting vertex position
+  	x0 = cos( theta ) * r;
+  	y0 = sin( theta ) * r;
   }
 
   // Filling the gun

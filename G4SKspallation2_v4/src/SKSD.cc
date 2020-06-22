@@ -120,7 +120,6 @@ G4bool SKSD::ProcessHits(G4Step* step,
   G4String partType= thePartDef->GetParticleType();
   G4String name = thePartDef->GetParticleName();
   G4int TrackID = Track->GetTrackID(); 
-  G4double CurrentE = step->GetPreStepPoint()->GetKineticEnergy(); // current energy of the particle
   //---------------------------------------------- END TRACK
 
 
@@ -135,8 +134,8 @@ G4bool SKSD::ProcessHits(G4Step* step,
   if ( size2 > 0){ // check if we have secondaries
 	// we loop over secondaries and save information in the hit object
 	for( int i = 0; i < size2; ++i){
-		loopForSecondariesEnergies( Secondaries2 , i , 
-			CurrentE , hit, thePartDef->GetPDGEncoding() );
+		loopForSecondariesEnergies( Secondaries2 , i , // TrackID,  
+			Track->GetKineticEnergy() , hit, thePartDef->GetPDGEncoding() );
 	}
   } //---------------------------------------------- END isotopes' parents energies
 
@@ -283,9 +282,9 @@ G4bool SKSD::ProcessHits(G4Step* step,
   //  Collect path length information for particles
   //  generated from an interaction with the water tank
   //----------------------------------------------
-  if ( partType != "nucleus" &&  TrackID != 1 && ( CurrentE > 0.9 )){ //check if it is a wanted particle - not isotope or initial muon - and if its energy is greater than 0.9 MeV - because too many particles otherwise
+  if ( partType != "nucleus" &&  TrackID != 1 && ( Track->GetKineticEnergy() > 0.9 )){ //check if it is a wanted particle - not isotope or initial muon - and if its energy is greater than 0.9 MeV - because too many particles otherwise
 	// fill the path length hit
-	hit->FillPathLength( thePartDef->GetPDGEncoding(), CurrentE, Track->GetStepLength());
+	hit->FillPathLength( thePartDef->GetPDGEncoding(), Track->GetKineticEnergy(), Track->GetStepLength());
   	
   	return true;
    } //---------------------------------------------- END check if it is a wanted particle

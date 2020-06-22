@@ -77,12 +77,12 @@ G4VPhysicalVolume* SKDetectorConstruction::Construct()
   G4Material* tank_mat = nist->FindOrBuildMaterial("G4_WATER"); //taking the material from the G4 materials list
 
   // Parameters of the fiducial volume
-  G4double FinnerRadius = 0.*m;
-  G4double FouterRadius = 14.9*m; //Fiducial volume radius
-  G4double Fhz = 32.*m; //Fiducial volume height
-  G4double FstartAngle = 0.*deg;
-  G4double FspanningAngle = 360.*deg;
-  G4Material* fidu_mat = tank_mat;
+  //G4double FinnerRadius = 0.*m;
+  //G4double FouterRadius = 14.9*m; //Fiducial volume radius
+  //G4double Fhz = 32.*m; //Fiducial volume height
+  //G4double FstartAngle = 0.*deg;
+  //G4double FspanningAngle = 360.*deg;
+  //G4Material* fidu_mat = tank_mat;
 
   // Parameters of the world
   G4double worldLength = 1.2*SKhz; //size of the world - just need to be larger than the tank
@@ -120,19 +120,19 @@ G4VPhysicalVolume* SKDetectorConstruction::Construct()
   // Fiducial volume
   //
   //Solid and Logical volumes        
-  G4Tubs* solidFidu = new G4Tubs("FiducialS", FinnerRadius, FouterRadius,0.5* Fhz, FstartAngle, FspanningAngle);         
-  G4LogicalVolume* logicFidu = new G4LogicalVolume(solidFidu, fidu_mat, "FiducialLV");
+  //G4Tubs* solidFidu = new G4Tubs("FiducialS", FinnerRadius, FouterRadius,0.5* Fhz, FstartAngle, FspanningAngle);         
+  //G4LogicalVolume* logicFidu = new G4LogicalVolume(solidFidu, fidu_mat, "FiducialLV");
   // Physical volume             
-  new G4PVPlacement(0, G4ThreeVector(), logicFidu, "Fiducial", logicTank, false, 0, checkOverlaps);
+  //new G4PVPlacement(0, G4ThreeVector(), logicFidu, "Fiducial", logicTank, false, 0, checkOverlaps);
 
   
   // Visualization attributes
   G4VisAttributes* worldVisAtt = new G4VisAttributes(G4Colour(0.5451,0.2706,0.0745,0.35));
   G4VisAttributes* tankVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0,0.36));
-  G4VisAttributes* fiduVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0,0.365));
+  //G4VisAttributes* fiduVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0,0.365));
   worldLV        ->SetVisAttributes(worldVisAtt);
   logicTank      ->SetVisAttributes(tankVisAtt);
-  logicFidu      ->SetVisAttributes(fiduVisAtt);
+  //logicFidu      ->SetVisAttributes(fiduVisAtt);
 
 
   //
@@ -151,16 +151,16 @@ void SKDetectorConstruction::ConstructSDandField()
   // 
   // Creating the sensitive detector for the tank
   //
-  //G4VSensitiveDetector* tankSD = new SKSD("TankSD", "TankHitsCollection");
-  //G4SDManager::GetSDMpointer()->AddNewDetector(tankSD);
-  //SetSensitiveDetector("TankLV", tankSD);
+  G4VSensitiveDetector* tankSD = new SKSD("TankSD", "TankHitsCollection");
+  G4SDManager::GetSDMpointer()->AddNewDetector(tankSD);
+  SetSensitiveDetector("TankLV", tankSD);
 
   // 
   // Creating the sensitive detector for the fiducial volume - comment the above lines
   // so we only have one detector
-  auto fiduSD = new SKSD("FiduSD", "TankHitsCollection");
-  G4SDManager::GetSDMpointer()->AddNewDetector(fiduSD);
-  SetSensitiveDetector("FiducialLV", fiduSD);
+  //auto fiduSD = new SKSD("FiduSD", "TankHitsCollection");
+  //----------------------------------------------------G4SDManager::GetSDMpointer()->AddNewDetector(fiduSD);
+  //SetSensitiveDetector("FiducialLV", fiduSD);
 
 }
 

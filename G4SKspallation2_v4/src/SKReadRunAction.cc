@@ -82,9 +82,9 @@ SKReadRunAction::SKReadRunAction(SKEventAction* eventAction, SKFileReader* fileR
   // Creating histograms
   //
   // 1D histograms
-    analysisManager->CreateH1("Edep","Energy of deposited per event", 101, 0.1 , 100.5 * GeV //,"none", "none", "log"
+    analysisManager->CreateH1("Edep","Energy of deposited per event", 101, 0.5 , 100.5 * GeV //,"none", "none", "log"
 ); // ID 0
-    analysisManager->CreateH1("KinEmu","Initial muon kinetic energy", 1000, 0.01 , 100000.1 * GeV//,"none", "none", "log"
+    analysisManager->CreateH1("KinEmu","Initial muon kinetic energy", 100, 0.1 , 1000.1 * GeV,"none", "none", "log"
 ); // ID 1
     analysisManager->CreateH1("PathLmu","Initial muon path lenght", 50, 0. , 50. * m//,"none", "none", "log"
 ); // ID 2
@@ -186,7 +186,7 @@ void SKReadRunAction::BeginOfRunAction(const G4Run* run)
 
 
   // Reading the right number of events from the initial conditions file
-#ifdef G4MULTITHREADED // making sure we only read once for the Master thread
+#ifdef G4MULTITHREADED
 	G4AutoLock lock(&SKReadRunActionMutex);
 	if(! G4Threading::IsWorkerThread() ){
 		fFileReader->Read(run->GetNumberOfEventToBeProcessed());
@@ -242,7 +242,7 @@ void SKReadRunAction::EndOfRunAction(const G4Run* /*run*/)
   analysisManager->CloseFile();
 
     // Cleaning the reader after ending run
-#ifdef G4MULTITHREADED // we only clean once for the master
+#ifdef G4MULTITHREADED
 	G4AutoLock lock(&SKReadRunActionMutex);
 	if(! G4Threading::IsWorkerThread() ){
 		fFileReader->Clear();

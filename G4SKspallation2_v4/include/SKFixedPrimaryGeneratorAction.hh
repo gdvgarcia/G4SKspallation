@@ -54,8 +54,7 @@ class SKFixedPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
   
   private:
-    G4ParticleGun*  	fParticleGun; 	// pointer a to G4 gun class
-    G4double 		fThzHalf;	// height of either the fiducial or the tank volume
+    G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -31,9 +31,6 @@
 
 #include "SKFixedPrimaryGeneratorAction.hh"
 
-#include "G4LogicalVolumeStore.hh"
-#include "G4LogicalVolume.hh"
-#include "G4Tubs.hh"
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4ParticleGun.hh"
@@ -45,8 +42,7 @@
 
 SKFixedPrimaryGeneratorAction::SKFixedPrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(),
-  fParticleGun(0),
-  fThzHalf(-1.)
+  fParticleGun(0)
 {
   G4int n_particle = 1;
   fParticleGun  = new G4ParticleGun(n_particle);
@@ -76,43 +72,15 @@ void SKFixedPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   //This function is called at the begining of each event
   //
-
-
-  // In order to avoid dependence of PrimaryGeneratorAction
-  // on DetectorConstruction class we get Envelope volume
-  // from G4LogicalVolumeStore.
-
-  // getting the volume and then getting its parameters
-  if(fThzHalf < 0){
-  G4Tubs* EnvelopeTub = 0;
-  	G4LogicalVolume* envLV
-  	  = G4LogicalVolumeStore::GetInstance()->GetVolume("FiducialLV");
-  	if ( envLV ) { EnvelopeTub = dynamic_cast<G4Tubs*>(envLV->GetSolid());}
-  	else{ 
-		envLV = G4LogicalVolumeStore::GetInstance()->GetVolume("TankLV");
-  		if ( envLV ) {EnvelopeTub = dynamic_cast<G4Tubs*>(envLV->GetSolid());}
-  	}
   
-
-  if ( EnvelopeTub ) {
-    fThzHalf 		= EnvelopeTub->GetZHalfLength 	();
-  }  
-  else  {
-    G4ExceptionDescription msg;
-    msg << "Envelope volume of tub shape not found.\n"; 
-    msg << "Perhaps you have changed geometry.\n";
-    msg << "The gun will be place at the center.";
-    G4Exception("SKFixedPrimaryGeneratorAction::GeneratePrimaries()",
-     "MyCode0002",JustWarning,msg);
-  }
-  }
+  //SK tank parameters to set up the gun in the right height
+  G4double Thz = 42.*m;
 
   //setting vertex position
-  G4double x0 = 0;		//centered
-  G4double y0 = 0;		//centered
-  G4double z0 = fThzHalf;	//on top of the tank
+  G4double x0 = 0;//centered
+  G4double y0 = 0;//centered
+  G4double z0 = 0.5 * Thz;//on top of the tank
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
-
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }

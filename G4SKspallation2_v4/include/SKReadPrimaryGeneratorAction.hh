@@ -64,9 +64,7 @@ class SKReadPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   
   private:
     G4ParticleGun*  		fParticleGun; 	// pointer a to G4 gun class
-    static SKFileReader* 	fFileReader; 	// file reader object used to read data from the file of initial conditions
-    G4double 			fThzHalf;	// height of either the fiducial or the tank volume
-    G4double 			fTouterRadius;	// radius of either the fiducial or the tank volume
+    static SKFileReader * 	fFileReader; 	// file reader object used to read data from the file of initial conditions
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
