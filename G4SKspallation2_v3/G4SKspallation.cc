@@ -127,7 +127,7 @@ int main(int argc,char** argv)
           			break;
 			}
     		}
-	}
+	}else{physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP");} //default one
   }else{physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP");} //default one
   physicsList->SetVerboseLevel(0);
   runManager->SetUserInitialization(physicsList);
