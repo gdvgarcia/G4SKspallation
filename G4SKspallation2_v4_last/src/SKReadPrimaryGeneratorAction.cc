@@ -66,8 +66,8 @@ SKReadPrimaryGeneratorAction::SKReadPrimaryGeneratorAction(SKFileReader* fileRea
   //fThzHalf(-1.),
   //fTouterRadius(-1.)
   //DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-  fThzHalf(16.),
-  fTouterRadius(14.9)
+  fThzHalf(16. *m),
+  fTouterRadius(14.9 *m)
 {
   G4int n_particle = 1;
   fParticleGun  = new G4ParticleGun(n_particle);
@@ -157,8 +157,8 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   //Building the GUN in the right position 
 
   //setting default vertex position
-  G4double x0 = 0;
-  G4double y0 = 0;
+  G4double x0 = 0. *m;
+  G4double y0 = 0. *m;
   // on top of the tank
   G4double z0 = fThzHalf;
 
@@ -184,69 +184,58 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   	G4double 	theta2 =  2* pi * G4UniformRand();
   	G4double 	r =  fTouterRadius * G4UniformRand();
   	// setting the point
-  	G4double x1 	= cos( theta2 ) * r;
-  	G4double y1 	= sin( theta2 ) * r;
-	G4double z1 	= fThzHalf * 2 * (0.5 - G4UniformRand());
+  	G4double x1 	= 0 *m; //cos( theta2 ) * r;
+  	G4double y1 	= 0 *m; // sin( theta2 ) * r;
+	G4double z1 	= -10. *m; //fThzHalf * 2 * (0.5 - G4UniformRand());
 	// initialize
-	G4double D 	= 0.;
+	G4double D 	= 0. *m;
 
 	// projecting our point into the cylinder surface in the inverse direction of its momentum
 
 	// we break it down in 2 possibilities to find the distance from the point to the cylinder along its past trajectory
 
-	/*if ( Pz < 1. ){
+	if ( Pz < 1. ){
 		// first the X & Y plan
 		G4double delta = ( Px * x1 + Py * y1 )* ( Px * x1 + Py * y1 ) - (Px * Px + Py * Py) * ( x1 * x1 + y1 * y1 - fTouterRadius * fTouterRadius);
 		if ( delta > 0.){
-			D = (  ( Px * x1 + Py * y1 ) ) - sqrt( delta ) / ( (Px * Px + Py * Py) ) ;
+			D = ( ( ( Px * x1 + Py * y1 ) ) + sqrt( delta ) )/ ( (Px * Px + Py * Py) ) ;
 			// setting the vertex
 			x0 = x1 - Px * D;
 			y0 = y1 - Py * D;
 			z0 = z1 - Pz * ( D/ sin( theta ) );
+			G4cout << "Tipo 1" << D << endl;
 		}
 	}
 
-	if ( ( z0  > fThzHalf + 50  ) ){
+	if ( ( z0  > fThzHalf + 10 || z0  < -fThzHalf - 10 ) ){ // 10 mm precision
 		// second in radius & Z  
+		G4cout << "Tipo 2" << z0 << endl;
 		D =  (  fThzHalf - z1 ) / cos( theta );
 		// setting the vertex
-		x0 = x1 - Px * D;
-		y0 = y1 - Py * D;
+		x0 = x1 - Px * D * sin(theta)/ sqrt(Px * Px + Py * Py);
+		y0 = y1 - Py * D * sin(theta)/ sqrt(Px * Px + Py * Py);
 		z0 = z1 - Pz * D;
 	}
 
 
-	if ( z0 > fThzHalf + 50) {
-		cerr << "Error in finding the projection. Z error. Z = " << z0 << " and Zmax = " << fThzHalf << " Radius error. R = " << sqrt(x0*x0 + y0*y0) << endl;
+	if ( z0 > fThzHalf + 10) {// 10 mm precision
+		G4cerr << "Error in finding the projection. Z error. Z = " << z0 << " and Zmax = " << fThzHalf << " Radius error. R = " << sqrt(x0*x0 + y0*y0) << endl;
 		x0 = 0;
 		y0 = 0;
 		z0 = 0;
 	}
 	
-	if ( x0*x0 + y0*y0 > fTouterRadius*fTouterRadius  + 50){
-		// last try
-		// first the X & Y plan
-		G4double delta = ( Px * x1 + Py * y1 )* ( Px * x1 + Py * y1 ) - (Px * Px + Py * Py) * ( x1 * x1 + y1 * y1 - fTouterRadius * fTouterRadius);
-		if ( delta > 0.){
-			D = ( sqrt( delta ) +  ( Px * x1 + Py * y1 ) ) / ( (Px * Px + Py * Py) ) ;
-			// setting the vertex
-			x0 = x1 - Px * D;
-			y0 = y1 - Py * D;
-			z0 = z1 - Pz * ( D/ sin( theta ) );
-		}
-
-		
-		if ( z0 > fThzHalf + 50) {
-		cerr << "Error in finding the projection. Radius error. R = " << sqrt(x0*x0 + y0*y0) << " and Rmax = " << fTouterRadius << " and Z = " << z0 << " and Zmax = " << fThzHalf << endl;
+	if ( x0*x0 + y0*y0 > fTouterRadius*fTouterRadius  + 10){// 10 mm precision
+		G4cerr << "Error in finding the projection. Radius error. R = " << sqrt(x0*x0 + y0*y0) << " and Rmax = " << fTouterRadius << " and Z = " << z0 << " and Zmax = " << fThzHalf << endl;
 		x0 = 0;
 		y0 = 0;
 		z0 = 0;
-		}
 	}
-*/
+
   }
 
   // Filling the gun
+  G4cout << "x0 = " << x0 << " , y0 = " << x0 << " , z0 = " << z0 << " and R = " << sqrt(x0*x0 + y0*y0) << endl;
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
