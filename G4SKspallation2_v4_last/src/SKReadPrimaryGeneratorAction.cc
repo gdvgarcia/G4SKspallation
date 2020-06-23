@@ -184,9 +184,9 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   	G4double 	theta2 =  2* pi * G4UniformRand();
   	G4double 	r =  fTouterRadius * G4UniformRand();
   	// setting the point
-  	G4double x1 	= 0 *m; //cos( theta2 ) * r;
-  	G4double y1 	= 0 *m; // sin( theta2 ) * r;
-	G4double z1 	= -10. *m; //fThzHalf * 2 * (0.5 - G4UniformRand());
+  	G4double x1 	= cos( theta2 ) * r;
+  	G4double y1 	= sin( theta2 ) * r;
+	G4double z1 	= fThzHalf * 2 * (0.5 - G4UniformRand());
 	// initialize
 	G4double D 	= 0. *m;
 
@@ -194,27 +194,25 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 	// we break it down in 2 possibilities to find the distance from the point to the cylinder along its past trajectory
 
-	if ( Pz < 1. ){
-		// first the X & Y plan
+	// first in Z 
+	D =  (  fThzHalf - z1 ) / cos( theta );
+	// setting the vertex
+	x0 = x1 - Px * D;
+	y0 = y1 - Py * D;
+	z0 = z1 - Pz * D;
+	G4cout << "Tipo 1 -  Z = " << z0 << " and Zmax = " << fThzHalf << "  R = " << sqrt(x0*x0 + y0*y0) << " and Rmax = " << fTouterRadius << endl;
+
+	// second in radius
+	if ( x0*x0 + y0*y0 > fTouterRadius*fTouterRadius  + 10 && Pz > -1.){ // 10 mm precision
 		G4double delta = ( Px * x1 + Py * y1 )* ( Px * x1 + Py * y1 ) - (Px * Px + Py * Py) * ( x1 * x1 + y1 * y1 - fTouterRadius * fTouterRadius);
 		if ( delta > 0.){
-			D = ( ( ( Px * x1 + Py * y1 ) ) + sqrt( delta ) )/ ( (Px * Px + Py * Py) ) ;
+			D = (  ( Px * x1 + Py * y1 )  + sqrt( delta )  )/ (   sqrt(Px * Px + Py * Py) * sin( theta ) )  ;
 			// setting the vertex
 			x0 = x1 - Px * D;
 			y0 = y1 - Py * D;
-			z0 = z1 - Pz * ( D/ sin( theta ) );
-			G4cout << "Tipo 1" << D << endl;
+			z0 = z1 - Pz * D;
+			G4cout << "Tipo 2 - Z = " << z0 << " and Zmax = " << fThzHalf << "  R = " << sqrt(x0*x0 + y0*y0) << " and Rmax = " << fTouterRadius << endl;
 		}
-	}
-
-	if ( ( z0  > fThzHalf + 10 || z0  < -fThzHalf - 10 ) ){ // 10 mm precision
-		// second in radius & Z  
-		G4cout << "Tipo 2" << z0 << endl;
-		D =  (  fThzHalf - z1 ) / cos( theta );
-		// setting the vertex
-		x0 = x1 - Px * D * sin(theta)/ sqrt(Px * Px + Py * Py);
-		y0 = y1 - Py * D * sin(theta)/ sqrt(Px * Px + Py * Py);
-		z0 = z1 - Pz * D;
 	}
 
 
