@@ -1,0 +1,242 @@
+-------------------------------------------------------------------
+
+     =========================================================
+     Geant4 - an Object-Oriented Toolkit for Simulation in HEP
+     =========================================================
+
+                            G4SKspallation
+                            -----------
+
+ This simulation demonstrates muon spallation process in the SK Chrenkov water tank detector 
+with simple conditions for the geometry.
+
+	
+ 1- GEOMETRY DEFINITION
+	
+   The geometry is constructed in the G4SKDetectorConstruction class.
+   The setup consists of a an envelope(world) of box shape containing two volumes: 
+   the water tank cylinder and the fiducial volume of the tank which is also a cylinder.
+   ***Fiducial volume is commented - if you want to measure things only for the fiducial volume 
+   you have to uncomment lines in the detector construction.***
+
+   
+        |<---------- 42 m------------->|
+        |                              |                       
+        ================================ _ _
+        ||water tank       	      ||   ^
+        ||                   	      ||   |  
+        ||  ========================  ||   |
+        ||  |fiducial volume       |  ||   |
+ muon   ||  |       	  	   |  ||   | 39 m
+=======>||  |                      |  ||   |
+        ||  |                	   |  ||   |
+	||  ========================  ||   |
+	||                     	      ||   v
+	||                            || _ _
+        ================================
+    
+
+
+   The envelope(world) is made of water (2.7 m water ~ 1 m rock) and the two inner volumes
+   are also made of water.  
+
+   The materials are created with the help of the G4NistManager class,
+   which allows to build a material from the NIST database using their
+   names. All available materials can be found in the Geant4 User's Guide
+   for Application Developers, Appendix 10: Geant4 Materials Database.
+		
+ 2- PHYSICS LIST
+ 
+   The particle's type and the physics processes which will be available
+   in this simulation are set in the QGSP_BERT_HP physics list, or in the QGSP_BIC_HP or
+   in the FTFP_BERT_HP or in the QGSP_INCLXX_HP (for later comparison of results of these 
+   different lists). These physics lists require data files for electromagnetic 
+   and hadronic processes.
+   See more on installation of the datasets in Geant4 Installation Guide,
+   Chapter 3.3: Note On Geant4 Datasets:
+   http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides
+                                           /InstallationGuide/html/ch03s03.html
+   The following datasets: G4LEDATA, G4LEVELGAMMADATA, G4NEUTRONXSDATA,
+   G4SAIDXSDATA and G4ENSDFSTATEDATA are mandatory for this simulation.
+
+   In addition the build-in interactive command:
+               /process/(in)activate processName
+   allows to activate/inactivate the processes one by one.
+
+   The physics list can be chosen by adding an extra argument when opening the application
+   in batch mode. The third argument corresponds to the physics list choice. By default we 
+   use the QGSP_BERT_HP. If the third argument is "0", we keep the QGSP_BERT_HP. If it is "1", we 
+   get the QGSP_BIC_HP. "2" brings the FTFP_BERT_HP and "3" the QGSP_INCLXX_HP. Any other number or
+   value for the third argument will bring the default physics list. If the argument is "!", it just
+   keep the default one and you can add a fourth argument. Meaning that "!" is just a place holder. 
+   
+ 3- ACTION INITALIZATION
+
+   Two newly introduced classes, G4SKFixedActionInitialization and G4SKReadActionInitialization, 
+   instantiates and registers to Geant4 kernel all user action classes.
+
+   While in sequential mode the action classes are instatiated just once,
+   via invoking the method:
+      G4SKActionInitialization::Build() 
+   in multi-threading mode the same method is invoked for each thread worker
+   and so all user action classes are defined thread-local.
+
+   A run action class is instantiated both thread-local 
+   and global that's why its instance is created also in the method
+      G4SKActionInitialization::BuildForMaster() 
+   which is invoked only in multi-threading mode.
+  	 
+ 4- PRIMARY GENERATOR
+  
+   Two classes introduce two different possibilities of primary particle generation.
+
+   The fixed energy and position primary generator is defined in the SKFixedPrimaryGeneratorAction class.
+   Its default kinematics is a 271 GeV muon(which is the average muon energy for Super-Kamiokande) 
+   with downward momentum along the cylinder axis located on top of the tank's water in the center
+   of the tank surface.
+
+   This fixed primary generator is called by the 'batch' mode if we have no fourth argument.
+   
+   One may choose to read the initial conditions for the muons from an ASCII file. For this to be done,
+   one have to write the initial conditions in the ini_cond.txt text file, keeping the same file format. 
+   Then when lauching the application, if the command has a fourth argument the initial conditions will be 
+   read from the file with the help of the SKReadPrimaryGeneratorAction class.
+   
+   For example, I want to keep the default physics list, read the run2.mac macro and use the initial conditions
+   from the ini_cond.txt file. So I use the following command :
+   % ./G4SKspallation run2.mac ! yes
+   The last argument "yes" could be anything.
+
+   The SKReadPrimaryGeneratorAction class is the default class for the interactive mode.
+
+   This default settings can be changed via the Geant4 built-in commands of the G4ParticleGun class.
+     
+ 5- DETECTOR RESPONSE
+
+   This simulation contains two scoring methods. 
+
+   One is the command-based method implemented in the main function with the line : 
+   G4ScoringManager * scManager = G4ScoringManager::GetScoringManager();  
+   And then with scoring macros. You would have to build your own macro, but this is quite simple.
+   The scoring macro available already have most of the examples needed for you to construct your
+   own personal macro. - This method is recommended for fast check as it is the most straight forward.
+	***This method is desactivated(commented for now) in the main function - to activate only
+	   uncomment two lines in the G4SKspallation.cc
+
+   The other method is introduced with a sensitive detector construction. This is more complex
+   and , for this specific simulation , it required the definition of some classes :
+   SKRunAction, SKEventAction, SKHits, SKSD, SKAnalysis.
+   And also some changes in the action initialization and in the detector geometry classes.
+   
+   The energy deposited in the SK tank is collected step by step in the SKSD and accumulated event 
+   by event in a SKHit class object. The tank being the sensitive detector defined (one can change 
+   the sensitive detector only to the fiducial volume by changing a few lines in the SKDetectorConstruction 
+   class). The muon initial kinetic energy is also kept in a SKHit class object as well as its total
+   path length inside the detector.
+
+   At end of an event, the values acummulated in a SKHit class object are added to histograms in SKEventAction.
+
+   The rest of the data is only added to histograms and ntuples, which are created in the SKRunAction, already
+   whithin the SKSD::ProcessHits(G4Step* step, G4TouchableHistory* history) virtual function. These 
+   histograms and ntuples are all saved in a root file named "SK.root"(it can be changed to a csv or 
+   a xml file in the SKAnalysis).
+
+   To change the information collected, you can change or add ntuples and histograms in the SKRunAction class. 
+   Then you have to fill this data structures in the SKSD or SKEventAction classes. Usually you will collect
+   the information from the Step or Track object in the SKSD::ProcessHits virtual function. Then you will either
+   save it directly in the data structures or accumulate it per event in the SKHit class object and save it in 
+   the EventAction class. If you read a bit this four classes mentioned you will understand the logic behid 
+   this data retrieving method. More information about the kind of information you can collect from the Track
+   or the Step objet can be found in the following source code websites :
+
+   Track object : https://geant4.kek.jp/lxr/source/track/include/G4Track.hh 
+   Step object  : https://geant4.kek.jp/lxr/source/track/include/G4Step.hh 
+
+   Alternative ways of scoring via Geant4 classes can be found in many Geant4 official examples.
+
+ A- VISUALISATION
+
+   The visualization manager is set via the G4VisExecutive class
+   in the main() function in G4SKspallation.cc.    
+   The initialisation of the drawing is done via a set of /vis/ commands
+   in the macro vis.mac. This macro is automatically read from
+   the main function when the simulation is used in interactive running mode.
+
+   By default, vis.mac opens an OpenGL viewer (/vis/open OGL).
+   The user can change the initial viewer by commenting out this line
+   and instead uncommenting one of the other /vis/open statements, such as
+   HepRepFile or DAWNFILE (which produce files that can be viewed with the
+   HepRApp and DAWN viewers, respectively).  Note that one can always
+   open new viewers at any time from the command line.  For example, if
+   you already have a view in, say, an OpenGL window with a name
+   "viewer-0", then
+      /vis/open DAWNFILE
+   then to get the same view
+      /vis/viewer/copyView viewer-0
+   or to get the same view *plus* scene-modifications
+      /vis/viewer/set/all viewer-0
+   then to see the result
+      /vis/viewer/flush
+
+   The DAWNFILE, HepRepFile drivers are always available
+   (since they require no external libraries), but the OGL driver requires
+   that the Geant4 libraries have been built with the OpenGL option.
+
+   The vis.mac macro in G4SKspallation has additional commands
+   that demonstrate additional functionality of the vis system, such as
+   displaying text, axes, scales, date, logo and shows how to change
+   viewpoint and style.  To see even more commands use help or
+   ls or browse the available UI commands in the Application
+   Developers Guide, Section 7.1.
+
+   For more information on visualization, including information on how to
+   install and run DAWN, OpenGL and HepRApp, see the visualization tutorials,
+   for example,
+   http://geant4.slac.stanford.edu/Presentations/vis/G4[VIS]Tutorial/G4[VIS]Tutorial.html
+   (where [VIS] can be replaced by DAWN, OpenGL and HepRApp)
+
+   The tracks are automatically drawn at the end of each event, accumulated
+   for all events and erased at the beginning of the next run.
+
+ B- USER INTERFACES
+ 
+   The user command interface is set via the G4UIExecutive class
+   in the main() function in G4SKspallation.cc 
+   The selection of the user command interface is then done automatically 
+   according to the Geant4 configuration or it can be done explicitly via 
+   the third argument of the G4UIExecutive constructor (see exampleB4a.cc of the Geant4-10.06.p01 examples 
+   distributed with the Geant4 source). 
+ 
+ C- HOW TO RUN
+
+    - Execute G4SKspallation in the 'interactive mode' with visualization:
+        % ./G4SKspallation
+      and type in the commands line by line:  
+        Idle> /control/verbose 2
+        Idle> /tracking/verbose 1
+        Idle> /run/beamOn 1
+        Idle> ...
+        Idle> exit
+      or
+        Idle> /control/execute run1.mac
+        ....
+        Idle> exit
+
+    - Execute G4SKspallation in the 'batch' mode from macro files 
+      (without visualization)
+        % ./G4SKspallation run2.mac
+
+    - Change the physics list with a third argument : 1 for QGSP_BIC_HP , 2 for FTFP_BERT_HP 
+    and 3 for QGSP_INCLXX_HP.
+
+    - Give your initial conditions to the muon by adding a fourth argument. Any thing can be written
+    for this argument.
+
+    Example of a run in batch mode using a given initial conditions file, the FTFP_BERT_HP physics list
+    and running the run2.mac :
+
+    % ./G4SKspallation run2.mac 2 yes
+
+    *** "yes" could be any other word or number
+
+End.
