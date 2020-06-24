@@ -44,15 +44,20 @@ using namespace std;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SKFileReader::SKFileReader( string fileName)
-{ inputFile.open (fileName); angles = true; fValues.clear();}
+{ inputFile.open (fileName); 
+  fangles = true; 
+  fValues.clear();
+  std::cout << '\n';
+  std::cout << "Initial conditions file is opened.";
+  std::cout << '\n';}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SKFileReader::~SKFileReader()
 { inputFile.close(); 
-			std::cout << '\n';
-  		std::cout << "Initial conditions file is closed.";
-  		std::cout << '\n';
+  std::cout << '\n';
+  std::cout << "Initial conditions file is closed.";
+  std::cout << '\n';
 }
 
 
@@ -60,9 +65,16 @@ SKFileReader::~SKFileReader()
 
 double SKFileReader::GetOneValue()
 {
+  if(!fValues.empty()){//if it is not empty
   double value = fValues.front();
   fValues.pop_front();
   return value;
+  }
+  else{
+  std::cout << "File reader is empty. Returning 1. in place of the value from the ini_cond.txt file.";
+  std::cout << '\n';
+  return 1.;
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -82,7 +94,7 @@ void SKFileReader::Read( int numberOfEvents )
   	Split(line, '#', *words);
 	for( unsigned int k = 0; k < words->at(0).size(); k++){
 		if(words->at(0)[k] == '0'){ // check if we find a zero
-			angles = false; // deactivate angles reader
+			fangles = false; // deactivate angles reader
 			std::cout << '\n';
   			std::cout << "Reading angles deactivated.";
   			std::cout << '\n';
@@ -109,7 +121,7 @@ void SKFileReader::Read( int numberOfEvents )
     		// Filling the list
   		fValues.push_back(value);
 
-  		if(angles){ // check if we deactivated the angles
+  		if(fangles){ // check if we deactivated the angles
 			// Convert the strings to numbers with the atof and saving the initial conditions variables
   			value =  atof(words->at(0).c_str());
 			// Filling the list
@@ -154,7 +166,7 @@ void SKFileReader::Split(const string& line, char divisionchart, vector<string>&
 void SKFileReader::Clear()
 {
   fValues.clear();
-  angles = true;
+  fangles = true;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

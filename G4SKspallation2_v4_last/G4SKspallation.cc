@@ -29,8 +29,8 @@
 /// You can choose the physics list by using a third argument when opening the application
 
 #include "SKDetectorConstruction.hh"
-#include "SKReadActionInitialization.hh" // Reading the initial conditions from a file
-#include "SKFixedActionInitialization.hh" // Fixed initial muon energy
+#include "SKReadActionInitialization.hh" 	// Reading the initial conditions from a file
+#include "SKFixedActionInitialization.hh" 	// Fixed initial muon energy
 
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
@@ -41,11 +41,11 @@
 
 #include "G4UImanager.hh"
 #include "G4ScoringManager.hh"
-#include "QGSP_BERT_HP.hh"  //physics list that will be used by default 
-#include "QGSP_BERT.hh"  // ID 0
-#include "QGSP_BIC_HP.hh"   // ID 1
-#include "FTFP_BERT_HP.hh"  // ID 2
-#include "QGSP_INCLXX_HP.hh"  // ID 3
+#include "QGSP_BERT_HP.hh"  	//physics list that will be used by default 
+#include "QGSP_BERT.hh"  	// ID 0
+#include "QGSP_BIC_HP.hh"   	// ID 1
+#include "FTFP_BERT_HP.hh"  	// ID 2
+#include "QGSP_INCLXX_HP.hh"  	// ID 3
 #include "G4PhysListFactory.hh"
 #include "G4VUserPhysicsList.hh"
 

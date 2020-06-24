@@ -44,13 +44,6 @@
 
 #include "cmath" // to have the cosine and sine math functions
 
-//to read initial conditions from a file
-#include <fstream>
-#include <iostream>
-#include <stdlib.h>
-#include <string>
-#include <vector>
-#include <list>
 #include "G4AutoLock.hh"
 
 namespace { G4Mutex SKReadPrimarynMutex = G4MUTEX_INITIALIZER; }
@@ -142,17 +135,17 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   bool anglesflag = false;
 
   // Variable for the energy from the file
-  G4double KinEnergy = 1.;
+  G4double KinEnergy =  271. - 0.1056583755;
 
    // getting the value from the file reader and anglesflag
   if(fFileReader)
   {
-    	G4AutoLock lock(&SKReadPrimarynMutex);
-    	anglesflag = fFileReader->DoAngles();
-    	KinEnergy = fFileReader->GetOneValue();
+    	G4AutoLock 	lock(&SKReadPrimarynMutex);
+    	anglesflag 	= fFileReader->DoAngles(); 	// getting the angles flag
+    	KinEnergy 	= fFileReader->GetOneValue();	// getting the energy value
   }
   
-  fParticleGun->SetParticleEnergy( KinEnergy *GeV);
+  fParticleGun->SetParticleEnergy( KinEnergy *GeV);	// adding the right energy
 
   //Building the GUN in the right position 
 
@@ -174,66 +167,11 @@ void SKReadPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   	G4double Py = sin( phi ) * sin( theta );
   	G4double Pz = - cos( theta );
 
-  	// Filling the gun
+  	// Filling the gun with the right direction
   	fParticleGun->SetParticleMomentumDirection(G4ThreeVector( Px, Py, Pz ));
-
-	// then the location
-
- 	// Here we choose a point inside the SK tank with a uniform distribution, this point will be crossed by the muon
-  	const G4double 	pi = 3.14159265358979323846264338328;
-  	G4double 	theta2 =  2* pi * G4UniformRand();
-  	G4double 	r =  fTouterRadius * G4UniformRand();
-  	// setting the point
-  	G4double x1 	= cos( theta2 ) * r;
-  	G4double y1 	= sin( theta2 ) * r;
-	G4double z1 	= fThzHalf * 2 * (0.5 - G4UniformRand());
-	// initialize
-	G4double D 	= 0. *m;
-
-	// projecting our point into the cylinder surface in the inverse direction of its momentum
-
-	// we break it down in 2 possibilities to find the distance from the point to the cylinder along its past trajectory
-
-	// first in Z 
-	D =  (  fThzHalf - z1 ) / cos( theta );
-	// setting the vertex
-	x0 = x1 - Px * D;
-	y0 = y1 - Py * D;
-	z0 = z1 - Pz * D;
-	G4cout << "Tipo 1 -  Z = " << z0 << " and Zmax = " << fThzHalf << "  R = " << sqrt(x0*x0 + y0*y0) << " and Rmax = " << fTouterRadius << endl;
-
-	// second in radius
-	if ( x0*x0 + y0*y0 > fTouterRadius*fTouterRadius  + 10 && Pz > -1.){ // 10 mm precision
-		G4double delta = ( Px * x1 + Py * y1 )* ( Px * x1 + Py * y1 ) - (Px * Px + Py * Py) * ( x1 * x1 + y1 * y1 - fTouterRadius * fTouterRadius);
-		if ( delta > 0.){
-			D = (  ( Px * x1 + Py * y1 )  + sqrt( delta )  )/ (   sqrt(Px * Px + Py * Py) * sin( theta ) )  ;
-			// setting the vertex
-			x0 = x1 - Px * D;
-			y0 = y1 - Py * D;
-			z0 = z1 - Pz * D;
-			G4cout << "Tipo 2 - Z = " << z0 << " and Zmax = " << fThzHalf << "  R = " << sqrt(x0*x0 + y0*y0) << " and Rmax = " << fTouterRadius << endl;
-		}
-	}
-
-
-	if ( z0 > fThzHalf + 10) {// 10 mm precision
-		G4cerr << "Error in finding the projection. Z error. Z = " << z0 << " and Zmax = " << fThzHalf << " Radius error. R = " << sqrt(x0*x0 + y0*y0) << endl;
-		x0 = 0;
-		y0 = 0;
-		z0 = 0;
-	}
-	
-	if ( x0*x0 + y0*y0 > fTouterRadius*fTouterRadius  + 10){// 10 mm precision
-		G4cerr << "Error in finding the projection. Radius error. R = " << sqrt(x0*x0 + y0*y0) << " and Rmax = " << fTouterRadius << " and Z = " << z0 << " and Zmax = " << fThzHalf << endl;
-		x0 = 0;
-		y0 = 0;
-		z0 = 0;
-	}
-
   }
 
-  // Filling the gun
-  G4cout << "x0 = " << x0 << " , y0 = " << x0 << " , z0 = " << z0 << " and R = " << sqrt(x0*x0 + y0*y0) << endl;
+	
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
   fParticleGun->GeneratePrimaryVertex(anEvent);

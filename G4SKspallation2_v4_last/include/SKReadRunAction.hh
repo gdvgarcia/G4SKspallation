@@ -35,7 +35,6 @@
 #include "SKEventAction.hh"
 #include "SKFileReader.hh"
 
-class SKFileReader;
 
 class G4Run;
 
@@ -49,6 +48,8 @@ class G4Run;
 /// In EndOfRunAction(), the accumulated statistic is printed and saved in the SK file created.
 ///
 
+class SKFileReader;
+
 class SKReadRunAction : public G4UserRunAction
 {
   public:
@@ -60,8 +61,8 @@ class SKReadRunAction : public G4UserRunAction
 
 
     private:
-    SKEventAction* fEventAction;
-    static SKFileReader* fFileReader; // SK file reader to help save the information from the file of initial conditions
+    SKEventAction* 		fEventAction;
+    static SKFileReader* 	fFileReader; // SK file reader to help save the information from the file of initial conditions
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -36,9 +36,6 @@
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
-#include <iostream>
-#include<string>
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SKFixedRunAction::SKFixedRunAction(SKEventAction* eventAction)

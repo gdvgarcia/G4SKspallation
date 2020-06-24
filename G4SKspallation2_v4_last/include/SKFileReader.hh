@@ -45,12 +45,12 @@ using namespace std;
 class SKFileReader
 {
  public:
-   SKFileReader( std::string fileName);
+   SKFileReader( std::string fileName );
    ~SKFileReader();
    
    double 	GetOneValue	();
    void 	Read		( int numberOfEvents );
-   bool 	DoAngles	()	{ return angles; }
+   bool 	DoAngles	(){ return fangles; }
    void 	Clear		();
    void 	Print		();
 
@@ -59,8 +59,8 @@ class SKFileReader
    std::list< double > fValues; // values read from the file
    bool angles; // Flag for cancelling the angles reader and only read energy spectrum
 
-    // Funtion to split the lines of the file so we can take the data and put in a string vector
-    void Split(const std::string& line, char divisionchart, std::vector<std::string>& words) ;
+   // Funtion to split the lines of the file so we can take the data and put in a string vector
+   void Split(const std::string& line, char divisionchart, std::vector<std::string>& words) ;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
