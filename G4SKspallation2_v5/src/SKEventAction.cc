@@ -62,6 +62,7 @@ SKEventAction::SKEventAction()
   fvectorIniTime.clear();
   fvectorFinTime.clear();
   fvectorStable.clear();
+  fvectorLifeTime.clear();
   // vectors for the isotopes' parents data
   fvectorParentsCode.clear();
   fvectorAdaug.clear();
@@ -169,6 +170,7 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
   fvectorIniTime		= tankHit->GetIniTime();
   fvectorFinTime		= tankHit->GetFinTime();
   fvectorStable			= tankHit->GetStable();
+  fvectorLifeTime		= tankHit->GetLifeTime();
   // vectors for the isotopes' parents data
   fvectorParentsCode		= tankHit->GetParentsCode();
   fvectorAdaug			= tankHit->GetAdaug();
@@ -202,9 +204,9 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
   analysisManager->FillNtupleDColumn( 8, 	tankHit->GetLmu());
   analysisManager->FillNtupleIColumn( 9, 	fvectorFirstGenCode.size());
   analysisManager->FillNtupleIColumn(12, 	fvectorA.size());
-  analysisManager->FillNtupleIColumn(23, 	fvectorParentsCode.size());
-  analysisManager->FillNtupleIColumn(28, 	fvectorPathLengthCode.size());
-  analysisManager->FillNtupleIColumn(32, 	fvectorTransParticlesCode.size());
+  analysisManager->FillNtupleIColumn(24, 	fvectorParentsCode.size());
+  analysisManager->FillNtupleIColumn(29, 	fvectorPathLengthCode.size());
+  analysisManager->FillNtupleIColumn(33, 	fvectorTransParticlesCode.size());
   // adding the Row
   analysisManager->AddNtupleRow(); 
 
@@ -224,6 +226,7 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
   fvectorIniTime.clear();
   fvectorFinTime.clear();
   fvectorStable.clear();
+  fvectorLifeTime.clear();
   // vectors for the isotopes' parents data
   fvectorParentsCode.clear();
   fvectorAdaug.clear();

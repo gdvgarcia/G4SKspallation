@@ -69,6 +69,7 @@ SKHit::SKHit()
     fIniTime.clear();		///< vector of initial times of the isotopes
     fFinTime.clear(); 		///< vector of final times of the isotopes
     fStable.clear(); 		///< vector of the stability(1) or instability(0) of isotopes
+    fLifeTime.clear();		///< vector of life times of the isotopes
     // isotopes' parents
     fParentsCode.clear();	///< vector of the parent particle codes
     fAdaug.clear(); 		//< vector of atomic masses of the daughters
@@ -116,6 +117,7 @@ SKHit::SKHit(const SKHit& right)
     fIniTime 		= right.fIniTime;	///< vector of initial times of the isotopes
     fFinTime 		= right.fFinTime;	///< vector of final times of the isotopes
     fStable 		= right.fStable; 	///< vector of the stability(1) or instability(0) of isotopes
+    fLifeTime		= right.fLifeTime;	///< vector of life times of the isotopes
     // isotopes' parents
     fParentsCode 	= right.fParentsCode;	///< vector of the parent particle codes
     fAdaug		= right.fAdaug; 	//< vector of atomic masses of the daughters
@@ -158,6 +160,7 @@ const SKHit& SKHit::operator=(const SKHit& right)
     fIniTime 		= right.fIniTime;	///< vector of initial times of the isotopes
     fFinTime 		= right.fFinTime;	///< vector of final times of the isotopes
     fStable 		= right.fStable; 	///< vector of the stability(1) or instability(0) of isotopes
+    fLifeTime		= right.fLifeTime;	///< vector of life times of the isotopes
     // isotopes' parents
     fParentsCode 	= right.fParentsCode;	///< vector of the parent particle codes
     fAdaug		= right.fAdaug; 	//< vector of atomic masses of the daughters

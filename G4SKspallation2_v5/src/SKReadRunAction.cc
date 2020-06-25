@@ -133,36 +133,38 @@ SKReadRunAction::SKReadRunAction(SKEventAction* eventAction, SKFileReader* fileR
   analysisManager->CreateNtupleDColumn(
         "InitialTime", fEventAction->GetvectorIniTime()); 	//column ID 20 - initial time when the isotope was created
   analysisManager->CreateNtupleDColumn(
-        "FinalTime", fEventAction->GetvectorFinTime()); 		//column ID 21 - final time when it stopped being tracked
+        "FinalTime", fEventAction->GetvectorFinTime()); 	//column ID 21 - final time when it stopped being tracked
   analysisManager->CreateNtupleIColumn(
         "Stable1Instable0", fEventAction->GetvectorStable()); 	//column ID 22 - if stable it has 1 if instable is has 0
+  analysisManager->CreateNtupleDColumn(
+        "LifeTIme", fEventAction->GetvectorLifeTime()); 	//column ID 23 - life time of the isotope
 
   // isotopes' parents data
-  analysisManager->CreateNtupleIColumn("ParentsSize"); 		//column ID 23  - size of the vectors 
+  analysisManager->CreateNtupleIColumn("ParentsSize"); 		//column ID 24  - size of the vectors 
   analysisManager->CreateNtupleIColumn(
-        "ParentsCode",fEventAction->GetvectorParentsCode()); 	//column ID 24 - particle code
+        "ParentsCode",fEventAction->GetvectorParentsCode()); 	//column ID 25 - particle code
   analysisManager->CreateNtupleIColumn(
-        "Adaughter", fEventAction->GetvectorAdaug()); 		//column ID 25 - daugther atomic mass
+        "Adaughter", fEventAction->GetvectorAdaug()); 		//column ID 26 - daugther atomic mass
   analysisManager->CreateNtupleIColumn(
-        "Zdaughter", fEventAction->GetvectorZdaug()); 		//column ID 26 - daugther atomic number
+        "Zdaughter", fEventAction->GetvectorZdaug()); 		//column ID 27 - daugther atomic number
   analysisManager->CreateNtupleDColumn(
-        "ParentsEnergy", fEventAction->GetvectorEparent()); 	//column ID 27 - particle energy
+        "ParentsEnergy", fEventAction->GetvectorEparent()); 	//column ID 28 - particle energy
 
   // all particles path length per energy data
-  analysisManager->CreateNtupleIColumn("PathLengthSize"); 		//column ID 28 - size of the vectors 
+  analysisManager->CreateNtupleIColumn("PathLengthSize"); 		//column ID 29 - size of the vectors 
   analysisManager->CreateNtupleIColumn(
-        "PathLengthCode",fEventAction->GetvectorPathLengthCode());	//column ID 29 - particle code
+        "PathLengthCode",fEventAction->GetvectorPathLengthCode());	//column ID 30 - particle code
   analysisManager->CreateNtupleDColumn(
-        "PathLengthEnergy", fEventAction->GetvectorPathLengthE()); 	//column ID 30 - particle energy
+        "PathLengthEnergy", fEventAction->GetvectorPathLengthE()); 	//column ID 31 - particle energy
   analysisManager->CreateNtupleDColumn(
-        "StepLength", fEventAction->GetvectorStepLength()); 		//column ID 31 - particle step length for this given energy
+        "StepLength", fEventAction->GetvectorStepLength()); 		//column ID 32 - particle step length for this given energy
 
   // all particles transverse distance
-  analysisManager->CreateNtupleIColumn("TransParticlesSize"); 			//column ID 32 - size of the vectors 
+  analysisManager->CreateNtupleIColumn("TransParticlesSize"); 			//column ID 33 - size of the vectors 
   analysisManager->CreateNtupleIColumn(
-        "TransParticlesCode",fEventAction->GetvectorTransParticlesCode());	//column ID 33 - particle code
+        "TransParticlesCode",fEventAction->GetvectorTransParticlesCode());	//column ID 34 - particle code
   analysisManager->CreateNtupleDColumn(
-        "TransParticlesDistance", fEventAction->GetvectorTransParticlesDist()); //column ID 34 - transverse distance
+        "TransParticlesDistance", fEventAction->GetvectorTransParticlesDist()); //column ID 35 - transverse distance
 
   // finishing ntuple creation
   analysisManager->FinishNtuple();

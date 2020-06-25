@@ -76,7 +76,8 @@ class SKHit : public G4VHit
     // for the first generation daugther of the muon
     void FillFirstGen(G4double Energy, G4int Code);
     // for the isotopes
-    void FillIso(G4int A, G4int Z, G4double x, G4double y, G4double z,G4double dis,  G4int Code, G4double InitialTime, G4double FinalTime, G4int Stable);
+    void FillIso(G4int A, G4int Z, G4double x, G4double y, G4double z,G4double dis,  G4int Code, 
+    G4double InitialTime, G4double FinalTime, G4int Stable, G4double LifeTime);
     // for isotopes' parents
     void FillIsoPar( G4int Code, G4int A, G4int Z, G4double Energy);
     // for the path length data
@@ -88,41 +89,42 @@ class SKHit : public G4VHit
     // get methods
     //
     // for the muon
-    G4double GetEdep() 	const 	{ return fEdep; }
-    G4double GetEmu() 	const 	{ return fEmu; 	}
-    G4double GetLmu() 	const 	{ return fLmu; 	}
-    G4double GetxIni() 	const	  { return fxIni; }
-    G4double GetyIni() 	const	  { return fyIni; }
-    G4double GetzIni() 	const	  { return fzIni; }
-    G4double GetxFin() 	const	  { return fxFin; }
-    G4double GetyFin() 	const	  { return fyFin; }
-    G4double GetzFin() 	const	  { return fzFin; }
+    G4double 			GetEdep() 		const 	{ return fEdep; 		}
+    G4double 			GetEmu() 		const 	{ return fEmu; 			}
+    G4double 			GetLmu()		const	{ return fLmu; 			}
+    G4double 			GetxIni() 		const	{ return fxIni; 		}
+    G4double 			GetyIni()		const	{ return fyIni; 		}
+    G4double 			GetzIni() 		const	{ return fzIni; 		}
+    G4double 			GetxFin()		const	{ return fxFin; 		}
+    G4double 			GetyFin() 		const	{ return fyFin; 		}
+    G4double 			GetzFin() 		const	{ return fzFin; 		}
     // for the first generation daugthers of the muon
-    std::vector< G4int > 	    GetFirstGenCode()	  const 	{ return fFirstGenCode; 	}
-    std::vector< G4double > 	GetEfisrtGen()		  const 	{ return fEfisrtGen; 		}
+    std::vector< G4int >	GetFirstGenCode()	const 	{ return fFirstGenCode; 	}
+    std::vector< G4double > 	GetEfisrtGen()		const 	{ return fEfisrtGen; 		}
     // for the isotopes	
-    std::vector< G4int > 	    GetA() 			        const 	{ return fA; 			} 
-    std::vector< G4int >	    GetZ() 			        const 	{ return fZ; 			}
-    std::vector< G4double > 	GetxIso() 		      const 	{ return fxIso; 		} 
-    std::vector< G4double > 	GetyIso() 		      const 	{ return fyIso; 		}
-    std::vector< G4double > 	GetzIso() 		      const 	{ return fzIso; 		} 
-    std::vector< G4double > 	GetIsoDist() 		    const 	{ return fIsoDist; 		}
-    std::vector< G4int > 	    GetIsoParentCode()	const 	{ return fIsoParentCode; 	}
-    std::vector< G4double > 	GetIniTime() 		    const 	{ return fIniTime; 		} 
-    std::vector< G4double > 	GetFinTime() 		    const 	{ return fFinTime; 		}
-    std::vector< G4int > 	    GetStable()		      const 	{ return fStable; 		}
+    std::vector< G4int >	GetA() 			const 	{ return fA; 			} 
+    std::vector< G4int >	GetZ() 			const 	{ return fZ; 			}
+    std::vector< G4double > 	GetxIso() 		const 	{ return fxIso; 		} 
+    std::vector< G4double > 	GetyIso() 		const 	{ return fyIso; 		}
+    std::vector< G4double > 	GetzIso() 		const 	{ return fzIso; 		} 
+    std::vector< G4double > 	GetIsoDist() 		const 	{ return fIsoDist; 		}
+    std::vector< G4int > 	GetIsoParentCode()	const 	{ return fIsoParentCode; 	}
+    std::vector< G4double > 	GetIniTime() 		const 	{ return fIniTime; 		} 
+    std::vector< G4double > 	GetFinTime() 		const 	{ return fFinTime; 		}
+    std::vector< G4int > 	GetStable()		const 	{ return fStable; 		}
+    std::vector< G4double > 	GetLifeTime() 		const 	{ return fLifeTime; 		}
     // for isotopes' parents
-    std::vector< G4int >	    GetParentsCode()	  const 	{ return fParentsCode; 		}
-    std::vector< G4int > 	    GetAdaug() 		      const 	{ return fAdaug; 		}
-    std::vector< G4int > 	    GetZdaug() 		      const 	{ return fZdaug; 		}
-    std::vector< G4double > 	GetEparent() 		    const 	{ return fEparent; 		}
+    std::vector< G4int >	GetParentsCode()	const 	{ return fParentsCode; 		}
+    std::vector< G4int > 	GetAdaug() 		const 	{ return fAdaug; 		}
+    std::vector< G4int > 	GetZdaug() 		const 	{ return fZdaug; 		}
+    std::vector< G4double > 	GetEparent() 		const 	{ return fEparent; 		}
     // for the path length data
-    std::vector< G4int >	    GetPathLengthCode()	const 	{ return fPathLengthCode; 	} 
-    std::vector< G4double > 	GetPathLengthE() 	  const 	{ return fPathLengthE; 		} 
-    std::vector< G4double > 	GetStepLength() 	  const 	{ return fStepLength; 		}
+    std::vector< G4int >	GetPathLengthCode()	const 	{ return fPathLengthCode; 	} 
+    std::vector< G4double > 	GetPathLengthE() 	const 	{ return fPathLengthE; 		} 
+    std::vector< G4double > 	GetStepLength() 	const 	{ return fStepLength; 		}
     // for the transverse distance data
-    std::vector< G4int >	    GetTransParticlesCode()	const 	{ return fTransCode; 	}
-    std::vector< G4double >  	GetTransParticlesDist()	const 	{ return fTransDist; 	} 	
+    std::vector< G4int >	GetTransParticlesCode()	const 	{ return fTransCode; 		}
+    std::vector< G4double >  	GetTransParticlesDist()	const 	{ return fTransDist; 		} 	
 
   private:
     // data for the muon
@@ -149,6 +151,7 @@ class SKHit : public G4VHit
     std::vector< G4double > 	fIniTime;	///< vector of initial times of the isotopes
     std::vector< G4double > 	fFinTime; 	///< vector of final times of the isotopes
     std::vector< G4int > 	fStable; 	///< vector of the stability(1) or instability(0) of isotopes
+    std::vector< G4double > 	fLifeTime; 	///< vector of life times of the isotopes
     // data for isotopes' parents
     std::vector< G4int > 	fParentsCode;	///< vector of the parent particle codes
     std::vector< G4int > 	fAdaug; 	///< vector of atomic masses of the daughters
@@ -229,7 +232,7 @@ inline void SKHit::FillFirstGen(G4double Energy, G4int Code){
 // Isotope function
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-inline void SKHit::FillIso(G4int A, G4int Z, G4double x, G4double y, G4double z,G4double dis,  G4int Code, G4double InitialTime, G4double FinalTime, G4int Stable){
+inline void SKHit::FillIso(G4int A, G4int Z, G4double x, G4double y, G4double z,G4double dis,  G4int Code, G4double InitialTime, G4double FinalTime, G4int Stable, G4double LifeTime){
   fA.push_back 			(A);
   fZ.push_back 			(Z);
   fxIso.push_back 		(x);
@@ -240,6 +243,7 @@ inline void SKHit::FillIso(G4int A, G4int Z, G4double x, G4double y, G4double z,
   fIniTime.push_back 		(InitialTime);
   fFinTime.push_back 		(FinalTime);
   fStable.push_back 		(Stable);
+  fLifeTime.push_back 		(LifeTime);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

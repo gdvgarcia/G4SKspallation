@@ -53,31 +53,32 @@ public:
   virtual void    EndOfEventAction(const G4Event* event);
 
   // vectors for first generation daugthers of the muon data
-  std::vector<G4int>& GetvectorFirstGenCode()		{ return fvectorFirstGenCode; }
-  std::vector<G4double>& GetvectorEfisrtGen()		{ return fvectorEfisrtGen; }
+  std::vector<G4int>& 		GetvectorFirstGenCode()			{ return fvectorFirstGenCode; }
+  std::vector<G4double>& 	GetvectorEfisrtGen()			{ return fvectorEfisrtGen; }
   // vectors for the isotopes data
-  std::vector<G4int>& GetvectorA() 			{ return fvectorA; }
-  std::vector<G4int>& GetvectorZ() 			{ return fvectorZ; }
-  std::vector<G4double>& Getvectorx() 			{ return fvectorx; }
-  std::vector<G4double>& Getvectory() 			{ return fvectory; }
-  std::vector<G4double>& Getvectorz() 			{ return fvectorz; }
-  std::vector<G4double>& GetvectorIsoDist() 		{ return fvectorIsoDist; }
-  std::vector<G4int>& GetvectorIsoParentCode() 		{ return fvectorIsoParentCode; }
-  std::vector<G4double>& GetvectorIniTime()		{ return fvectorIniTime; }
-  std::vector<G4double>& GetvectorFinTime()		{ return fvectorFinTime; }
-  std::vector<G4int>& GetvectorStable()			{ return fvectorStable; }
+  std::vector<G4int>& 		GetvectorA() 				{ return fvectorA; }
+  std::vector<G4int>& 		GetvectorZ() 				{ return fvectorZ; }
+  std::vector<G4double>& 	Getvectorx() 				{ return fvectorx; }
+  std::vector<G4double>& 	Getvectory() 				{ return fvectory; }
+  std::vector<G4double>& 	Getvectorz() 				{ return fvectorz; }
+  std::vector<G4double>& 	GetvectorIsoDist() 			{ return fvectorIsoDist; }
+  std::vector<G4int>& 		GetvectorIsoParentCode() 		{ return fvectorIsoParentCode; }
+  std::vector<G4double>& 	GetvectorIniTime()			{ return fvectorIniTime; }
+  std::vector<G4double>& 	GetvectorFinTime()			{ return fvectorFinTime; }
+  std::vector<G4int>& 		GetvectorStable()			{ return fvectorStable; }
+  std::vector<G4double>& 	GetvectorLifeTime()			{ return fvectorLifeTime; }
   // vectors for the isotopes' parents data
-  std::vector<G4int>& GetvectorParentsCode() 		{ return fvectorParentsCode; }
-  std::vector<G4int>& GetvectorAdaug() 			{ return fvectorAdaug; }
-  std::vector<G4int>& GetvectorZdaug() 			{ return fvectorZdaug; }
-  std::vector<G4double>& GetvectorEparent() 		{ return fvectorEparent; }
+  std::vector<G4int>& 		GetvectorParentsCode() 			{ return fvectorParentsCode; }
+  std::vector<G4int>& 		GetvectorAdaug() 			{ return fvectorAdaug; }
+  std::vector<G4int>& 		GetvectorZdaug() 			{ return fvectorZdaug; }
+  std::vector<G4double>& 	GetvectorEparent() 			{ return fvectorEparent; }
   // vectors for the path length data
-  std::vector<G4int>& GetvectorPathLengthCode()		{ return fvectorPathLengthCode; }
-  std::vector<G4double>& GetvectorPathLengthE()		{ return fvectorPathLengthE; }
-  std::vector<G4double>& GetvectorStepLength()		{ return fvectorStepLength; }
+  std::vector<G4int>& 		GetvectorPathLengthCode()		{ return fvectorPathLengthCode; }
+  std::vector<G4double>& 	GetvectorPathLengthE()			{ return fvectorPathLengthE; }
+  std::vector<G4double>& 	GetvectorStepLength()			{ return fvectorStepLength; }
   // vectors for the transverse distance data
-  std::vector<G4int>& GetvectorTransParticlesCode() 	{ return fvectorTransParticlesCode; }
-  std::vector<G4double>& GetvectorTransParticlesDist()	{ return fvectorTransParticlesDist; }
+  std::vector<G4int>& 		GetvectorTransParticlesCode() 		{ return fvectorTransParticlesCode; }
+  std::vector<G4double>& 	GetvectorTransParticlesDist()		{ return fvectorTransParticlesDist; }
     
 private:
   // methods
@@ -101,6 +102,7 @@ private:
   std::vector< G4double > 	fvectorIniTime;
   std::vector< G4double > 	fvectorFinTime;
   std::vector< G4int > 		fvectorStable;
+  std::vector< G4double > 	fvectorLifeTime;
   // vectors for the isotopes' parents data
   std::vector< G4int > 		fvectorParentsCode;
   std::vector< G4int > 		fvectorAdaug;

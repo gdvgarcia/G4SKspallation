@@ -71,7 +71,7 @@ int histos(){
 	DataTree->SetBranchAddress("IsotopesSize",&IsotopesSize);
 	DataTree->SetBranchAddress("A",&A);
 	DataTree->SetBranchAddress("Z",&Z);
-	//DataTree->SetBranchAddress("LifeTime",&LifeTime);
+	DataTree->SetBranchAddress("LifeTime",&LifeTime);
 	DataTree->SetBranchAddress("Stable1Instable0",&stable);
 	DataTree->SetBranchAddress("TransverseDistance",&TransverseDistance);
 	DataTree->SetBranchAddress("PathLengthSize",&PathLengthSize);
@@ -317,7 +317,7 @@ int histos(){
 			// running for the iso list
 			if(A->at(j) > 7){
 				multiplicity[Z->at(j)-1][A->at(j)] 	+= 1; // the defult initializition is 0
-				//LifeTimes[Z->at(j)-1][A->at(j)] 	= LifeTime->at(j); // getting the isosopes life time
+				LifeTimes[Z->at(j)-1][A->at(j)] 	= LifeTime->at(j); // getting the isosopes life time
 				multiplicityEvent[Z->at(j)-1][A->at(j)] += 1; // the defult initializition is 0
 				Isstable[Z->at(j)-1][A->at(j)] 		= stable->at(j);
 			}
@@ -838,7 +838,7 @@ int histos(){
 			arrays->push_back(itr->first); //id 1
 			arrays->push_back(itr->second); //id 2
 			arrays->push_back(sqrt(multiplicityError[i][itr->first])/sqrt(nentries)); //id 3
-			//arrays->push_back(LifeTimes[i][itr->first]); //id 4
+			arrays->push_back(LifeTimes[i][itr->first]); //id 4
 			if ( Isstable[i][itr->first] ){
 				cout << elements[i] << itr->first << " is " << Isstable[i][itr->first] <<" and has " << itr->second << " \\pm " << multiplicityError[i][itr->first] << " with a life time of " << LifeTimes[i][itr->first] << endl ;
 				stables->push_back(arrays);
@@ -889,7 +889,7 @@ int histos(){
 			}
 		}
 		outfile << '\t' << "$^{"  << unstables->at(location)->at(1) << "}$" << elements[(int)unstables->at(location)->at(0)]
-             	<< '\t' << '&' // << '\t' << unstables->at(location)->at(4) * 1000000000. << '\t' << '&'
+             	<< '\t' << '&'  << '\t' << unstables->at(location)->at(4) * 1000000000. << '\t' << '&'
 		<< '\t' << max/(3200.* ( nentries )) * 10000000. << '\t' << '&' << '\t' << " \\pm " << unstables->at(location)->at(3)/(3200.) * 10000000.  << '\t' << "\\\\" <<'\n';  // dividing per the number of muons, the distance of the muon track and by the water density 1 * g * cm^{-3} and multiplyin by 10^{7} - time multiplied by e9 because in nanosecs
 		unstables->erase (unstables->begin()+location); //removing the maximum from the vector
 		max = -1;

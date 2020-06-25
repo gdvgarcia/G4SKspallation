@@ -201,7 +201,7 @@ G4bool SKSD::ProcessHits(G4Step* step,
 
 	// filling the hit with the isotope information
 	hit->FillIso( A, Z, xiso, yiso , ziso , transverseDistance( xiso, yiso, ziso ), fParentsCodes[TrackID],
- 	fInitialTimes[TrackID], Track->GetGlobalTime(), thePartDef->GetPDGStable()); 
+ 	fInitialTimes[TrackID], Track->GetGlobalTime(), thePartDef->GetPDGStable(), thePartDef->GetPDGLifeTime()); 
       
   	return true;
   } //---------------------------------------------- END ISOTOPE

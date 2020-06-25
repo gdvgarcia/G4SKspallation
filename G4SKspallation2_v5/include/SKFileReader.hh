@@ -57,7 +57,7 @@ class SKFileReader
  private:
    std::ifstream inputFile; // file with the initial conditions
    std::list< double > fValues; // values read from the file
-   bool angles; // Flag for cancelling the angles reader and only read energy spectrum
+   bool fangles; // Flag for cancelling the angles reader and only read energy spectrum
 
    // Funtion to split the lines of the file so we can take the data and put in a string vector
    void Split(const std::string& line, char divisionchart, std::vector<std::string>& words) ;

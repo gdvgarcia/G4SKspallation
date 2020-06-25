@@ -46,9 +46,7 @@
 SKFixedPrimaryGeneratorAction::SKFixedPrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(),
   fParticleGun(0),
-  //fThzHalf(-1.)
-  //DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-  fThzHalf(16.)
+  fThzHalf(-1.)
 {
   G4int n_particle = 1;
   fParticleGun  = new G4ParticleGun(n_particle);
@@ -81,33 +79,43 @@ void SKFixedPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 
   // In order to avoid dependence of PrimaryGeneratorAction
-  // on DetectorConstruction class we get Envelope volume
+  // on DetectorConstruction class we get cylinder parameters
   // from G4LogicalVolumeStore.
 
   // getting the volume and then getting its parameters
-  /*if(fThzHalf < 0){
-  G4Tubs* EnvelopeTub = 0;
-  	G4LogicalVolume* envLV
-  	  = G4LogicalVolumeStore::GetInstance()->GetVolume("FiducialLV");
-  	if ( envLV ) { EnvelopeTub = dynamic_cast<G4Tubs*>(envLV->GetSolid());}
-  	else{ 
-		envLV = G4LogicalVolumeStore::GetInstance()->GetVolume("TankLV");
-  		if ( envLV ) {EnvelopeTub = dynamic_cast<G4Tubs*>(envLV->GetSolid());}
-  	}
+  if(fThzHalf < 0.){
+  	G4Tubs* EnvelopeTub = 0;
+  		G4LogicalVolume* envLV
+  	  	  = G4LogicalVolumeStore::GetInstance()->GetVolume("FiducialLV");
+  		if ( envLV ) { 
+			EnvelopeTub = dynamic_cast<G4Tubs*>(envLV->GetSolid());
+			G4cout << "\n";
+			G4cout << "Fiducial volume activated. \n";
+			G4cout << "\n";
+		}
+  		else{ 
+			envLV = G4LogicalVolumeStore::GetInstance()->GetVolume("TankLV");
+  			if ( envLV ) {
+				EnvelopeTub = dynamic_cast<G4Tubs*>(envLV->GetSolid());
+				G4cout << "\n";
+				G4cout << "Fiducial volume deactivated. \n";
+				G4cout << "\n";
+			}
+  		}
   
 
-  if ( EnvelopeTub ) {
-    fThzHalf 		= EnvelopeTub->GetZHalfLength 	();
-  }  
-  else  {
-    G4ExceptionDescription msg;
-    msg << "Envelope volume of tub shape not found.\n"; 
-    msg << "Perhaps you have changed geometry.\n";
-    msg << "The gun will be place at the center.";
-    G4Exception("SKFixedPrimaryGeneratorAction::GeneratePrimaries()",
-     "MyCode0002",JustWarning,msg);
+  	if ( EnvelopeTub ) {
+    		fThzHalf 	= EnvelopeTub->GetZHalfLength 	();
+  	}  
+  	else  {
+    		G4ExceptionDescription msg;
+    		msg << "Envelope volume of tub shape not found.\n"; 
+    		msg << "Perhaps you have changed geometry.\n";
+    		msg << "The gun will be place at the center.";
+    		G4Exception("SKFixedPrimaryGeneratorAction::GeneratePrimaries()",
+     		"MyCode0002",JustWarning,msg);
+  	}
   }
-  }*/
 
   
   //setting vertex position
