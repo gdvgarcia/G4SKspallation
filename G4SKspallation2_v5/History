@@ -40,3 +40,5 @@ track of all tags.
 - Multi-threading mode now is fully available.
 16/06/20 G. D. V. Garcia (G4SKspallation2)
 - New way of reading the ASCII file. This way only reads the file once and requires a new class, the SKFileReader class. 
+25/06/20 G. D. V. Garcia (G4SKspallation2)
+- New method of random particle generation. First we choose a point inside the tank, then from this point we project a point on the walls of the tank using the muon initial momentum.

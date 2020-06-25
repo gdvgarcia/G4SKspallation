@@ -137,7 +137,7 @@ SKReadRunAction::SKReadRunAction(SKEventAction* eventAction, SKFileReader* fileR
   analysisManager->CreateNtupleIColumn(
         "Stable1Instable0", fEventAction->GetvectorStable()); 	//column ID 22 - if stable it has 1 if instable is has 0
   analysisManager->CreateNtupleDColumn(
-        "LifeTIme", fEventAction->GetvectorLifeTime()); 	//column ID 23 - life time of the isotope
+        "LifeTime", fEventAction->GetvectorLifeTime()); 	//column ID 23 - life time of the isotope
 
   // isotopes' parents data
   analysisManager->CreateNtupleIColumn("ParentsSize"); 		//column ID 24  - size of the vectors 
