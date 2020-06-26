@@ -175,6 +175,8 @@ SKReadRunAction::SKReadRunAction(SKEventAction* eventAction, SKFileReader* fileR
 
 SKReadRunAction::~SKReadRunAction()
 {
+  G4AutoLock lock(&SKReadRunActionMutex);
+  if( fFileReader ) { fFileReader = 0; }
   delete G4AnalysisManager::Instance();  
 }
 
@@ -189,8 +191,8 @@ void SKReadRunAction::BeginOfRunAction(const G4Run* run)
 
   // Reading the right number of events from the initial conditions file
 #ifdef G4MULTITHREADED // making sure we only read once for the Master thread
-	G4AutoLock lock(&SKReadRunActionMutex);
 	if(! G4Threading::IsWorkerThread() ){
+		G4AutoLock lock(&SKReadRunActionMutex);
 		fFileReader->Read(run->GetNumberOfEventToBeProcessed());
  		G4cout << "Read(only for master) the initial conditions file into a list for " << run->GetNumberOfEventToBeProcessed() << " events." << G4endl;
 	}
@@ -245,15 +247,15 @@ void SKReadRunAction::EndOfRunAction(const G4Run* /*run*/)
 
     // Cleaning the reader after ending run
 #ifdef G4MULTITHREADED // we only clean once for the master
-	G4AutoLock lock(&SKReadRunActionMutex);
 	if(! G4Threading::IsWorkerThread() ){
+		G4AutoLock lock(&SKReadRunActionMutex);
 		fFileReader->Clear();
  		G4cout << "File reader is clear." << G4endl << G4endl;
 	}
 #else
 	G4AutoLock lock(&SKReadRunActionMutex);
 	fFileReader->Clear();
- 		G4cout << "File reader is clear." << G4endl << G4endl;
+ 	G4cout << "File reader is clear." << G4endl << G4endl;
 #endif
 }
 

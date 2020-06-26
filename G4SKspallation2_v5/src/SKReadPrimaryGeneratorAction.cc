@@ -83,8 +83,7 @@ SKReadPrimaryGeneratorAction::SKReadPrimaryGeneratorAction(SKFileReader* fileRea
 SKReadPrimaryGeneratorAction::~SKReadPrimaryGeneratorAction()
 {
   G4AutoLock lock(&SKReadPrimarynMutex);
-  
-  if( fFileReader ) { delete fFileReader; fFileReader = 0; }
+  if( fFileReader ) { fFileReader = 0; }
   delete fParticleGun;
 }
 

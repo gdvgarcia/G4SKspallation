@@ -50,7 +50,10 @@ SKReadActionInitialization::SKReadActionInitialization()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SKReadActionInitialization::~SKReadActionInitialization()
-{}
+{
+  G4AutoLock lock(&SKReadActionInitializationMutex);
+  if( fileReader ) { delete fileReader; fileReader = 0; }
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

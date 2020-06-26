@@ -54,10 +54,18 @@ SKFileReader::SKFileReader( string fileName)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SKFileReader::~SKFileReader()
-{ inputFile.close(); 
-  std::cout << '\n';
-  std::cout << "Initial conditions file is closed.";
-  std::cout << '\n';
+{
+  if (inputFile.is_open()) {  
+	inputFile.close(); 
+  	std::cout << '\n';
+  	std::cout << "Initial conditions file is closed.";
+  	std::cout << '\n';
+  }
+  else {
+    	std::cout << '\n';
+  	std::cout << "Initial conditions  file is already closed.";
+  	std::cout << '\n';
+  }
 }
 
 
@@ -141,6 +149,7 @@ void SKFileReader::Read( int numberOfEvents )
   // reseting the get line position - returning to the start of the file
   inputFile.seekg(0,std::ios::beg);
 
+  delete words;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
