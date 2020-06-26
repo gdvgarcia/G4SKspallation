@@ -191,6 +191,9 @@ int main(int argc,char** argv)
     delete ui;
   }
 
+  // remembering the seed used
+  std::cout  << " \n" << "The initial random seed used was : " << seed << " \n";
+
 
   // Job termination
   // Free the store: user actions, physics_list and detector_description are
