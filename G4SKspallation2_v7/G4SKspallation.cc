@@ -191,17 +191,21 @@ int main(int argc,char** argv)
 
 #ifdef G4MULTITHREADED
   	// If we are in multithreading mode we give the number of threads to the particle generator so it reads correctly the ini cond file
-  						
   	G4String command2 	= "/SK/generator/SetThreads "; 		// command to set the number of threads
   	G4String nCores 	= std::to_string(numberOfcores); 	// number of threads
   	UImanager->ApplyCommand(command2 + nCores);
 #endif	
     	}
 
+  	// Seeting the seed in the run action so we have a unique name for the root file
+  	G4String command3 	= "/SK/runAction/SetSeed "; 		// command to set the seed
+  	G4String setSeed 	= std::to_string(seed); 		// seed
+  	UImanager->ApplyCommand(command3 + setSeed);
+
     	// running the macro
-    	G4String command3 	= "/control/execute ";		// command to run a macro
+    	G4String command4 	= "/control/execute ";		// command to run a macro
     	G4String fileName2 	= argv[1];			// macro file name 
-	UImanager->ApplyCommand(command3+fileName2);
+	UImanager->ApplyCommand(command4+fileName2);
 
     	// Record end time
     	auto finish = std::chrono::high_resolution_clock::now();

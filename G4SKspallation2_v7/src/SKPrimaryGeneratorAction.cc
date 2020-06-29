@@ -266,6 +266,7 @@ void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 void SKPrimaryGeneratorAction::DefineCommands()
 {
   // Define /SK/generator command directory using generic messenger class

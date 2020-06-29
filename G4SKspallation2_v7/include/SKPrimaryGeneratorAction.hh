@@ -64,12 +64,12 @@ class SKPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
   
   private:
-    void DefineCommands(); // method where we define our command that sets the file name
+    void DefineCommands(); // method where we define our commands that set fileReader properties
 
     G4ParticleGun*  		fParticleGun; 	// pointer a to G4 gun class
     G4double 			fThzHalf;	// height of either the fiducial or the tank volume
     G4double 			fTouterRadius;	// radius of either the fiducial or the tank volume
-    G4GenericMessenger* 	fMessenger;	// messenger which sets the file name
+    G4GenericMessenger* 	fMessenger;	// messenger which sets the commands
     G4String 			fFileName;	// initial conditions file name
     G4int 			fNofCores;	// number of cores for multithreading
     G4int 			fCoreID;	// ID of the current thread 

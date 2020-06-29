@@ -36,15 +36,19 @@
 #include "G4UImanager.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4GenericMessenger.hh"
 
 #include <iostream>
 #include <string>
+#include <chrono>  // for high_resolution_clock
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SKRunAction::SKRunAction(SKEventAction* eventAction)
  : G4UserRunAction(),
+   fSeed(0),
+   fMessenger(nullptr),
    fEventAction(eventAction)
 {
   // set printing event number per each event
@@ -158,6 +162,9 @@ SKRunAction::SKRunAction(SKEventAction* eventAction)
 
   // finishing ntuple creation
   analysisManager->FinishNtuple();
+
+  // define commands for this class
+  DefineCommands();
   
 }
 
@@ -166,6 +173,7 @@ SKRunAction::SKRunAction(SKEventAction* eventAction)
 SKRunAction::~SKRunAction()
 {
   delete G4AnalysisManager::Instance();  
+  delete fMessenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -205,7 +213,7 @@ void SKRunAction::BeginOfRunAction(const G4Run* run)
   // Open an output file where we save the data collected
   //
   int runID = run->GetRunID();
-  G4String fileName = "SK" + std::to_string(runID);
+  G4String fileName = "SK_run" + std::to_string(runID) + "_seed" + std::to_string(fSeed);
   analysisManager->OpenFile(fileName);
 }
 
@@ -251,3 +259,21 @@ void SKRunAction::EndOfRunAction(const G4Run* /*run*/)
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void SKRunAction::DefineCommands()
+{
+  // Define /SK/generator command directory using generic messenger class
+  fMessenger 
+    = new G4GenericMessenger(this, 
+                             "/SK/runAction/", 
+                             "Run action control");
+  // file name command
+  auto& seedCmd
+    = fMessenger->DeclareProperty("SetSeed", fSeed, 
+        "Set the seed of the application run so we make a unique root file.");
+  seedCmd.SetParameterName("Seed", true);
+  seedCmd.SetRange("Seed > 0");                                
+  seedCmd.SetDefaultValue("0");               
+}
+
+//..oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

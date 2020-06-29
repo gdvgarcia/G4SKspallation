@@ -35,6 +35,7 @@
 #include "SKEventAction.hh"
 
 class G4Run;
+class G4GenericMessenger;
 
 /// Run action class
 ///
@@ -57,7 +58,11 @@ class SKRunAction : public G4UserRunAction
 
 
     private:
-    SKEventAction* 		fEventAction;
+    void DefineCommands(); 			// method where we define our command that sets the seed for the name of the root file
+
+    G4int  			fSeed; 		// pointer a to G4 gun class
+    G4GenericMessenger* 	fMessenger;	// messenger which sets the file name
+    SKEventAction* 		fEventAction;   // so we get the pointer to the vectors of each event
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
