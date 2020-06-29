@@ -75,6 +75,7 @@ class SKPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     G4int 			fCoreID;	// ID of the current thread 
     G4int 			fNEvents;	// number of events for the current thread 
     SKFileReader* 		fFileReader; 	// file reader object used to read data from the file of initial conditions
+    G4bool	 		fClear; 	// flag for cleaning the file reader
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

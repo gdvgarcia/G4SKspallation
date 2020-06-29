@@ -171,7 +171,14 @@ int main(int argc,char** argv)
   //
   if ( ! ui ) { // batch mode
     	// // Detect if we want to read a initial condition file (if there is a forth argument)
-    	if (  argc > 3 ) { 						
+    	if (  argc > 3 ) { 
+#ifdef G4MULTITHREADED
+  		// first if in multithread we have to initialize the run so the primary generators for each thread are created and so we can asign the file name and threa information for those classes
+  		G4String cmdinitial = "/run/initialize "; 	// command to initialize the run
+  		UImanager->ApplyCommand(cmdinitial);
+  		std::cout << "Number of threads being used : " << numberOfcores << "\n";
+#endif
+						
 		G4String command1 	= "/SK/generator/SetFileName "; // command to set the initial condition file name with the fourth argument
     		G4String fileName1 	= argv[3];			// initial conditions file name - if "yes" it uses default file
 		if( fileName1 == "yes" ){ 				// using default file
@@ -183,7 +190,6 @@ int main(int argc,char** argv)
 
 #ifdef G4MULTITHREADED
   	// If we are in multithreading mode we give the number of threads to the particle generator so it reads correctly the ini cond file
-  	std::cout << "Number of threads being used : " << numberOfcores << "\n";
   						
   	G4String command2 	= "/SK/generator/SetThreads "; 		// command to set the number of threads
   	G4String nCores 	= std::to_string(numberOfcores); 	// number of threads

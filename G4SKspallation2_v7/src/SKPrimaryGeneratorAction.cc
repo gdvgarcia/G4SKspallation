@@ -63,7 +63,8 @@ SKPrimaryGeneratorAction::SKPrimaryGeneratorAction()
   fNofCores(1),
   fCoreID(0),
   fNEvents(1),
-  fFileReader(0)
+  fFileReader(0),
+  fClear(false)
 {
   G4int n_particle = 1;
   fParticleGun  = new G4ParticleGun(n_particle);
@@ -111,6 +112,10 @@ void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   //This function is called at the begining of each event
   //
+
+
+  // clear the file reader after a run
+  if( fClear ) { fFileReader->Clear(); fClear = false; G4cout << "File Reader is clear." << G4endl; } // clear the fileread
 
   // creating the file reader if not already created
   if( fFileName != "" && !fFileReader ) { fFileReader = new SKFileReader( fFileName, fNofCores , fCoreID, fNEvents ); } // make sure you have the right file and with enough entries for your simulation
@@ -292,6 +297,13 @@ void SKPrimaryGeneratorAction::DefineCommands()
 // number of events command
   fMessenger->DeclareProperty("SetNEvents", fNEvents, 
         "Set the number of events to be read in the current thread.");
+
+// clear the file reader after a run
+  auto& clearCmd
+    =fMessenger->DeclareProperty("ClearFileReader", fClear, 
+        "Set the flag for cleaning the FileReader.");
+  clearCmd.SetParameterName("flagClear", true);                             
+  clearCmd.SetDefaultValue("true");  
 }
 
 //..oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

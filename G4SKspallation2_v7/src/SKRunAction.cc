@@ -240,6 +240,14 @@ void SKRunAction::EndOfRunAction(const G4Run* /*run*/)
   //
   analysisManager->Write();
   analysisManager->CloseFile();
+
+  // cleaning the file reader
+  //
+  // getting UI manager to set information about the run
+  G4UImanager* UImanager = G4UImanager::GetUIpointer();
+
+  G4String command 	= "/SK/generator/ClearFileReader "; 		// command to clear the file reader beeing
+  UImanager->ApplyCommand(command);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -45,8 +45,7 @@ using namespace std;
 
 SKFileReader::SKFileReader( string fileName, int n , int id, int nevents)
 {   
-  std::cout << '\n';
-  std::cout << "Opening "<< fileName << " ...";
+  std::cout << "\nOpening "<< fileName << " ... \n";
   fnThreads 	= n;
   fThreadID 	= id;
   fangles 	= true; 
@@ -57,12 +56,12 @@ SKFileReader::SKFileReader( string fileName, int n , int id, int nevents)
   	std::cout << "Initial conditions file is opened.";
   	std::cout << '\n';
 	Read(nevents);
-	std::cout << "Read the initial conditions file into a list for " << nevents  << " events in the thread " << id << "." << std::endl;
+	std::cout << "\nRead the initial conditions file into a list for " << nevents  << " events in the thread " << id << "." << std::endl;
     	std::cout << '\n';
   }
   else {
     	std::cout << '\n';
-  	std::cout << "Could not find initial conditions file with the path/name = " << fileName << ". Opening ini_cond.txt ...";
+  	std::cout << "\nCould not find initial conditions file with the path/name = " << fileName << ". Opening ini_cond.txt ...";
   	std::cout << '\n';
 	inputFile.open ("ini_cond.txt"); 
 	if (inputFile.is_open()) { 
@@ -70,12 +69,12 @@ SKFileReader::SKFileReader( string fileName, int n , int id, int nevents)
   		std::cout << "Initial conditions file ini_cond.txt is opened.";
   		std::cout << '\n';
 		Read(nevents);
-		std::cout << "Read the initial conditions file into a list for " << nevents  << " events in the thread " << id << "." << std::endl;
+		std::cout << "\nRead the initial conditions file into a list for " << nevents  << " events in the thread " << id << "." << std::endl;
     		std::cout << '\n';
   	}
   	else {
     		std::cout << '\n';
-  		std::cout << "Could not open ini_cond.txt.";
+  		std::cout << "\nCould not open ini_cond.txt.";
   		std::cout << '\n'; 
   	}
   }
@@ -155,10 +154,7 @@ bool SKFileReader::Read( int numberOfEvents )
   int l = fThreadID;
 
   //for-loop to collect the data into the list
-  for ( int i = 1 ; ( l < fnThreads * numberOfEvents + fThreadID ) && ( !inputFile.eof() ); i++ ){
-
-	// jumping the lines that are read by the other threads
-  	for( int j = 1; j < fnThreads; j++ ){ getline(inputFile, line, '\n'); }
+  for ( int i = 1 ; ( l < fnThreads * numberOfEvents + fThreadID ) && ( !inputFile.eof() ); i++ ){ // get the total number of events, because if one thread goes too slow the other runs more events so we must be sure to have enough events for each
 
   	// cleaning the strings
   	line.clear();
@@ -186,9 +182,9 @@ bool SKFileReader::Read( int numberOfEvents )
   		}
   	}
 
-	// cleaning the strings
-  	line.clear();
-  	words->clear();
+	// jumping the lines that are read by the other threads
+  	for( int j = 1; j < fnThreads; j++ ){ getline(inputFile, line, '\n'); }
+
 
 	// updating int line
 	l = fnThreads * i + fThreadID ;
@@ -247,9 +243,6 @@ bool SKFileReader::ReadPublic( int numberOfEvents, int id )
   //for-loop to collect the data into the list
   for ( int i = 1 ; ( l < fnThreads * numberOfEvents + fThreadID ) && ( !inputFile.eof() ); i++ ){
 
-	// jumping the lines that are read by the other threads
-  	for( int j = 1; j < fnThreads; j++ ){ getline(inputFile, line, '\n'); }
-
   	// cleaning the strings
   	line.clear();
   	words->clear();
@@ -276,9 +269,9 @@ bool SKFileReader::ReadPublic( int numberOfEvents, int id )
   		}
   	}
 
-	// cleaning the strings
-  	line.clear();
-  	words->clear();
+	// jumping the lines that are read by the other threads
+  	for( int j = 1; j < fnThreads; j++ ){ getline(inputFile, line, '\n'); }
+
 
 	// updating int line
 	l = fnThreads * i + fThreadID ;

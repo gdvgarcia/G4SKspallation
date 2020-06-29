@@ -183,12 +183,12 @@ void SKRunAction::BeginOfRunAction(const G4Run* run)
 #ifdef G4MULTITHREADED // making sure we only read once for the Master thread
   if( G4Threading::IsWorkerThread() ){
 	// setting core ID and the number of events
-  	G4String command 	= "/SK/generator/SetIDThread "; 				// command to set the thread ID
-  	G4String coreID 	= std::to_string(G4Threading::G4GetThreadId()); 		// thread ID
+  	G4String command 	= "/SK/generator/SetIDThread "; 			// command to set the thread ID
+  	G4String coreID 	= std::to_string(G4Threading::G4GetThreadId()); 	// thread ID
   	UImanager->ApplyCommand(command + coreID);
 
-  	G4String command2 	= "/SK/generator/SetNEvents "; 					// command to set the number of events
-  	G4String nEvents 	= std::to_string(run->GetNumberOfEventToBeProcessed()); 	// number of events beeing processed in this core
+  	G4String command2 	= "/SK/generator/SetNEvents "; 				// command to set the number of events
+  	G4String nEvents 	= std::to_string(run->GetNumberOfEventToBeProcessed()); 		// number of events beeing processed in this core
   	UImanager->ApplyCommand(command2 + nEvents);
   }
 #else
@@ -240,6 +240,14 @@ void SKRunAction::EndOfRunAction(const G4Run* /*run*/)
   //
   analysisManager->Write();
   analysisManager->CloseFile();
+
+  // cleaning the file reader
+  //
+  // getting UI manager to set information about the run
+  G4UImanager* UImanager = G4UImanager::GetUIpointer();
+
+  G4String command 	= "/SK/generator/ClearFileReader "; 		// command to clear the file reader beeing
+  UImanager->ApplyCommand(command);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
