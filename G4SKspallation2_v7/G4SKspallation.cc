@@ -120,7 +120,7 @@ int main(int argc,char** argv)
 
   // Physics list
   G4PhysListFactory  *physListFactory = new G4PhysListFactory();
-  G4VUserPhysicsList* physicsList = 0; // initialize
+  G4String PhysListName = "QGSP_BERT_HP"; 	// default list
   // Detect if we are choosing a physics list (if there is a third argument)
   //
   if (  argc > 2 ) { 
@@ -131,24 +131,25 @@ int main(int argc,char** argv)
 			// taking the phys list by its ID
   			switch(ID) {
       			case 0:
-         			physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT");
+         			PhysListName = "QGSP_BERT";
       	        		break;
       			case 1:
-          			physicsList =  physListFactory->GetReferencePhysList("QGSP_BIC_HP");
+          			PhysListName =  "QGSP_BIC_HP";
           			break;
       			case 2:
-          			physicsList =  physListFactory->GetReferencePhysList("FTFP_BERT_HP");
+          			PhysListName =  "FTFP_BERT_HP";
           			break;
       			case 3:
-          			physicsList =  physListFactory->GetReferencePhysList("QGSP_INCLXX_HP"); // it says that this phys List is still under validation and improvements
+          			PhysListName =  "QGSP_INCLXX_HP"; 	// it says that this phys List is still under validation and improvements
           			break;
       			default:
-          			physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP"); //default
+          			PhysListName = "QGSP_BERT_HP"; 		//default
           			break;
 			}
-    		}else{physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP");} //default one
-	}else{physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP");} //default one
-  }else{physicsList =  physListFactory->GetReferencePhysList("QGSP_BERT_HP");} //default one
+    		}
+	}
+  }
+  G4VUserPhysicsList* physicsList = physListFactory->GetReferencePhysList(PhysListName); // getting the list by the name
   physicsList->SetVerboseLevel(0);
   runManager->SetUserInitialization(physicsList);
     
@@ -202,10 +203,14 @@ int main(int argc,char** argv)
   	G4String setSeed 	= std::to_string(seed); 		// seed
   	UImanager->ApplyCommand(command3 + setSeed);
 
+  	// Seeting the physList for the root file
+  	G4String command4 	= "/SK/runAction/SetPhysList "; 	// command to set the physlist in the run
+  	UImanager->ApplyCommand(command4 + PhysListName);
+
     	// running the macro
-    	G4String command4 	= "/control/execute ";		// command to run a macro
+    	G4String command5 	= "/control/execute ";		// command to run a macro
     	G4String fileName2 	= argv[1];			// macro file name 
-	UImanager->ApplyCommand(command4+fileName2);
+	UImanager->ApplyCommand(command5+fileName2);
 
     	// Record end time
     	auto finish = std::chrono::high_resolution_clock::now();

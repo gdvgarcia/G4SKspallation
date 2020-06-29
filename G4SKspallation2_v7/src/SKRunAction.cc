@@ -48,6 +48,7 @@
 SKRunAction::SKRunAction(SKEventAction* eventAction)
  : G4UserRunAction(),
    fSeed(0),
+   fPhysListName(""),
    fMessenger(nullptr),
    fEventAction(eventAction)
 {
@@ -213,7 +214,7 @@ void SKRunAction::BeginOfRunAction(const G4Run* run)
   // Open an output file where we save the data collected
   //
   int runID = run->GetRunID();
-  G4String fileName = "SK_run" + std::to_string(runID) + "_seed" + std::to_string(fSeed);
+  G4String fileName = "SK_run" + std::to_string(runID) + "_seed" + std::to_string(fSeed) + "_physlist" + fPhysListName;
   analysisManager->OpenFile(fileName);
 }
 
@@ -262,18 +263,25 @@ void SKRunAction::EndOfRunAction(const G4Run* /*run*/)
 
 void SKRunAction::DefineCommands()
 {
-  // Define /SK/generator command directory using generic messenger class
+  // Define /SK/runAction command directory using generic messenger class
   fMessenger 
     = new G4GenericMessenger(this, 
                              "/SK/runAction/", 
                              "Run action control");
-  // file name command
+  // seed command
   auto& seedCmd
     = fMessenger->DeclareProperty("SetSeed", fSeed, 
         "Set the seed of the application run so we make a unique root file.");
   seedCmd.SetParameterName("Seed", true);
   seedCmd.SetRange("Seed > 0");                                
-  seedCmd.SetDefaultValue("0");               
+  seedCmd.SetDefaultValue("0");    
+
+  // physlist name command
+  auto& physCmd
+    = fMessenger->DeclareProperty("SetPhysList", fPhysListName, 
+        "Set the physics list name into the root file name.");
+  physCmd.SetParameterName("PhysName", true);
+  physCmd.SetDefaultValue("QGSP_BERT_HP");              
 }
 
 //..oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -60,7 +60,8 @@ class SKRunAction : public G4UserRunAction
     private:
     void DefineCommands(); 			// method where we define our command that sets the seed for the name of the root file
 
-    G4int  			fSeed; 		// pointer a to G4 gun class
+    G4int  			fSeed; 		// saving the initial seed of the application
+    G4String			fPhysListName; 	// saving the physics list used in the application
     G4GenericMessenger* 	fMessenger;	// messenger which sets the file name
     SKEventAction* 		fEventAction;   // so we get the pointer to the vectors of each event
 };
