@@ -26,8 +26,9 @@
 //
 /// \file SKDetectorConstruction.cc
 /// \Implementation of the SKDetectorConstruction class
-/// To analyse data only from the fiducial volume you have to uncomment lines
-/// that create the fiducial volume and change the Sensitive Detector logical volume.
+///
+///  To analyse data only from the fiducial volume you have only to uncomment lines
+///  that create the fiducial volume.
 
 #include "SKDetectorConstruction.hh"
 #include "G4RunManager.hh"
@@ -52,12 +53,12 @@ SKDetectorConstruction::SKDetectorConstruction()
 : G4VUserDetectorConstruction(),
    fTankPV(0),
    fFiducialPV(0)
-{ }
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SKDetectorConstruction::~SKDetectorConstruction()
-{ }
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

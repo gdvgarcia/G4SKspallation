@@ -26,7 +26,7 @@
 //
 /// \file G4SKspallation.cc
 /// \brief Main program of the G4SKspallation
-/// You can choose the physics list by using a third argument when opening the application
+///  You can choose the physics list by using a third argument when opening the application
 ///  and the initial conditon file with a fourth argument
 
 #include "SKDetectorConstruction.hh"
@@ -87,7 +87,7 @@ int main(int argc,char** argv)
   t_1 = t_1 * 1000. - 1592000000000.; // multiplied by 1 000  to get milisecs precision and removing the large unnecessary number of 1592000000000 secs - so this simulation has a maximum of around 30 years validation - Now 2020 
   
   long seed = (long)t_1; // so we use the time for the seed
-  // Setting your seed
+  // Setting the seed
   G4Random::setTheSeed(seed);
   std::cout << " \n Initial random seed is : " << seed << " \n";
 
@@ -176,10 +176,10 @@ int main(int argc,char** argv)
     	// // Detect if we want to read a initial condition file (if there is a forth argument)
     	if (  argc > 3 ) { 		
 #ifdef G4MULTITHREADED
-  		// first if in multithread we have to initialize the run so the primary generators for each thread are created and so we can asign the file name and threa information for those classes
-  		G4String cmdinitial = "/run/initialize "; 	// command to initialize the run
-  		UImanager->ApplyCommand(cmdinitial);
   		std::cout << "Number of threads being used : " << numberOfcores << "\n";
+  		// first if in multithread we have to initialize the run so the primary generators for each thread are created and so we can asign the file name and thread information for those classes
+  		G4String cmdinitial = "/run/initialize "; 		// command to initialize the run
+  		UImanager->ApplyCommand(cmdinitial);
 #endif				
 		G4String command1 	= "/SK/generator/SetFileName "; // command to set the initial condition file name with the fourth argument
     		G4String fileName1 	= argv[3];			// initial conditions file name - if "yes" it uses default file
@@ -208,36 +208,41 @@ int main(int argc,char** argv)
   	UImanager->ApplyCommand(command4 + PhysListName);
 
     	// running the macro
-    	G4String command5 	= "/control/execute ";		// command to run a macro
-    	G4String fileName2 	= argv[1];			// macro file name 
+    	G4String command5 	= "/control/execute ";			// command to run a macro
+    	G4String fileName2 	= argv[1];				// macro file name 
 	UImanager->ApplyCommand(command5+fileName2);
+
 
     	// Record end time
     	auto finish = std::chrono::high_resolution_clock::now();
 
     	// Printing Elapsed time
     	std::chrono::duration<double> elapsed = finish - start;
-    	std::cout << "\n Elapsed time: " << elapsed.count() << " s\n";
+    	std::cout << "Elapsed time: " << elapsed.count() << " s\n";
   }
   else { // interactive mode 
-    	// activating muon energy and angular distribution for the interactive mode
-    	G4String command1 	= "/SK/generator/SetFileName "; 	// command to set the initial condition to be read from ini_cond.txt
-    	UImanager->ApplyCommand(command1);
-
 #ifdef G4MULTITHREADED
-  	// If we are in multithreading we give the number of threads to the particle generator so it reads correctly the ini cond file
   	std::cout << "Number of threads being used : " << numberOfcores << "\n";
-  						
+	// first if in multithread we have to initialize the run so the primary generators for each thread are created and so we can asign the file name and thread information for those classes
+  	G4String cmdinitial = "/run/initialize "; 		// command to initialize the run
+  	UImanager->ApplyCommand(cmdinitial);	
+
+  	// If we are in multithreading we give the number of threads to the particle generator so it reads correctly the ini cond file
   	G4String command2 	= "/SK/generator/SetThreads "; 		// command to set the number of threads
   	G4String nCores 	= std::to_string(numberOfcores); 	// number of threads
   	UImanager->ApplyCommand(command2 + nCores);
 #endif	
 
+	// activating muon energy and angular distribution for the interactive mode
+    	G4String command1 	= "/SK/generator/SetFileName "; 	// command to set the initial condition to be read from ini_cond.txt
+    	UImanager->ApplyCommand(command1);
+
     	// running the visualization macro
-    	UImanager->ApplyCommand("/control/execute init_vis.mac");	// command to run a macro
+    	UImanager->ApplyCommand("/control/execute init_vis.mac");	// command to run the visualization macro
     	ui->SessionStart();
     	delete ui;
   }
+
 
   // remembering the seed used
   std::cout  << " \n" << "The initial random seed used was : " << seed << " \n \n";

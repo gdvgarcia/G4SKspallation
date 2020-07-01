@@ -49,28 +49,27 @@ SKFileReader::SKFileReader( string fileName, int n , int id, int nevents)
   fnThreads 	= n;
   fThreadID 	= id;
   fangles 	= true; 
-  fValues.clear();
   inputFile.open (fileName); 
   if (inputFile.is_open()) { 
   	std::cout << '\n';
   	std::cout << "Initial conditions file is opened.";
   	std::cout << '\n';
-	Read(nevents);
 	std::cout << "\nRead the initial conditions file into a list for " << nevents  << " events in the thread " << id << "." << std::endl;
+	Read(nevents);
     	std::cout << '\n';
   }
   else {
     	std::cout << '\n';
-  	std::cout << "\nCould not find initial conditions file with the path/name = " << fileName << ". Opening ini_cond.txt ...";
+  	std::cout << "Could not find initial conditions file with the path/name = " << fileName << ". Opening ini_cond.txt ...";
   	std::cout << '\n';
 	inputFile.open ("ini_cond.txt"); 
 	if (inputFile.is_open()) { 
   		std::cout << '\n';
   		std::cout << "Initial conditions file ini_cond.txt is opened.";
   		std::cout << '\n';
-		Read(nevents);
 		std::cout << "\nRead the initial conditions file into a list for " << nevents  << " events in the thread " << id << "." << std::endl;
-    		std::cout << '\n';
+		Read(nevents);
+		std::cout << '\n';
   	}
   	else {
     		std::cout << '\n';
@@ -84,16 +83,11 @@ SKFileReader::SKFileReader( string fileName, int n , int id, int nevents)
 
 SKFileReader::~SKFileReader()
 {
+  fValues.clear();
   if (inputFile.is_open()) {  
 	inputFile.close(); 
   	std::cout << '\n';
-  	std::cout << "Initial conditions file is closed.";
-  	std::cout << '\n';
-  	std::cout << '\n';
-  }
-  else {
-    	std::cout << '\n';
-  	std::cout << "Initial conditions  file is already closed.";
+  	std::cout << "Initial conditions file has been closed.";
   	std::cout << '\n';
   	std::cout << '\n';
   }
@@ -106,12 +100,12 @@ double SKFileReader::GetOneValue()
 {
   if(!fValues.empty()){			//if it is not empty
   double value = fValues.front();
-  fValues.pop_front();
+  fValues.pop_front(); 			// remove the value from the list
   return value;
   }
   else{
   std::cout << '\n';
-  std::cout << "File reader is empty. Returning 1. in place of the expected value from the initial condition file.";
+  std::cout << "File reader is empty. Returning 1 in place of the expected value from the initial condition file.";
   std::cout << '\n';
   return 1.;
   }
@@ -131,12 +125,12 @@ bool SKFileReader::Read( int numberOfEvents )
   // jumping the head lines
   getline(inputFile, line, '\n');
 
-  // check if we deactivated the angles with a 0 in the start of the text file
-  if ( line.compare("") != 0 ){ //check if the line is not empty
+  // check if the angles are deactivated - a 0 in the start of the text file
+  if ( line.compare("") != 0 ){ 		//check if the line is not empty
   	Split(line, '#', *words);
 	for( unsigned int k = 0; k < words->at(0).size(); k++){
-		if(words->at(0)[k] == '0'){ // check if we find a zero
-			fangles = false; // deactivate angles reader
+		if(words->at(0)[k] == '0'){ 	// check if we find a zero
+			fangles = false; 	// deactivate angles reader
 			std::cout << '\n';
   			std::cout << "Reading angles deactivated.";
   			std::cout << '\n';
@@ -154,23 +148,23 @@ bool SKFileReader::Read( int numberOfEvents )
   int l = fThreadID;
 
   //for-loop to collect the data into the list
-  for ( int i = 1 ; ( l < fnThreads * numberOfEvents + fThreadID ) && ( !inputFile.eof() ); i++ ){ // get the total number of events, because if one thread goes too slow the other runs more events so we must be sure to have enough events for each
+  for ( int i = 1 ; ( l < fnThreads * numberOfEvents + fThreadID ) && ( !inputFile.eof() ); i++ ){ // get the total number of events, because if one thread goes too slow the others run more events so we must be sure to have enough events for each
 
   	// cleaning the strings
   	line.clear();
   	words->clear();
 
-	getline(inputFile, line, '\n');  // Grab the line
+	getline(inputFile, line, '\n');  				// Grab the line
 
   	// first we break the data into strings. Each string containing a piece of information                 
-  	if ( line.compare("") != 0 ){ //check if the line is not empty
-  		Split(line, ' ', *words); 			// Splitting the line into words
+  	if ( line.compare("") != 0 ){ 					//check if the line is not empty
+  		Split(line, ' ', *words); 				// Splitting the line into words
   		// Convert the strings to numbers with the atof and saving the initial conditions variables
-  		value = atof(words->at(2).c_str()) - 0.1056583755; // Transform the total energy to Kinetic energy
+  		value = atof(words->at(2).c_str()) - 0.1056583755; 	// Transform the total energy to Kinetic energy
     		// Filling the list
   		fValues.push_back(value);
 
-  		if(fangles){ // check if we deactivated the angles
+  		if(fangles){ 						// check if we deactivated the angles
 			// Convert the strings to numbers with the atof and saving the initial conditions variables
   			value =  atof(words->at(0).c_str());
 			// Filling the list
@@ -190,10 +184,22 @@ bool SKFileReader::Read( int numberOfEvents )
 	l = fnThreads * i + fThreadID ;
   }
 
-  // reseting the get line position - returning to the start of the file
-  inputFile.seekg(0,std::ios::beg);
-
   delete words;
+
+  if (inputFile.is_open()) {  // closing the file after reading
+	inputFile.close(); 
+  	std::cout << '\n';
+  	std::cout << "Initial conditions file is closed.";
+  	std::cout << '\n';
+  	std::cout << '\n';
+  }
+  else {
+    	std::cout << '\n';
+  	std::cout << "Initial conditions  file is already closed.";
+  	std::cout << '\n';
+  	std::cout << '\n';
+  }
+
   return true;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -247,17 +253,17 @@ bool SKFileReader::ReadPublic( int numberOfEvents, int id )
   	line.clear();
   	words->clear();
 
-	getline(inputFile, line, '\n');  // Grab the line
+	getline(inputFile, line, '\n');  				// Grab the line
 
   	// first we break the data into strings. Each string containing a piece of information                 
-  	if ( line.compare("") != 0 ){ //check if the line is not empty
-  		Split(line, ' ', *words); 			// Splitting the line into words
+  	if ( line.compare("") != 0 ){ 					//check if the line is not empty
+  		Split(line, ' ', *words); 				// Splitting the line into words
   		// Convert the strings to numbers with the atof and saving the initial conditions variables
-  		value = atof(words->at(2).c_str()) - 0.1056583755; // Transform the total energy to Kinetic energy
+  		value = atof(words->at(2).c_str()) - 0.1056583755; 	// Transform the total energy to Kinetic energy
     		// Filling the list
   		fValues.push_back(value);
 
-  		if(fangles){ // check if we deactivated the angles
+  		if(fangles){ 						// check if we deactivated the angles
 			// Convert the strings to numbers with the atof and saving the initial conditions variables
   			value =  atof(words->at(0).c_str());
 			// Filling the list
@@ -319,7 +325,7 @@ void SKFileReader::Clear()
 
 void SKFileReader::Print()
 { 
-  if(!fValues.empty()){//if it is not empty
+  if(!fValues.empty()){	//if it is not empty
   std::cout << '\n';
   int size = 0;
   for (std::list< double >::iterator it=fValues.begin(); it != fValues.end(); ++it){
@@ -340,7 +346,7 @@ void SKFileReader::Print()
 
 bool SKFileReader::IsEmpty()
 { 
-  if(!fValues.empty()){//if it is not empty
+  if(!fValues.empty()){	//if it is not empty
   	return false;
   }
   return true;

@@ -44,7 +44,7 @@ class G4GenericMessenger;
 /// The histograms and ntuple are then saved in the output file in a format
 /// according to a selected technology in SKAnalysis.hh.
 ///
-/// In EndOfRunAction(), the accumulated statistic is printed and saved in the SK file created.
+/// In EndOfRunAction(), the accumulated statistic is printed and saved in the output file created.
 ///
 
 class SKRunAction : public G4UserRunAction
@@ -62,8 +62,8 @@ class SKRunAction : public G4UserRunAction
 
     G4int  			fSeed; 		// saving the initial seed of the application
     G4String			fPhysListName; 	// saving the physics list used in the application
-    G4GenericMessenger* 	fMessenger;	// messenger which sets the file name
-    SKEventAction* 		fEventAction;   // so we get the pointer to the vectors of each event
+    G4GenericMessenger* 	fMessenger;	// messenger which sets the output file name infortmation
+    SKEventAction* 		fEventAction;   // this allows the run action to get the pointers to the vectors of data of each event
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

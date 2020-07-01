@@ -43,4 +43,4 @@ track of all tags.
 25/06/20 G. D. V. Garcia (G4SKspallation2)
 - New method of random particle generation. First we choose a point inside the tank, then from this point we project a point on the walls of the tank using the muon initial momentum.
 27/06/20 G. D. V. Garcia (G4SKspallation2)
-- New way of reading the ASCII file which is thread local to avoid issues. This new way also allows the user to give an input file to the initial conditions by choice in the argument.
+- New way of reading the ASCII file which is thread local to avoid issues in multi-threading mode. This new way also allows the user to give an input file to the initial conditions by choice in the argument.

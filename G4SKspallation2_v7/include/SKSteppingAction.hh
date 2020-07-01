@@ -56,16 +56,19 @@ public:
   virtual void UserSteppingAction(const G4Step* step);
     
 private:
-  const SKDetectorConstruction* fDetConstruction;
-  SKEventAction*  fEventAction;  
+  const SKDetectorConstruction* fDetConstruction; 	// so one can check if the particle step is inside the desired volume 
+  SKEventAction*  fEventAction;  			// so one can handle the data to the event action objects which save the data for the entire event 
 
     //
     // Extra functions
     //
+    // this is used to make a for loop in the secondaries per step vector - it fills the parents' vectors
     void loopForSecondariesEnergies(const std::vector<const G4Track*>* Secondaries , G4int n ,  
-    G4double Energy , G4int Code); // this is used to make a for loop in the secondaries per step vector - it fills the parents hit
-    bool loopForSecondaries( const G4TrackVector* Secondaries , G4int n , G4int TrackID, G4int Code); // this is used to make a for loop in the secondaries per track vector - it fills the fParentsCodes map with the parent particle codes
-    G4double transverseDistance( G4double x, G4double y, G4double z ); // transverse distance to the muon track line - suppose an "infinite" line to do the calculation
+    G4double Energy , G4int Code); 								
+    // this is used to make a for loop in the secondaries per track vector - it fills the fParentsCodes map with the parent particle codes	
+    bool loopForSecondaries( const G4TrackVector* Secondaries , G4int n , G4int TrackID, G4int Code); 	
+    // transverse distance to the muon track line - suppose the muon path to be an "infinite" line to do the calculation
+    G4double transverseDistance( G4double x, G4double y, G4double z );					 
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

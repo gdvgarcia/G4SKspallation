@@ -64,7 +64,6 @@ class SKDetectorConstruction : public G4VUserDetectorConstruction
   private:
     // data members
     //
-     
     G4VPhysicalVolume*   	fTankPV; 		// the tank physical volume
     G4VPhysicalVolume*   	fFiducialPV;      	// the fiducial physical volume
 };
