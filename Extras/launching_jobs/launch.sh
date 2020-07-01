@@ -8,8 +8,9 @@
 for input in $1/*
 do
 
+    # command to print the initial conditions file
     echo $input
-    /opt/exp_soft/cms/t3/t3submit -long runG4.sh $input
-    #/home/ggarcia/Programs/geant4/G4SKspallation2-build/G4SKspallation /home/ggarcia/Programs/geant4/G4SKspallation2-build/run2.mac
+    # command to submit the job in the cluster
+    /opt/exp_soft/cms/t3/t3submit -long launchgeant.sh $input 
 
 done
