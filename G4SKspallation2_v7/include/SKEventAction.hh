@@ -34,6 +34,7 @@
 #include "globals.hh"
 #include <vector>
 #include <iomanip>
+#include <map>
 
 /// Event action class
 ///
@@ -52,7 +53,7 @@ public:
   virtual ~SKEventAction();
 
   virtual void  	BeginOfEventAction(const G4Event* event);
-  virtual void    	EndOfEventAction(const G4Event* event);
+  virtual void    	EndOfEventAction  (const G4Event* event);
 
   // get methods
   //

@@ -88,22 +88,9 @@ SKPrimaryGeneratorAction::SKPrimaryGeneratorAction()
 
 SKPrimaryGeneratorAction::~SKPrimaryGeneratorAction()
 {
-#ifdef G4MULTITHREADED // we only clean once for the master
-  if( fFileReader ) {
-  fFileReader->Clear();
-  G4cout << "File reader in work thread number : " <<  G4Threading::G4GetThreadId() << " is clear." << G4endl << G4endl;
-  }
-#else
-  if( fFileReader ) {
-	fFileReader->Clear();
-  	std::cout << '\n';
-  	G4cout << "File reader is clear." << G4endl;
-  }
-#endif
   delete fFileReader;
   delete fParticleGun;
   delete fMessenger;
-
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -115,13 +102,19 @@ void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 
   // clear the file reader after a run
-  if( fClear ) { fFileReader->Clear(); fClear = false; G4cout << "File Reader is clear." << G4endl; } // clear the fileread
+  if( fClear ) {  
+	if(fFileReader){
+	delete fFileReader; 
+	fFileReader = 0; 
+	G4cout << "\nDeleted the File reader of the previous run." << G4endl; } // delete file reader after a run
+	fClear = false; 
+  }
+
 
   // creating the file reader if not already created
-  if( fFileName != "" && !fFileReader ) { fFileReader = new SKFileReader( fFileName, fNofCores , fCoreID, fNEvents ); } // make sure you have the right file and with enough entries for your simulation
+  if( fFileName != "" && !fFileReader ) { fFileReader = new SKFileReader( fFileName, fNofCores , fCoreID, fNEvents ); } 
+		// make sure you have the right file and with enough entries for your simulation
 
-  // if empty we read the number of events again
-  if( fFileReader  && fFileReader->IsEmpty() ) {fFileReader->ReadPublic( fNEvents, fCoreID ); } // make sure you have the right file and with enough entries for your simulation
 
   // In order to avoid dependence of PrimaryGeneratorAction
   // on DetectorConstruction class we get cylinder parameters
@@ -164,14 +157,13 @@ void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
 
 
-
   // Flag for cancelling the angles reader and only read energy spectrum
   bool anglesflag = false;
 
   // Variable for the energy from the file
   G4double KinEnergy =  271. - 0.1056583755;
 
-   // getting the value from the file reader and anglesflag
+  // Getting the value from the file reader and anglesflag
   if(fFileReader)
   {
     	anglesflag 	= fFileReader->DoAngles(); 	// getting the angles flag
@@ -179,7 +171,7 @@ void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
   
 
-  fParticleGun->SetParticleEnergy( KinEnergy *GeV);	// adding the right energy
+  fParticleGun->SetParticleEnergy( KinEnergy *GeV);	// setting the right energy
 
 
   //setting default vertex position
@@ -189,10 +181,10 @@ void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4double z0 = fThzHalf;
 
 
-  if(anglesflag){ // check if we deactivated the angles
-	// first the direction
+  if(anglesflag){ 			// check if the angles are deactivated 
+	// first setting the direction of the muon gun
 
-	// Convert the strings to numbers with the atof and saving the initial conditions variables
+	// getting the angles from the file reader
   	G4double theta 	= fFileReader->GetOneValue();
   	G4double phi 	= fFileReader->GetOneValue();
 
@@ -204,9 +196,9 @@ void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   	// Filling the gun with the right direction
   	fParticleGun->SetParticleMomentumDirection(G4ThreeVector( Px, Py, Pz ));
 
-	// second the initial location
+	// second setting the initial location of the muon gun
 
- 	// Here we choose a point inside the SK tank/fiducial with a uniform distribution, this point will be in the muon path
+ 	// Here we choose a point inside the SK tank/fiducial with a uniform distribution, this point will be in the muon trajectory
   	const G4double 	pi = 3.14159265358979323846264338328;
   	G4double 	theta2 =  2* pi * G4UniformRand();
   	G4double 	r =  fTouterRadius * G4UniformRand();
@@ -215,15 +207,18 @@ void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   	G4double y1 	= sin( theta2 ) * r;
 	G4double z1 	= fThzHalf * 2 * (0.5 - G4UniformRand());
 
-	// initialize
+	//
+	// projecting our point into the cylinder surface in the inverse direction of the muon momentum
+	//
+
+	// initialize the distance of the point to the cylinder along the muon past trajectory
 	G4double D 	= 0. *m;
 
-	// projecting our point into the cylinder surface in the inverse direction of its momentum
+	// breaking it down in 2 possibilities to find the distance from the point to the cylinder along the muon past trajectory
+	//
 
-	// we break it down in 2 possibilities to find the distance from the point to the cylinder along its past trajectory
-
-	// first in Z 
-	if( Pz < 0. || Pz > 0. ){ // so cos(theta) is not zero
+	// first, the muon comes from the top of the tank - in x&y plan 
+	if( Pz < 0. || Pz > 0. ){ 	// so cos(theta) is not zero
 		D =  (  fThzHalf - z1 ) / cos( theta );
 		// setting the vertex
 		x0 = x1 - Px * D;
@@ -231,7 +226,7 @@ void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		z0 = z1 - Pz * D;
 	}
 
-	// second in radius
+	// second, the muon comes from the lateral of the tank - constant x&y radius surface
 	if ( x0*x0 + y0*y0 > fTouterRadius*fTouterRadius  + 10 && Pz > -1.){ // 10 mm precision
 		G4double delta = ( Px * x1 + Py * y1 )* ( Px * x1 + Py * y1 ) - (Px * Px + Py * Py) * ( x1 * x1 + y1 * y1 - fTouterRadius * fTouterRadius);
 		if ( delta > 0.){
@@ -259,9 +254,10 @@ void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	}
   }
 
-	
+  // setting the gun position
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
+  // generating the initial event
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 
@@ -290,16 +286,16 @@ void SKPrimaryGeneratorAction::DefineCommands()
   ncoresCmd.SetRange("nCores > 0");                                
   ncoresCmd.SetDefaultValue("1");    
 
-// ID core command
+  // ID core command
   fMessenger->DeclareProperty("SetIDThread", fCoreID, 
         "Set the ID number of the current thread.");
 #endif	
 
-// number of events command
+  // number of events command
   fMessenger->DeclareProperty("SetNEvents", fNEvents, 
         "Set the number of events to be read in the current thread.");
 
-// clear the file reader after a run
+  // clear the file reader after a run command
   auto& clearCmd
     =fMessenger->DeclareProperty("ClearFileReader", fClear, 
         "Set the flag for cleaning the FileReader.");

@@ -164,6 +164,7 @@ SKRunAction::SKRunAction(SKEventAction* eventAction)
   // finishing ntuple creation
   analysisManager->FinishNtuple();
 
+
   // define commands for this class
   DefineCommands();
   
@@ -181,6 +182,8 @@ SKRunAction::~SKRunAction()
 
 void SKRunAction::BeginOfRunAction(const G4Run* run)
 { 
+  // esthetics
+  G4cout << "\n";
 
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
@@ -189,8 +192,8 @@ void SKRunAction::BeginOfRunAction(const G4Run* run)
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
   // Reading the right number of events from the initial conditions file
-#ifdef G4MULTITHREADED // making sure we only read once for the Master thread
-  if( G4Threading::IsWorkerThread() ){
+#ifdef G4MULTITHREADED 
+  if( G4Threading::IsWorkerThread() ){ // making sure only the work threads read information
 	// setting core ID and the number of events
   	G4String command 	= "/SK/generator/SetIDThread "; 				// command to set the thread ID
   	G4String coreID 	= std::to_string(G4Threading::G4GetThreadId()); 		// thread ID
@@ -211,18 +214,21 @@ void SKRunAction::BeginOfRunAction(const G4Run* run)
   // Get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
 
-  // Open an output file where we save the data collected
+  // Open an output file where to save the data collected
   //
   int runID = run->GetRunID();
   G4String fileName = "SK_run" + std::to_string(runID) + "_seed" + std::to_string(fSeed) + "_physlist" + fPhysListName;
   analysisManager->OpenFile(fileName);
+
+  // esthetics
+  std::cout << "\n";
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void SKRunAction::EndOfRunAction(const G4Run* /*run*/)
 {
-  // print some histogram statistics - make sure you keep two 1D histograms
+  // print some histogram statistics - make sure you keep two 1D histograms in your simulation
   //
   auto analysisManager = G4AnalysisManager::Instance();
   if ( analysisManager->GetH1(1) ) {
@@ -250,13 +256,19 @@ void SKRunAction::EndOfRunAction(const G4Run* /*run*/)
   analysisManager->Write();
   analysisManager->CloseFile();
 
+
   // cleaning the file reader
   //
   // getting UI manager to set information about the run
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-  G4String command 	= "/SK/generator/ClearFileReader "; 		// command to clear the file reader beeing
+  G4String command 	= "/SK/generator/ClearFileReader "; 		// command to clear the file reader after a run
   UImanager->ApplyCommand(command);
+
+
+  // esthetics
+  std::cout << "\n";
+  std::cout << "\n";
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

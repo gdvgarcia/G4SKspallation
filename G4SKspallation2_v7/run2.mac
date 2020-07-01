@@ -21,8 +21,8 @@
 #
 # Genereating 20 muons hit
 #
-/run/beamOn 5
-/run/beamOn 5
+/run/beamOn 10
+/run/beamOn 10
 #
 # Dump scorers to a file
 #

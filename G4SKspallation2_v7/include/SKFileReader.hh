@@ -28,6 +28,12 @@
 //
 /// \file SKFileReader.hh
 /// \brief Definition of the SKFileReader class
+///
+/// The FileReader class, in multi-threading mode, reads the number of threads times the events required per run, 
+/// because each thread gets an initial condition when it starts a new event and the speed that each thread ends a 
+/// work is not always equal to the other threads, mainly because they have different initial conditions, so one 
+/// thread can read much more initial conditions than others. So as the filereader is thread local, each working 
+/// thread must have enough conditions for the entire run.
 
 #ifndef SKFileReader_h
 #define SKFileReader_h 1
@@ -59,12 +65,13 @@ class SKFileReader
  private:
    std::ifstream 	inputFile; 	// file with the initial conditions
    std::list< double > 	fValues; 	// values read from the file
-   bool 		fangles; 	// Flag for cancelling the angles reader and only read energy spectrum
+   bool 		fangles; 	// flag for cancelling the angles reader and only read energy spectrum
    int 			fThreadID;	// ID of the current thread 
    int 			fnThreads;	// number of threads for the run 
 
-   // Funtion to split the lines of the file so we can take the data and put in a string vector
+   // function to split the lines of the file so we can take the data and put in a string vector
    void Split	(const std::string& line, char divisionchart, std::vector<std::string>& words) ;
+   // function to read the text file information
    bool Read	( int numberOfEvents );
 };
 

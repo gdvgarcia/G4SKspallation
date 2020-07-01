@@ -38,6 +38,7 @@
 #include "Randomize.hh"
 #include <iomanip>
 #include <vector>
+#include <map>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -52,38 +53,7 @@ SKEventAction::SKEventAction()
    fxFin(0.),						///< x initial position  of the muon
    fyFin(0.),						///< y initial position  of the muon
    fzFin(0.)						///< z initial position  of the muon 
-{
-  // vectors for first generation daugthers of the muon data
-  fvectorFirstGenCode.clear();
-  fvectorEfisrtGen.clear();
-  // vectors for the isotopes data
-  fvectorA.clear();
-  fvectorZ.clear();
-  fvectorx.clear();
-  fvectory.clear();
-  fvectorz.clear();
-  fvectorIsoDist.clear();
-  fvectorIsoParentCode.clear();
-  fvectorIniTime.clear();
-  fvectorFinTime.clear();
-  fvectorStable.clear();
-  fvectorLifeTime.clear();
-  // vectors for the isotopes' parents data
-  fvectorParentsCode.clear();
-  fvectorAdaug.clear();
-  fvectorZdaug.clear();
-  fvectorEparent.clear();
-  // vectors for the path length data
-  fvectorPathLengthCode.clear();
-  fvectorPathLengthE.clear();
-  fvectorStepLength.clear();
-  // vectors for the transverse distance data
-  fvectorTransParticlesCode.clear();
-  fvectorTransParticlesDist.clear();
-  // data members necessary to collect the information in the StepAction
-  fParentsCodes.clear(); 
-  fInitialTimes.clear(); 
-}
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -115,7 +85,7 @@ void SKEventAction::PrintEventStatistics() const
 
 void SKEventAction::BeginOfEventAction(const G4Event* /*event*/)
 {
-// initialize the data each event
+  // initialize the data at the start of each event
   // data for the muon
   fEdep 	= 0.;     					///< Energy deposit in the sensitive volume
   fEmu		= 0.;      					///< Initial kinetic energy of the muon
@@ -200,7 +170,7 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// only necessary to the stepAction
+// only necessary to the stepAction - maps for the entire event
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void SKEventAction::FillParentsCodes( G4int TrackID, G4int 		ParentCode ){
   fParentsCodes[TrackID] = ParentCode; 
@@ -209,5 +179,4 @@ void SKEventAction::FillParentsCodes( G4int TrackID, G4int 		ParentCode ){
 void SKEventAction::FillInitialTimes( G4int TrackID, G4double 	InitialTime ){
   fInitialTimes[TrackID] = InitialTime; 
 } 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

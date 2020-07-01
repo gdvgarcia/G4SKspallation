@@ -70,38 +70,39 @@ SKSteppingAction::~SKSteppingAction()
 
 void SKSteppingAction::UserSteppingAction(const G4Step* step)
 {
-  // Collect information at each step if inside the volume
+  // Collect information at each step if inside the desired volume
   //
 
   // get volume of the current step
   auto volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
   // get desired volume
   auto volume2 = fDetConstruction->GetFiducialPV();;
-  if( !volume2 ){ // if fiducial does not exist we have a zero
+  if( !volume2 ){ 		// if fiducial does not exist we have a zero
 	volume2 = fDetConstruction->GetTankPV();
   }
 
-  if( volume == volume2 ){ // just process if it is inside the desired volume
+  if( volume == volume2 ){ 	// just process if it is inside the desired volume
 
   //----------------------------------------------
   //        Energy deposit
   //----------------------------------------------
   // getting the energy deposit for this step and adding it to the event energy deposit
   fEventAction->Add(step->GetTotalEnergyDeposit());
+  //-------------------------------------------------------------------------------------------- END ENERGY DEPOSIT
 
 
 
   //----------------------------------------------
   //        Track
   //----------------------------------------------
-  // getting track object to collect some data and some of its informtion about its particle
+  // getting track object to collect some data and some of its information about its particle
   G4Track* Track = step->GetTrack();
   G4ParticleDefinition* thePartDef = Track->GetDefinition();
   G4String partType= thePartDef->GetParticleType();
   G4String name = thePartDef->GetParticleName();
   G4int TrackID = Track->GetTrackID(); 
-  G4double CurrentE = step->GetPreStepPoint()->GetKineticEnergy(); // current energy of the particle
-  //---------------------------------------------- END TRACK
+  G4double CurrentE = step->GetPreStepPoint()->GetKineticEnergy(); // current energy of the particle - before the interaction step
+  //-------------------------------------------------------------------------------------------- END TRACK
 
 
 
@@ -112,54 +113,57 @@ void SKSteppingAction::UserSteppingAction(const G4Step* step)
   const std::vector<const G4Track*>* Secondaries2 = step->GetSecondaryInCurrentStep();
   G4int size2 = Secondaries2->size();
 
-  if ( size2 > 0){ // check if we have secondaries
+  if ( size2 > 0){ 						// check if we have secondaries
 	// we loop over secondaries and save information
 	for( int i = 0; i < size2; ++i){
 		loopForSecondariesEnergies( Secondaries2 , i , 
 			CurrentE , thePartDef->GetPDGEncoding() );
 	}
-  } //---------------------------------------------- END isotopes' parents energies
+  } //-------------------------------------------------------------------------------------------- END isotopes' parents energies
 
 
   
-  if ( ( Track->GetCurrentStepNumber() == 1) || ( step->IsFirstStepInVolume() ) ){ //- CHECK for newly produced particle. e.g. first step. or if it is an entering
+  if ( ( Track->GetCurrentStepNumber() == 1) || ( step->IsFirstStepInVolume() ) ){ 		//- CHECK for newly produced particle. e.g. first step. or if it is an entering the desired volume
 
 	  
   //----------------------------------------------
   //  Collect information for primarly daughters of the muon
   //----------------------------------------------
-  if(Track->GetParentID() == 1){ // check if its parents is our initial muon 
+  if(Track->GetParentID() == 1){ 				// check if its parents is our initial muon 
 	// fill the first generation daughters information
 	fEventAction->FillFirstGen(Track->GetVertexKineticEnergy() , thePartDef->GetPDGEncoding());
-  }
+  } //-------------------------------------------------------------------------------------------- END primarly daughters
 
 
 
   //----------------------------------------------
   //  Collect the initial time for the isotopes
   //----------------------------------------------
-  if ( partType == "nucleus" ){  //check if it is an ion
-	fEventAction->FillInitialTimes( TrackID , Track->GetGlobalTime());  // fill the initial time in the map
-  }
+  if ( partType == "nucleus" ){  				//check if it is an ion
+	// fill the initial time in the isotopes' initial time map
+	fEventAction->FillInitialTimes( TrackID , Track->GetGlobalTime());  	
+  } //-------------------------------------------------------------------------------------------- END initial isotopes time
 
-  } //---------------------------------------------- END check for newly produced particle 
+
+
+  } //-------------------------------------------------------------------------------------------- END check for newly produced particle 
 
 
   
-  if ( ( step->IsLastStepInVolume() ) || ( Track->GetTrackStatus() == fStopAndKill ) ){ // CHECK if is the end of the track
+  if ( ( step->IsLastStepInVolume() ) || ( Track->GetTrackStatus() == fStopAndKill ) ){ 	// CHECK if is the end of the track
 
 
   //----------------------------------------------
   //  Collect codes for isotopes' parents
   //----------------------------------------------
-  // first take all the secondaries in a vector and its size - as it is the end of the track, we have all the secondary produced by the current particles
+  // first take all the secondaries in a vector and its size - as it is the end of the track, we have all the secondary produced by the current particle in the secondaries vector
   const G4TrackVector* Secondaries = step->GetSecondary();
   G4int size = Secondaries->size();
 
-  if ( size > 0){ // check if we have secondaries
-	// we loop over secondaries and fill in the map
+  if ( size > 0){ 						// check if we have secondaries
+	// we loop over secondaries and fill in the parents ID map
 	for( int i = 0; i < size && !(loopForSecondaries( Secondaries , i ,TrackID, thePartDef->GetPDGEncoding() ) ); ++i){;}
-  } //---------------------------------------------- END isotopes' parents codes
+  } //-------------------------------------------------------------------------------------------- END isotopes' parents' codes
 
 
 
@@ -167,7 +171,7 @@ void SKSteppingAction::UserSteppingAction(const G4Step* step)
   //  Collect information for isotopes
   //  generated from an interaction with the water tank
   //-----------------------------------------------------
-  if ( partType == "nucleus" ){  //check if it is an ion
+  if ( partType == "nucleus" ){  				//check if it is an ion
 	// isotope information
 	G4double 	xiso = 	Track->GetPosition().getX();
 	G4double 	yiso = 	Track->GetPosition().getY();
@@ -176,15 +180,13 @@ void SKSteppingAction::UserSteppingAction(const G4Step* step)
 	G4int 		Z =	thePartDef->GetAtomicNumber();
 
 	// fill the 2D histogram
-  	auto analysisManager = G4AnalysisManager::Instance(); // get analysis manager
+  	auto analysisManager = G4AnalysisManager::Instance(); 	// get analysis manager
   	analysisManager->FillH2(0, Z, A);
 
 	// filling the isotope information
 	fEventAction->FillIso( A, Z, xiso, yiso , ziso , transverseDistance( xiso, yiso, ziso ), fEventAction->GetParentCode(TrackID),
  	fEventAction->GetInitialTime(TrackID), Track->GetGlobalTime(), thePartDef->GetPDGStable(), thePartDef->GetPDGLifeTime()); 
-      
-  	
-  } //---------------------------------------------- END ISOTOPE
+  } //-------------------------------------------------------------------------------------------- END ISOTOPE
 
 
 
@@ -192,22 +194,22 @@ void SKSteppingAction::UserSteppingAction(const G4Step* step)
   //  Collect transverse distance for  particles
   //  generated from an interaction with the water tank
   //----------------------------------------------
-  if ( partType != "nucleus" &&  TrackID != 1 ){ //check if it is a wanted particle - not isotope and not the initial muon
+  if ( partType != "nucleus" &&  TrackID != 1 ){ 		//check if it is a wanted particle - not isotope and not the initial muon
 	// fill the transverse distance
 	fEventAction->FillTransverse( thePartDef->GetPDGEncoding(), transverseDistance( Track->GetPosition().getX(),
   	Track->GetPosition().getY(), Track->GetPosition().getZ() ) );
-  } //---------------------------------------------- END check if it is a wanted particle  
+  } //-------------------------------------------------------------------------------------------- END check if it is a wanted particle  
 
    
 
-  } //---------------------------------------------- END CHECK IF IS THE END OF THE STEP
+  } //-------------------------------------------------------------------------------------------- END CHECK IF IS THE END OF THE STEP
 
 
 
   //----------------------------------------------
   //  Collect information for the muon
   //----------------------------------------------
-  if ( TrackID == 1 ){  // CHECK if it is our initial muon 
+  if ( TrackID == 1 ){  					// CHECK if it is our initial muon 
 
 	//----------------------------------------------
   	//        Path Length
@@ -217,7 +219,7 @@ void SKSteppingAction::UserSteppingAction(const G4Step* step)
 	
 
   	if ( ( step->IsLastStepInVolume() ) || 
-	( Track->GetTrackStatus() == fStopAndKill ) ){ // CHECK if it is leaving the tank or finishing the track
+	( Track->GetTrackStatus() == fStopAndKill ) ){ 		// CHECK if it is leaving the tank or finishing the track
 		//----------------------------------------------
   		//        Muon info
   		//----------------------------------------------
@@ -227,11 +229,10 @@ void SKSteppingAction::UserSteppingAction(const G4Step* step)
 
 		// Filling the muon final conditions
 		fEventAction->FillFin( x, y, z);
-		
-  		
   	}
 
-  	if( ( Track->GetCurrentStepNumber() == 1 ) || ( step->IsFirstStepInVolume() ) ){ // CHECK if it is entering the tank or is the first step
+  	if( ( Track->GetCurrentStepNumber() == 1 ) || 
+	( step->IsFirstStepInVolume() ) ){ 			// CHECK if it is entering the tank or is the first step
 		//----------------------------------------------
   		//        Muon info
   		//----------------------------------------------
@@ -241,11 +242,8 @@ void SKSteppingAction::UserSteppingAction(const G4Step* step)
 
         	// Filling the muon initial conditions
 		fEventAction->FillIni(Track->GetVertexKineticEnergy(), x, y, z);
-		
-  		
 	}
-  } 
-  //---------------------------------------------- END MUON 
+  } //-------------------------------------------------------------------------------------------- END MUON 
 
 
 
@@ -256,16 +254,12 @@ void SKSteppingAction::UserSteppingAction(const G4Step* step)
   if ( partType != "nucleus" &&  TrackID != 1 && ( CurrentE > 0.9 )){ //check if it is a wanted particle - not isotope or initial muon - and if its energy is greater than 0.9 MeV - because too many particles otherwise
 	// fill the path length
 	fEventAction->FillPathLength( thePartDef->GetPDGEncoding(), CurrentE, Track->GetStepLength());
-  	
-  	
-   } //---------------------------------------------- END check if it is a wanted particle
+   } //-------------------------------------------------------------------------------------------- END check if it is a wanted particle
 
 
 
-  
-  }
+  } //-------------------------------------------------------------------------------------------- END desired volume 
 
-  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -273,7 +267,7 @@ void SKSteppingAction::UserSteppingAction(const G4Step* step)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void SKSteppingAction::loopForSecondariesEnergies(const std::vector<const G4Track*>* Secondaries , 
-	G4int n , G4double Energy , G4int Code  ) // it fills the parents ntuple
+	G4int n , G4double Energy , G4int Code  ) 	// it fills the parents ntuple
 {
   // getting the information about the secondary
   const G4Track* secondary = Secondaries->at(n);
@@ -295,7 +289,8 @@ void SKSteppingAction::loopForSecondariesEnergies(const std::vector<const G4Trac
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-  bool SKSteppingAction::loopForSecondaries( const G4TrackVector* Secondaries , G4int n , G4int TrackID, G4int Code ) // it fills the fParentsCodes map 
+  bool SKSteppingAction::loopForSecondaries( const G4TrackVector* Secondaries , G4int n , 
+  	G4int TrackID, G4int Code ) 			// it fills the fParentsCodes map 
 {
   // getting the information about the secondary
   G4Track* secondary = Secondaries->at(n);
@@ -307,14 +302,14 @@ void SKSteppingAction::loopForSecondariesEnergies(const std::vector<const G4Trac
 	// Filling the map
 	fEventAction->FillParentsCodes(TrackID, Code);
 	
-	 return true;// so we can exit the for loop
+	return true;		// so we can exit the for loop
   }
-  return false; // so we keep in the for loop
+  return false; 		// so we keep in the for loop
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double SKSteppingAction::transverseDistance( G4double x, G4double y, G4double z )// transverse distance to the muon track line - suppose an "infinite" line 
+G4double SKSteppingAction::transverseDistance( G4double x, G4double y, G4double z )// transverse distance to the muon track line - suppose an "infinite" line for the muon path line
 {
   // making the vector from initial to particle and initial to final to calculate the cross product and have the transverse distance
   G4double xp = x - fEventAction->GetxIni();
@@ -334,7 +329,7 @@ G4double SKSteppingAction::transverseDistance( G4double x, G4double y, G4double 
   G4double normMu	= sqrt( xm*xm + ym*ym + zm*zm );
   G4double normc 	= sqrt( xc*xc + yc*yc + zc*zc );
 
-  G4double dis = normc/normMu; //the trasverse distance
+  G4double dis = normc/normMu; 	//the trasverse distance
 
   return dis;
 }

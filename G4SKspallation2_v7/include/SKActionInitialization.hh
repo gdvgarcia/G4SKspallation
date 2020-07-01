@@ -48,7 +48,7 @@ class SKActionInitialization : public G4VUserActionInitialization
     virtual void Build() const;
 
   private:
-    SKDetectorConstruction* fDetConstruction;
+    SKDetectorConstruction* fDetConstruction;	// data member to save the detector construction information and give it to the SteppingAction
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
