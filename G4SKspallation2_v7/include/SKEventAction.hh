@@ -32,6 +32,8 @@
 
 #include "G4UserEventAction.hh"
 #include "globals.hh"
+#include <vector>
+#include <iomanip>
 
 /// Event action class
 ///

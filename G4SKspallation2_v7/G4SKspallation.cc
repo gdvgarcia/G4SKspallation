@@ -176,10 +176,10 @@ int main(int argc,char** argv)
     	// // Detect if we want to read a initial condition file (if there is a forth argument)
     	if (  argc > 3 ) { 		
 #ifdef G4MULTITHREADED
+  		std::cout << "Number of threads being used : " << numberOfcores << "\n";
   		// first if in multithread we have to initialize the run so the primary generators for each thread are created and so we can asign the file name and threa information for those classes
   		G4String cmdinitial = "/run/initialize "; 	// command to initialize the run
   		UImanager->ApplyCommand(cmdinitial);
-  		std::cout << "Number of threads being used : " << numberOfcores << "\n";
 #endif				
 		G4String command1 	= "/SK/generator/SetFileName "; // command to set the initial condition file name with the fourth argument
     		G4String fileName1 	= argv[3];			// initial conditions file name - if "yes" it uses default file

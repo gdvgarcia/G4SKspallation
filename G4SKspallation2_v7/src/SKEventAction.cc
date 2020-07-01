@@ -37,6 +37,7 @@
 
 #include "Randomize.hh"
 #include <iomanip>
+#include <vector>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
