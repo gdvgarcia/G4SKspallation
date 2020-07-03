@@ -879,7 +879,7 @@ int histos(){
 
 	// print unstable isotopes in decreasing order
     	outfile << "\t Unstable isotopes \n"; 
-    	outfile << "Isotope \t Half-life (s) \t Quantity mu^{-1} g^{-1} cm^{2} x 10^{-7} \n" ;
+    	outfile << "Isotope \t Life-time (s) \t Quantity mu^{-1} g^{-1} cm^{2} x 10^{-7} \n" ;
 	size = unstables->size();
 	for( int i = 0; i < size; i++){
     		for ( int j = 0 ; j < unstables->size(); j++){
@@ -889,7 +889,7 @@ int histos(){
 			}
 		}
 		outfile << '\t' << "$^{"  << (int) unstables->at(location)->at(1) << "}$" << elements[(int)unstables->at(location)->at(0)]
-             	<< '\t' << '&'  << '\t' << std::scientific << unstables->at(location)->at(4) / 100000000.  << '\t' << '&'
+             	<< '\t' << '&'  << '\t' << std::scientific << unstables->at(location)->at(4) / 1000000000.  << '\t' << '&'
 		<< '\t'  << std::fixed << max/(3200.* ( nentries )) * 10000000. << '\t' << '&' << '\t' << " \\pm " << unstables->at(location)->at(3)/(3200.) * 10000000.  << '\t' << "\\\\" <<'\n';  // dividing per the number of muons, the distance of the muon track and by the water density 1 * g * cm^{-3} and multiplyin by 10^{7} - time multiplied by e9 because in nanosecs
 		unstables->erase (unstables->begin()+location); //removing the maximum from the vector
 		max = -1;

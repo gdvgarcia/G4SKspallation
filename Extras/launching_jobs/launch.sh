@@ -1,6 +1,6 @@
 #!/bin/bash
-#set LOG_DIR=/home/llr/t2k/dallavalle/simulaion_test/log
-#set ERR_DIR=/home/llr/t2k/dallavalle/simulaion_test/err
+#set LOG_DIR=/home/llr/t2k/dallavalle/simulaion_test1/log
+set ERR_DIR=/home/llr/t2k/dallavalle/simulaion_test1/err
 
 #Command ./launch.sh full_path_to_folder_with_input_files 
 
