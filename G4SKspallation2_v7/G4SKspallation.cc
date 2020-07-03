@@ -173,7 +173,7 @@ int main(int argc,char** argv)
   // Process macro or start UI session
   //
   if ( ! ui ) { // batch mode
-    	// // Detect if we want to read a initial condition file (if there is a forth argument)
+    	// Detect if we want to read a initial condition file (if there is a forth argument)
     	if (  argc > 3 ) { 		
 #ifdef G4MULTITHREADED
   		std::cout << "Number of threads being used : " << numberOfcores << "\n";
@@ -181,13 +181,16 @@ int main(int argc,char** argv)
   		G4String cmdinitial = "/run/initialize "; 		// command to initialize the run
   		UImanager->ApplyCommand(cmdinitial);
 #endif				
-		G4String command1 	= "/SK/generator/SetFileName "; // command to set the initial condition file name with the fourth argument
+  		// Seeting the file name with the fourth argument
+		G4String command1 	= "/SK/generator/SetFileName "; // command to set the initial condition file name
     		G4String fileName1 	= argv[3];			// initial conditions file name - if "yes" it uses default file
-		if( fileName1 == "yes" ){ 				// using default file
-    			UImanager->ApplyCommand(command1);
-		}
-		else{							// using given file
-    			UImanager->ApplyCommand(command1+fileName1);
+		if( fileName1 != "no" && fileName1 != "No" && fileName1 != "NO" ) { // no is just a place holder
+			if( fileName1 == "yes" ){ 				// using default file
+    				UImanager->ApplyCommand(command1);
+			}
+			else{							// using given file
+    				UImanager->ApplyCommand(command1+fileName1);
+			}
 		}
 
 #ifdef G4MULTITHREADED
@@ -198,19 +201,26 @@ int main(int argc,char** argv)
 #endif	
     	}
 
+	// Detect if we want to use muons plus (if there is a fifth argument)
+    	if (  argc > 4 ) { 
+		// Seeting the muon plus to be the initial particle generated
+  		G4String command3 	= "/SK/generator/SetMuonPlus "; // command to set the muon plus
+  		UImanager->ApplyCommand(command3);
+	}
+
   	// Seeting the seed in the run action so we have a unique name for the root file
-  	G4String command3 	= "/SK/runAction/SetSeed "; 		// command to set the seed
+  	G4String command4 	= "/SK/runAction/SetSeed "; 		// command to set the seed
   	G4String setSeed 	= std::to_string(seed); 		// seed
-  	UImanager->ApplyCommand(command3 + setSeed);
+  	UImanager->ApplyCommand(command4 + setSeed);
 
   	// Seeting the physList for the root file
-  	G4String command4 	= "/SK/runAction/SetPhysList "; 	// command to set the physlist in the run
-  	UImanager->ApplyCommand(command4 + PhysListName);
+  	G4String command5 	= "/SK/runAction/SetPhysList "; 	// command to set the physlist in the run
+  	UImanager->ApplyCommand(command5 + PhysListName);
 
     	// running the macro
-    	G4String command5 	= "/control/execute ";			// command to run a macro
+    	G4String command6 	= "/control/execute ";			// command to run a macro
     	G4String fileName2 	= argv[1];				// macro file name 
-	UImanager->ApplyCommand(command5+fileName2);
+	UImanager->ApplyCommand(command6+fileName2);
 
 
     	// Record end time

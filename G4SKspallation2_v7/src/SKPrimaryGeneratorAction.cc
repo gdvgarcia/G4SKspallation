@@ -64,7 +64,8 @@ SKPrimaryGeneratorAction::SKPrimaryGeneratorAction()
   fCoreID(0),
   fNEvents(1),
   fFileReader(0),
-  fClear(false)
+  fClear(false),
+  fMuonPlus(false)
 {
   G4int n_particle = 1;
   fParticleGun  = new G4ParticleGun(n_particle);
@@ -99,6 +100,18 @@ void SKPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   //This function is called at the begining of each event
   //
+
+
+  // changing the default muon minus to a muon plus if the flag is true
+  if( fMuonPlus ) {
+	// setting the muon plus as the particle for the gun
+  	G4ParticleTable* partiTable = G4ParticleTable::GetParticleTable();
+  	G4String partiName = "mu+";
+  	G4ParticleDefinition* parti
+    	= partiTable->FindParticle(partiName);
+  	fParticleGun->SetParticleDefinition(parti);
+	G4cout << "Muon + activated.\n" << G4endl; 
+  }
 
 
   // clear the file reader after a run
@@ -301,6 +314,13 @@ void SKPrimaryGeneratorAction::DefineCommands()
         "Set the flag for cleaning the FileReader.");
   clearCmd.SetParameterName("flagClear", true);                             
   clearCmd.SetDefaultValue("true");  
+
+  // muon plus command
+  auto& muonPCmd
+    =fMessenger->DeclareProperty("SetMuonPlus", fMuonPlus, 
+        "Set the flag for the muon plus generation.");
+  muonPCmd.SetParameterName("FlagMuonPlus", true);                             
+  muonPCmd.SetDefaultValue("true");  
 }
 
 //..oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
