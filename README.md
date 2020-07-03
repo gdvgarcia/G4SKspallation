@@ -1,6 +1,6 @@
 # G4SKspallation
 
-#### Here you will find files related to simulations of the muon induced spallation at the Super-Kamiokande water Cherenkov detector with the software Geant4(version 10.06.p01).
+##### Here you will find files related to simulations of the muon induced spallation at the Super-Kamiokande water Cherenkov detector with the software Geant4(version 10.06.p01).
 
 
 ## The first simulation consists of :
@@ -11,7 +11,7 @@ G4SKspallation1_v4.1 is the simplest simulation with only downward  fixed energy
 While G4SKspallation1_v4_event has the same properties expect to the creation of histograms per event and not per run.
 
 
-# The second simulation consists of :
+## The second simulation consists of :
 downward muons(with the extra possibility of activating the SK angular distribution or choose a user's angular distribution file) with the SK average muon energy 271 GeV (with the extra possibility of activating the SK muon energy spectrum or choose a user's energy distribution file) targeting the SK water tank with particles generated right on the upper and side borders of the tank.
 
 G4SKspallation2_v3 enhances the simulation by adding the possibility of generating muons with special angular and energy distributions with positions uniformly distributed on the top of the tank. This angular and energy distribution can be adjusted directly by an ASCII file. Some other improvements in code quality for data retrieving methods have also been added.  
@@ -30,9 +30,9 @@ G4SKspallation2_v4OutPart was developped to verify that the outside conditions f
 ## The third simulation consists of :
 the photomultipliers to the tank...
 
-### Geant4 default units : http://geant4.web.cern.ch/sites/geant4.web.cern.ch/files/geant4/collaboration/working_groups/electromagnetic/gallery/units/SystemOfUnits.html
+#### Geant4 default units : http://geant4.web.cern.ch/sites/geant4.web.cern.ch/files/geant4/collaboration/working_groups/electromagnetic/gallery/units/SystemOfUnits.html
 
-### Geant4 Particle Data Group Integer Identifier : https://home.fnal.gov/~mrenna/lutp0613man2/node44.html or http://pdg.lbl.gov/2019/reviews/rpp2019-rev-monte-carlo-numbering.pdf - at the end of the document
+#### Geant4 Particle Data Group Integer Identifier : https://home.fnal.gov/~mrenna/lutp0613man2/node44.html or http://pdg.lbl.gov/2019/reviews/rpp2019-rev-monte-carlo-numbering.pdf - at the end of the document
 
 ## References:
 
