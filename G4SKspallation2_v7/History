@@ -49,4 +49,4 @@ track of all tags.
 29/06/20 G. D. V. Garcia (G4SKspallation2)
 - Names of the root file created have now the seed, so they are unique, and also the physics list.
 03/07/20 G. D. V. Garcia (G4SKspallation2)
-- Now muons plus are also generated if the simulation is run in batch mode with a fifth argument.
+- Now muons plus are also generated if the simulation runs in batch mode with a fifth argument.
