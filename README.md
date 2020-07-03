@@ -6,16 +6,22 @@ Here you will find files related to simulations of the muon induced spallation a
 The first simulation consists of downward muons with the SK average muon energy 271 GeV targeting the SK water tank (with no photomultiplier introduced) with a layer of 200 cm of water outside the upper part of detector(equivalent to 74 cm of rock as stated in the SK article), where we have taken as reference the CMS barrel hadron calorimeter(which is about 79 cm deep and which is a sampling calorimeter made of brass and plastic scintillator tiles), because we want some neutrons from outside interactions to be able to enter the SK tank(as for distances of interaction larger than this length, we would expect no neutron arriving in the detector). In 13 May 2020, we decided to no longer keep particle creation outside the detector. So particles now are generated right on top of the water inside the tank.
 
 G4SKspallation1_v4.1 is the simplest simulation with only downward  fixed energy muons. It has been completed with a data reatriving method which fills histograms and ntuples per run and it can be also activated the mesh scoring method. 
+
 While G4SKspallation1_v4_event has the same properties expect to the creation of histograms per event and not per run.
 
 
 The second simulation consists of downward muons(with the extra possibility of activating the SK angular distribution or choose a user's angular distribution file) with the SK average muon energy 271 GeV (with the extra possibility of activating the SK muon energy spectrum or choose a user's energy distribution file) targeting the SK water tank with particles generated right on the upper and side borders of the tank.
 
 G4SKspallation2_v3 enhances the simulation by adding the possibility of generating muons with special angular and energy distributions with positions uniformly distributed on the top of the tank. This angular and energy distribution can be adjusted directly by an ASCII file. Some other improvements in code quality for data retrieving methods have also been added.  
+
 G4SKspallation2_v5 has the main change in the way ntuples are created and the main improvement that one can run this simulation in multithreading mode. This version creates one ntuple row per event with vectors containing information about the respective event.  So we just have one tree per run. 
+
 G4SKspallation2_v6 improves the initial conditions reader and has the possibility of reading the file of user's choice by a fourth argument in batch mode. It alsos improve the random generation of positions of the primary particles.
+
 G4SKspallation2_v7 maintains main aspects of v6 but it also has a substantial change in the retrieving method, no longer using Sensitive Detectors and Hits, but user's SteppingAction. This makes retrieving data much more intuitive. It has also improvements in the output file generation and the possibility of gerenating muons plus with a fifth argument in batch mode. 
+
 And G4SKspallation2_v2Shower contains many of the same features from the previous simulation v3, but it was created for the collection of special data. The study of the shower was its main objective, so the data ntuples and the histograms are very different from the main version simulations. 
+
 G4SKspallation2_v4OutPart was developped to verify that the outside conditions for the studies inside the water tank were negligible, showing that less than 1% of the particles present inside the tank are produced outside the tank. This simulation is the version 4 with some variations for saving the number of particles produced in and out the tank.
 
 
