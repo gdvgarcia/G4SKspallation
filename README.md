@@ -30,9 +30,6 @@ G4SKspallation2_v4OutPart was developped to verify that the outside conditions f
 ## The third simulation consists of :
 the photomultipliers to the tank...
 
-#### Geant4 default units : http://geant4.web.cern.ch/sites/geant4.web.cern.ch/files/geant4/collaboration/working_groups/electromagnetic/gallery/units/SystemOfUnits.html
-
-#### Geant4 Particle Data Group Integer Identifier : https://home.fnal.gov/~mrenna/lutp0613man2/node44.html or http://pdg.lbl.gov/2019/reviews/rpp2019-rev-monte-carlo-numbering.pdf - at the end of the document
 
 ## References:
 
@@ -40,4 +37,10 @@ http://www-sk.icrr.u-tokyo.ac.jp/doc/sk/pub/sknimpaper.pdf
 https://iopscience.iop.org/article/10.1088/1742-6596/293/1/012001/pdf
 https://cds.cern.ch/record/357153/files/CMS_HCAL_TDR.pdf
 
-### Installing Geant4 : https://github.com/gdvgarcia/Geant4.6-4.5installation/wiki/GEANT4installation-wiki-everything-here
+## Useful info :
+
+#### Geant4 default units : http://geant4.web.cern.ch/sites/geant4.web.cern.ch/files/geant4/collaboration/working_groups/electromagnetic/gallery/units/SystemOfUnits.html
+
+#### Geant4 Particle Data Group Integer Identifier : https://home.fnal.gov/~mrenna/lutp0613man2/node44.html or http://pdg.lbl.gov/2019/reviews/rpp2019-rev-monte-carlo-numbering.pdf - at the end of the document
+
+#### Installing Geant4 : https://github.com/gdvgarcia/Geant4.6-4.5installation/wiki/GEANT4installation-wiki-everything-here
