@@ -18,9 +18,11 @@ G4SKspallation2_v3 enhances the simulation by adding the possibility of generati
 
 G4SKspallation2_v5 has the main change in the way ntuples are created and the main improvement that one can run this simulation in multithreading mode. This version creates one ntuple row per event with vectors containing information about the respective event.  So we just have one tree per run. 
 
-G4SKspallation2_v6 improves the initial conditions reader and has the possibility of reading the file of user's choice by a fourth argument in batch mode. It alsos improve the random generation of positions of the primary particles.
+G4SKspallation2_v6 improves the initial conditions reader and has the possibility of reading the file of user's choice by a third argument in batch mode. It alsos improve the random generation of positions of the primary particles.
 
-G4SKspallation2_v7 maintains main aspects of v6 but it also has a substantial change in the retrieving method, no longer using Sensitive Detectors and Hits, but user's SteppingAction. This makes retrieving data much more intuitive. It has also improvements in the output file generation and the possibility of gerenating muons plus with a fifth argument in batch mode. 
+G4SKspallation2_v7 maintains main aspects of v6 but it also has a substantial change in the retrieving method, no longer using Sensitive Detectors and Hits, but user's SteppingAction. This makes retrieving data much more intuitive. It has also improvements in the output file generation and the possibility of gerenating muons plus with a fourth argument in batch mode. 
+
+G4SKspallation2_v8 just add the possibility of deactivating the angular distribution reader from the input file by the addition of a fourth argument(making the muon plus argument the fifth).
 
 And G4SKspallation2_v2Shower contains many of the same features from the previous simulation v3, but it was created for the collection of special data. The study of the shower was its main objective, so the data ntuples and the histograms are very different from the main version simulations. 
 
