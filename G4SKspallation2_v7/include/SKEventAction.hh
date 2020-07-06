@@ -91,8 +91,8 @@ public:
   G4double 			GetyIni()				{ return fyIni; 			}
   G4double 			GetzIni()				{ return fzIni; 			}
   G4double 			GetxFin()				{ return fxFin; 			}
-  G4double 			GetyFin()				{ return fyIni; 			}
-  G4double 			GetzFin()				{ return fzIni; 			}  
+  G4double 			GetyFin()				{ return fyFin; 			}
+  G4double 			GetzFin()				{ return fzFin; 			}  
 
   // methods to handle data
   //

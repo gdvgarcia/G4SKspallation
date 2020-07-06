@@ -14,4 +14,4 @@ source /opt/exp_soft/llr/GEANT4/10.5.1/bin/geant4.sh
 
 #command to launch geant4 jobs - we make one for each physlist with random initial conditions and one with the default physlist with fixed conditions
 #$1 is related to launch.sh which gives the input file
-/home/llr/t2k/dallavalle/G4SKspallation_geant4-build_SQ/G4SKspallation /home/llr/t2k/dallavalle/G4SKspallation_geant4-build_SQ/run3.mac ! $1
+/home/llr/t2k/dallavalle/G4SKspallation_geant4-build_SQ/G4SKspallation /home/llr/t2k/dallavalle/G4SKspallation_geant4-build_SQ/run3.mac ! $1 no

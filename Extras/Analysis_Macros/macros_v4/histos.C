@@ -6,6 +6,7 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TLegend.h"
+#include "TLatex.h"
 
 #include <iostream> 
 #include <vector> 
@@ -71,7 +72,7 @@ int histos(){
 	DataTree->SetBranchAddress("IsotopesSize",&IsotopesSize);
 	DataTree->SetBranchAddress("A",&A);
 	DataTree->SetBranchAddress("Z",&Z);
-	DataTree->SetBranchAddress("LifeTime",&LifeTime);
+	//DataTree->SetBranchAddress("LifeTime",&LifeTime);
 	DataTree->SetBranchAddress("Stable1Instable0",&stable);
 	DataTree->SetBranchAddress("TransverseDistance",&TransverseDistance);
 	DataTree->SetBranchAddress("PathLengthSize",&PathLengthSize);
@@ -175,15 +176,15 @@ int histos(){
 	//Declaring the histogram for distance and path length
 	TH1* h[3][6];
 	//Creating the histograms for isodistance
-	TH1* h1 = new TH1D("TransverseDistanceIsotopes", "Transverse Distance for all the isotopes", 300, 0.0, 300.0);
-	TH1* h2 = new TH1D("TransverseDistanceNitrogen", "Transverse Distance for N16", 60, 0.0, 300.0);
-	TH1* h3 = new TH1D("TransverseDistanceBoron", "Transverse Distance for B8", 60, 0.0, 300.0);
+	TH1* h1 = new TH1D("TransverseDistanceIsotopes", "Transverse Distance for all the isotopes", 400,  -50., 350.0);
+	TH1* h2 = new TH1D("TransverseDistanceNitrogen", "Transverse Distance for N16", 400, -50., 350.0);
+	TH1* h3 = new TH1D("TransverseDistanceBoron", "Transverse Distance for B8", 400, -50., 350.0);
 	//Declaring the histogram for muons daughters
 	TH1* hm[4];
 	//Declaring the histograms for the muon
 	TH1* hm1;
-	int nbinhm2 = 60; // number of bins for the energy loss
-	TH1* hm2 = new TH1D("hdep", "Muon energy loss", nbinhm2, 5, 20);
+	int nbinhm2 = 100; // number of bins for the energy loss
+	TH1* hm2 = new TH1D("hdep", "Muon energy loss", nbinhm2, 0, 50);
 
 
 
@@ -218,7 +219,7 @@ int histos(){
 		//Creating the histogram
 		histtitle = "Transverse distance for " + particles[j][2];
 		histname = "h" + particles[j][2] + "0";
-		h[0][j] = new TH1D(histname.c_str(), histtitle.c_str(), 200, 0.0, 300.0);
+		h[0][j] = new TH1D(histname.c_str(), histtitle.c_str(), 450, -50, 400.0);
 			
 	}
 
@@ -228,7 +229,7 @@ int histos(){
 		//Creating the histogram
 		histtitle = "Path Length spectra for " + particles[j][2];
 		histname = "h" + particles[j][2]  + "1";
-		h[1][j] = new TH1D(histname.c_str(), histtitle.c_str(), 353, -0.1, 500.0);;
+		h[1][j] = new TH1D(histname.c_str(), histtitle.c_str(), 650, -50, 600.0);;
 			
 	}
 
@@ -262,12 +263,12 @@ int histos(){
 		//Creating the histogram
 		histtitle = "Parents spectra for " + particles[j][2];
 		histname = "h" + particles[j][2] + "2";
-		h[2][j] = new TH1D(histname.c_str(), histtitle.c_str(), 153, -25., 500.0);
+		h[2][j] = new TH1D(histname.c_str(), histtitle.c_str(), 600, -50., 550.0);
 	}
 
 
 	// Building log binning for the muon spec
-	const Int_t nbins2= 100;
+	const Int_t nbins2= 1000;
    	Double_t xmin2 = 1.5e-2;
    	Double_t xmax2 = 1.5e4;
    	Double_t logxmin2 = TMath::Log10(xmin2);
@@ -317,7 +318,7 @@ int histos(){
 			// running for the iso list
 			if(A->at(j) > 7){
 				multiplicity[Z->at(j)-1][A->at(j)] 	+= 1; // the defult initializition is 0
-				LifeTimes[Z->at(j)-1][A->at(j)] 	= LifeTime->at(j); // getting the isosopes life time
+				//LifeTimes[Z->at(j)-1][A->at(j)] 	= LifeTime->at(j); // getting the isosopes life time
 				multiplicityEvent[Z->at(j)-1][A->at(j)] += 1; // the defult initializition is 0
 				Isstable[Z->at(j)-1][A->at(j)] 		= stable->at(j);
 			}
@@ -401,10 +402,10 @@ int histos(){
 		h[0][j]->GetYaxis()->SetTitle("Normalized probability");
 		//h[0][j]->SetTitleFont(62,"xyz"); // font option
 		//h[0][j]->SetLabelFont(62,"xyz"); // font option
-		h[0][j]->GetYaxis()->SetTitleOffset(1.3);
-		h[0][j]->GetXaxis()->SetTitleOffset(1.3);
-		h[0][j]->GetXaxis()->SetLabelSize(.05);
-		h[0][j]->GetYaxis()->SetLabelSize(.05);
+		h[0][j]->GetYaxis()->SetTitleOffset(1.25);
+		h[0][j]->GetXaxis()->SetTitleOffset(1.25);
+		h[0][j]->GetXaxis()->SetLabelSize(.0465);
+		h[0][j]->GetYaxis()->SetLabelSize(.0465);
 		h[0][j]->GetXaxis()->SetTitleSize(.055);
 		h[0][j]->GetYaxis()->SetTitleSize(.055);
 		h[0][j]->SetStats(kFALSE);
@@ -423,6 +424,7 @@ int histos(){
 		h[0][j]->SetTitle("");
 		h[0][j]->Draw(" HIST SAME 9");
 		h[0][j]->SetAxisRange(0.0001, 0.1,"Y");
+		h[0][j]->SetAxisRange(0., 300,"X");
 
 
 		// Adding the legend
@@ -465,15 +467,16 @@ int histos(){
     	hc->SetLineWidth(3);
 	hc->GetXaxis()->SetTitle("Isotope distance to muon track  [cm]");
 	hc->GetYaxis()->SetTitle("Probability");
-	hc->GetYaxis()->SetTitleOffset(1.3);
-	hc->GetXaxis()->SetTitleOffset(1.3);
-	hc->GetXaxis()->SetLabelSize(.05);
-	hc->GetYaxis()->SetLabelSize(.05);
+	hc->GetYaxis()->SetTitleOffset(1.2);
+	hc->GetXaxis()->SetTitleOffset(1.25);
+	hc->GetXaxis()->SetLabelSize(.0465);
+	hc->GetYaxis()->SetLabelSize(.0465);
 	hc->GetXaxis()->SetTitleSize(.055);
 	hc->GetYaxis()->SetTitleSize(.055);
 	hc->SetStats(kFALSE);
 	hc->Scale(1/h1->GetEntries()); //normalizing
 	hc->SetAxisRange(0., 1.,"Y");
+	hc->SetAxisRange(0., 300.,"X");
 	hc->DrawClone("HIST 9");
 
 
@@ -494,6 +497,7 @@ int histos(){
 	hc->SetStats(kFALSE);
 	hc->Scale(1/h3->GetEntries()); //normalizing
 	hc->SetAxisRange(0., 1.,"Y");
+	hc->SetAxisRange(0., 300.,"X");
 	hc->DrawClone("HIST 9 SAME");
 	// Saving the histogram	
 	hc->Write();
@@ -510,6 +514,7 @@ int histos(){
 	hc->SetStats(kFALSE);
 	hc->Scale(1/h2->GetEntries()); //normalizing
 	hc->SetAxisRange(0., 1.,"Y");
+	hc->SetAxisRange(0., 300.,"X");
 	hc->DrawClone("HIST 9 SAME");
 	// Saving the histogram	
 	hc->Write();
@@ -547,13 +552,14 @@ int histos(){
     		h[1][j]->SetLineStyle(2);
 		h[1][j]->GetXaxis()->SetTitle("Energy [MeV]");
 		h[1][j]->GetYaxis()->SetTitle("Path  length [cm MeV^{-1} ]");
-		h[1][j]->GetYaxis()->SetTitleOffset(1.3);
-		h[1][j]->GetXaxis()->SetTitleOffset(1.3);
-		h[1][j]->GetXaxis()->SetLabelSize(.05);
-		h[1][j]->GetYaxis()->SetLabelSize(.05);
+		h[1][j]->GetYaxis()->SetTitleOffset(1.25);
+		h[1][j]->GetXaxis()->SetTitleOffset(1.25);
+		h[1][j]->GetXaxis()->SetLabelSize(.0465);
+		h[1][j]->GetYaxis()->SetLabelSize(.0465);
 		h[1][j]->GetXaxis()->SetTitleSize(.055);
 		h[1][j]->GetYaxis()->SetTitleSize(.055);
 		h[1][j]->SetAxisRange(0.001, 1000.,"Y");
+		h[1][j]->SetAxisRange(0., 500.,"X");
 		h[1][j]->SetStats(kFALSE);
 
 		// Saving the histogram	
@@ -606,11 +612,10 @@ int histos(){
     		hm[j]->SetLineStyle(2);
 		hm[j]->GetXaxis()->SetTitle("Energy [GeV]");
 		hm[j]->GetYaxis()->SetTitle("dN/dlog_{10}E");
+		hm[j]->GetXaxis()->SetTitleOffset(1.25);
 		hm[j]->GetYaxis()->SetTitleOffset(1.1);
-		hm[j]->GetXaxis()->SetTitleOffset(1.3);
-		hm[j]->GetYaxis()->SetTitleOffset(1.3);
-		hm[j]->GetXaxis()->SetLabelSize(.05);
-		hm[j]->GetYaxis()->SetLabelSize(.05);
+		hm[j]->GetXaxis()->SetLabelSize(.0465);
+		hm[j]->GetYaxis()->SetLabelSize(.0465);
 		hm[j]->GetXaxis()->SetTitleSize(.055);
 		hm[j]->GetYaxis()->SetTitleSize(.055);
 		hm[j]->SetAxisRange(0.00001, 1.,"Y");
@@ -680,12 +685,12 @@ int histos(){
 	hm1->GetXaxis()->SetTitle("Energy [GeV]");
 	hm1->GetYaxis()->SetTitle("dN/dlog_{10}E_{#mu} per muon ");// [cm^{-2} s^{-1} ]");
 	hm1->GetYaxis()->SetTitleOffset(1.25);
-	hm1->GetXaxis()->SetTitleOffset(1.3);
-	hm1->GetXaxis()->SetLabelSize(.05);
-	hm1->GetYaxis()->SetLabelSize(.05);
+	hm1->GetXaxis()->SetTitleOffset(1.25);
+	hm1->GetXaxis()->SetLabelSize(.0465);
+	hm1->GetYaxis()->SetLabelSize(.0465);
 	hm1->GetXaxis()->SetTitleSize(.055);
 	hm1->GetYaxis()->SetTitleSize(.055);
-	hm1->SetAxisRange(0.0001, 0.1,"Y");
+	hm1->SetAxisRange(0.00001, 0.01,"Y");
 	hm1->SetAxisRange(0.1, 10000.,"X");
 	hm1->SetStats(kFALSE);
 	
@@ -694,10 +699,10 @@ int histos(){
     	hm2->SetLineStyle(1);
 	hm2->GetXaxis()->SetTitle("Muon energy loss [GeV]");
 	hm2->GetYaxis()->SetTitle("Normalized probability");
-	hm2->GetYaxis()->SetTitleOffset(1.3);
-	hm2->GetXaxis()->SetTitleOffset(1.3);
-	hm2->GetXaxis()->SetLabelSize(.05);
-	hm2->GetYaxis()->SetLabelSize(.05);
+	hm2->GetYaxis()->SetTitleOffset(1.25);
+	hm2->GetXaxis()->SetTitleOffset(1.25);
+	hm2->GetXaxis()->SetLabelSize(.0465);
+	hm2->GetYaxis()->SetLabelSize(.0465);
 	hm2->GetXaxis()->SetTitleSize(.055);
 	hm2->GetYaxis()->SetTitleSize(.055);
 	hm2->SetAxisRange(6., 20.,"X");
@@ -751,13 +756,14 @@ int histos(){
     		h[2][j]->SetLineStyle(2);
 		h[2][j]->GetXaxis()->SetTitle("Energy [MeV]");
 		h[2][j]->GetYaxis()->SetTitle("Number of events per muon");
-		h[2][j]->GetYaxis()->SetTitleOffset(1.3);
-		h[2][j]->GetXaxis()->SetTitleOffset(1.3);
-		h[2][j]->GetXaxis()->SetLabelSize(.05);
-		h[2][j]->GetYaxis()->SetLabelSize(.05);
+		h[2][j]->GetYaxis()->SetTitleOffset(1.25);
+		h[2][j]->GetXaxis()->SetTitleOffset(1.25);
+		h[2][j]->GetXaxis()->SetLabelSize(.0465);
+		h[2][j]->GetYaxis()->SetLabelSize(.0465);
 		h[2][j]->GetXaxis()->SetTitleSize(.055);
 		h[2][j]->GetYaxis()->SetTitleSize(.055);
 		h[2][j]->SetAxisRange(0.00001, 100.,"Y");
+		h[2][j]->SetAxisRange(-25., 500.,"X");
 		h[2][j]->SetStats(kFALSE);
 
 
@@ -838,7 +844,7 @@ int histos(){
 			arrays->push_back(itr->first); //id 1
 			arrays->push_back(itr->second); //id 2
 			arrays->push_back(sqrt(multiplicityError[i][itr->first])/sqrt(nentries)); //id 3
-			arrays->push_back(LifeTimes[i][itr->first]); //id 4
+			//arrays->push_back(LifeTimes[i][itr->first]); //id 4
 			if ( Isstable[i][itr->first] ){
 				cout << elements[i] << itr->first << " is " << Isstable[i][itr->first] <<" and has " << itr->second << " \\pm " << multiplicityError[i][itr->first] << " with a life time of " << LifeTimes[i][itr->first] << endl ;
 				stables->push_back(arrays);
@@ -865,8 +871,8 @@ int histos(){
 				location = j;
 			}
 		}
-		outfile << '\t' << "$^{"  <<  (int) stables->at(location)->at(1) << "}$" << elements[(int)stables->at(location)->at(0)]
-             	<< '\t' << '&'  << '\t' << -1 << '\t' << '&'
+		outfile << '\t' << "$^{"  << stables->at(location)->at(1) << "}$" << elements[(int)stables->at(location)->at(0)]
+             	<< '\t' << '&' // << '\t' << stables->at(location)->at(4) * 1000000000. << '\t' << '&'
 		<< '\t' << max/(3200.* ( nentries )) * 10000000. << '\t' << '&' << '\t' << " \\pm "
 		<< stables->at(location)->at(3)/(3200.) * 10000000.  << '\t' << "\\\\" <<'\n';  // dividing per the number of muons, the distance of the muon track and by the water density 1 * g * cm^{-3} and multiplyin by 10^{7} - time multiplied by e9 because in nanosecs
 		stables->erase (stables->begin()+location); //removing the maximum from the vector
@@ -879,7 +885,7 @@ int histos(){
 
 	// print unstable isotopes in decreasing order
     	outfile << "\t Unstable isotopes \n"; 
-    	outfile << "Isotope \t Life-time (s) \t Quantity mu^{-1} g^{-1} cm^{2} x 10^{-7} \n" ;
+    	outfile << "Isotope \t Half-life (s) \t Quantity mu^{-1} g^{-1} cm^{2} x 10^{-7} \n";
 	size = unstables->size();
 	for( int i = 0; i < size; i++){
     		for ( int j = 0 ; j < unstables->size(); j++){
@@ -888,9 +894,9 @@ int histos(){
 				location = j;
 			}
 		}
-		outfile << '\t' << "$^{"  << (int) unstables->at(location)->at(1) << "}$" << elements[(int)unstables->at(location)->at(0)]
-             	<< '\t' << '&'  << '\t' << std::scientific << unstables->at(location)->at(4) / 1000000000.  << '\t' << '&'
-		<< '\t'  << std::fixed << max/(3200.* ( nentries )) * 10000000. << '\t' << '&' << '\t' << " \\pm " << unstables->at(location)->at(3)/(3200.) * 10000000.  << '\t' << "\\\\" <<'\n';  // dividing per the number of muons, the distance of the muon track and by the water density 1 * g * cm^{-3} and multiplyin by 10^{7} - time multiplied by e9 because in nanosecs
+		outfile << '\t' << "$^{"  << unstables->at(location)->at(1) << "}$" << elements[(int)unstables->at(location)->at(0)]
+             	<< '\t' << '&' // << '\t' << unstables->at(location)->at(4) * 1000000000. << '\t' << '&'
+		<< '\t' << max/(3200.* ( nentries )) * 10000000. << '\t' << '&' << '\t' << " \\pm " << unstables->at(location)->at(3)/(3200.) * 10000000.  << '\t' << "\\\\" <<'\n';  // dividing per the number of muons, the distance of the muon track and by the water density 1 * g * cm^{-3} and multiplyin by 10^{7} - time multiplied by e9 because in nanosecs
 		unstables->erase (unstables->begin()+location); //removing the maximum from the vector
 		max = -1;
 	}

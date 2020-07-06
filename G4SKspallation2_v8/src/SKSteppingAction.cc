@@ -315,9 +315,9 @@ G4double SKSteppingAction::transverseDistance( G4double x, G4double y, G4double 
   G4double xp = x - fEventAction->GetxIni();
   G4double yp = y - fEventAction->GetyIni();
   G4double zp = z - fEventAction->GetzIni();
-  G4double xm = fEventAction->GetxFin() - fEventAction->GetxIni();
-  G4double ym = fEventAction->GetyFin() - fEventAction->GetyIni();
-  G4double zm = fEventAction->GetzFin() - fEventAction->GetzIni();
+  G4double xm = fEventAction->GetxFin() - fEventAction->GetxIni() ;
+  G4double ym = fEventAction->GetyFin() - fEventAction->GetyIni() ;
+  G4double zm = fEventAction->GetzFin() - fEventAction->GetzIni() ;
 
   // taking the cross product
   G4double xc, yc, zc; 
