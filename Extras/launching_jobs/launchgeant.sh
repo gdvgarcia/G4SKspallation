@@ -2,7 +2,7 @@
 #command to run jobs with GEANT4
 
 #goes to the folder where I want to work
-cd /home/llr/t2k/dallavalle/simulation_test1/root_files_from_simu
+cd /data_T2K/dallavalle/simulation_test1/root_files_from_simu
 
 
 # configuring conditions to run the geant4 application
