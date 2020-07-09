@@ -4,8 +4,8 @@
 #goes to the folder where I want to work
 cd /data_T2K/dallavalle/simulation_test1/root_files_from_simu
 
-
 # configuring conditions to run the geant4 application
+source /usr/share/Modules/init/bash
 module use /opt/exp_soft/vo.llr.in2p3.fr/modulefiles_el7
 module load cmake/3.10.1
 module load compilers/gcc/7.1.1
