@@ -167,6 +167,48 @@ void SKEventAction::EndOfEventAction(const G4Event* event)
   analysisManager->FillNtupleIColumn(33, 	fvectorTransParticlesCode.size());
   // adding the Row
   analysisManager->AddNtupleRow();
+
+  // clean the data at the end of each event
+  // data for the muon
+  fEdep 	= 0.;     					///< Energy deposit in the sensitive volume
+  fEmu		= 0.;      					///< Initial kinetic energy of the muon
+  fLmu		= 0.;      					///< Path lenght of the muon
+  fxIni		= 0.; 						///< x initial position  of the muon
+  fyIni		= 0.;						///< y initial position  of the muon
+  fzIni		= 0.;						///< z initial position  of the muon
+  fxFin		= 0.;						///< x initial position  of the muon
+  fyFin		= 0.;						///< y initial position  of the muon
+  fzFin		= 0.;						///< z initial position  of the muon     
+  // vectors for first generation daugthers of the muon data
+  fvectorFirstGenCode.clear();
+  fvectorEfisrtGen.clear();
+  // vectors for the isotopes data
+  fvectorA.clear();
+  fvectorZ.clear();
+  fvectorx.clear();
+  fvectory.clear();
+  fvectorz.clear();
+  fvectorIsoDist.clear();
+  fvectorIsoParentCode.clear();
+  fvectorIniTime.clear();
+  fvectorFinTime.clear();
+  fvectorStable.clear();
+  fvectorLifeTime.clear();
+  // vectors for the isotopes' parents data
+  fvectorParentsCode.clear();
+  fvectorAdaug.clear();
+  fvectorZdaug.clear();
+  fvectorEparent.clear();
+  // vectors for the path length data
+  fvectorPathLengthCode.clear();
+  fvectorPathLengthE.clear();
+  fvectorStepLength.clear();
+  // vectors for the transverse distance data
+  fvectorTransParticlesCode.clear();
+  fvectorTransParticlesDist.clear();
+  // data members necessary to collect the information in the StepAction
+  fParentsCodes.clear(); 
+  fInitialTimes.clear(); 
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
