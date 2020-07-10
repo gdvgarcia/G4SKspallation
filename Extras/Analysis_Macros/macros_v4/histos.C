@@ -154,11 +154,18 @@ int histos(){
 
 
 	
-	// variables for the mean
+	// variables for the mean of muon 
 	double meanSpec = 0.;
 	double meanLost = 0.;
-
-
+	double stddevSpec = 0.;
+	double stddevLost = 0.;
+	// variables for the values
+	vector<double> ESpec;
+	vector<double> ELost;
+	// variables for the sum of the difference square
+	double sumEspec = 0.;
+ 	double sumElost = 0.;
+	
 
 	// Create a new file where we gonna save the histograms
 	string filename = "histos.root";
@@ -189,7 +196,9 @@ int histos(){
 
 
 	// Making the canvas we will draw in
-	auto c1 = new TCanvas("c1","c1",10,10,650,600);
+	auto c1 = new TCanvas("c1","c1");
+   	c1->SetCanvasSize(750, 750);
+   	c1->SetWindowSize(600, 600);
 
 
 	// Build the legends - x1,y1,x2,y2 
@@ -201,7 +210,7 @@ int histos(){
 	leg[i]->SetNColumns(2);
 	}
 	// Build a legend - x1,y1,x2,y2  for isodista
-	leg[2] = new TLegend(.675 ,.2 ,.9 ,.45);
+	leg[2] = new TLegend(.675 ,.25 ,.9 ,.5);
 	leg[2]->SetFillColor(0);
 	// Build a legend - x1,y1,x2,y2 for muon daughters
 	leg[3] = new TLegend(.7 ,.725 ,.9 ,.9);
@@ -359,13 +368,14 @@ int histos(){
 	
 		hm1->Fill(Energy/1000., 1./(1.*nentries)); // divide per 1000 to convert to GeV - normalized by the size of the simulation
 		meanSpec = Energy/1000. + meanSpec; // somming up for the mean
+		ESpec.push_back(Energy/1000.);
 		if (Energy < 0.){ 
 			cerr << "Negative Kinetic Energy Value found : " << Energy/1000. << "GeV" << endl; 
     			return 0;
 		}
 		hm2->Fill((Edep)/1000.);//, 15./(1.*nbinhm2)); // divide per 1000 to convert to GeV and normalize by the bin size- normalized by the size of the simulation
 		meanLost = Edep/1000. + meanLost; // somming up for the mean
-
+		ELost.push_back(Edep/1000.);
 
 
 		for( int k =0; k < ParentsSize ; k++){//running through the vetors
@@ -384,7 +394,11 @@ int histos(){
 	// Closing hist file
 	inputFile->Close();
 
-
+	// finilizing the figure style
+	gPad->SetLogy(1);
+	gPad->SetMargin(0.20, 0.05, 0.20, 0.05); // (left, right, bottom, top)
+	gPad->SetTickx(1); 
+	gPad->SetTicky(1);
 
 	//
 	// MAKING THE TRANS DISTANCE FIGURE
@@ -397,17 +411,20 @@ int histos(){
 		// Histogram attributes
    		h[0][j]->SetLineColor(colors[j]);
     		h[0][j]->SetLineWidth(3);
-    		h[0][j]->SetLineStyle(2);
-		h[0][j]->GetXaxis()->SetTitle("Distance to muon track  [cm]");
+    		h[0][j]->SetLineStyle(1);
+		h[0][j]->GetXaxis()->SetTitle("Distance to muon track [cm]");
 		h[0][j]->GetYaxis()->SetTitle("Normalized probability");
 		//h[0][j]->SetTitleFont(62,"xyz"); // font option
 		//h[0][j]->SetLabelFont(62,"xyz"); // font option
-		h[0][j]->GetYaxis()->SetTitleOffset(1.25);
+		h[0][j]->GetYaxis()->SetTitleOffset(1.6);
 		h[0][j]->GetXaxis()->SetTitleOffset(1.25);
-		h[0][j]->GetXaxis()->SetLabelSize(.0465);
-		h[0][j]->GetYaxis()->SetLabelSize(.0465);
+		h[0][j]->GetXaxis()->SetLabelSize(.05);
+		h[0][j]->GetYaxis()->SetLabelSize(.05);
 		h[0][j]->GetXaxis()->SetTitleSize(.055);
 		h[0][j]->GetYaxis()->SetTitleSize(.055);
+		h[0][j]->GetXaxis()->SetTickLength(0.02);
+		h[0][j]->GetYaxis()->SetTickLength(0.02);
+		h[0][j]->GetXaxis()->SetNdivisions( 10,true);
 		h[0][j]->SetStats(kFALSE);
 
 
@@ -437,11 +454,7 @@ int histos(){
 
 
 	// finilizing the figure and saving it
-	gPad->SetLogy(1);
-	gPad->SetMargin(0.15, 0.05, 0.15, 0.05); // (left, right, bottom, top)
-	gPad->SetTickx(1); 
-	gPad->SetTicky(1);
-	c1->SaveAs("TrasverseDistance.png");
+	c1->SaveAs("TrasverseDistance.eps");
 
 
 
@@ -465,17 +478,21 @@ int histos(){
 	hc->SetTitle("");
 	hc->SetLineColor(4);
     	hc->SetLineWidth(3);
-	hc->GetXaxis()->SetTitle("Isotope distance to muon track  [cm]");
+	hc->GetXaxis()->SetTitle("Isotope distance to muon track [cm]");
 	hc->GetYaxis()->SetTitle("Probability");
-	hc->GetYaxis()->SetTitleOffset(1.2);
+	hc->GetYaxis()->SetTitleOffset(1.5);
 	hc->GetXaxis()->SetTitleOffset(1.25);
-	hc->GetXaxis()->SetLabelSize(.0465);
-	hc->GetYaxis()->SetLabelSize(.0465);
+	hc->GetXaxis()->SetLabelSize(.05);
+	hc->GetYaxis()->SetLabelSize(.05);
 	hc->GetXaxis()->SetTitleSize(.055);
 	hc->GetYaxis()->SetTitleSize(.055);
 	hc->SetStats(kFALSE);
 	hc->Scale(1/h1->GetEntries()); //normalizing
 	hc->SetAxisRange(0., 1.,"Y");
+	hc->GetXaxis()->SetNdivisions( 10,true);
+	hc->GetYaxis()->SetNdivisions( 5,true);
+	hc->GetXaxis()->SetTickLength(0.02);
+	hc->GetYaxis()->SetTickLength(0.02);
 	hc->SetAxisRange(0., 300.,"X");
 	hc->DrawClone("HIST 9");
 
@@ -493,7 +510,7 @@ int histos(){
 	hc->SetTitle("");
 	hc->SetLineColor(2);
     	hc->SetLineWidth(3);
-    	hc->SetLineStyle(2);
+    	hc->SetLineStyle(1);
 	hc->SetStats(kFALSE);
 	hc->Scale(1/h3->GetEntries()); //normalizing
 	hc->SetAxisRange(0., 1.,"Y");
@@ -527,7 +544,7 @@ int histos(){
 
 
 	// finilizing the figure and saving it
-	c1->SaveAs("TrasverseDistanceIsotopes.png");
+	c1->SaveAs("TrasverseDistanceIsotopes.eps");
 
 	
 
@@ -549,17 +566,20 @@ int histos(){
 		// Histogram attributes
    		h[1][j]->SetLineColor(colors[j]);
     		h[1][j]->SetLineWidth(3);
-    		h[1][j]->SetLineStyle(2);
+    		h[1][j]->SetLineStyle(1);
 		h[1][j]->GetXaxis()->SetTitle("Energy [MeV]");
 		h[1][j]->GetYaxis()->SetTitle("Path  length [cm MeV^{-1} ]");
-		h[1][j]->GetYaxis()->SetTitleOffset(1.25);
+		h[1][j]->GetYaxis()->SetTitleOffset(1.6);
 		h[1][j]->GetXaxis()->SetTitleOffset(1.25);
-		h[1][j]->GetXaxis()->SetLabelSize(.0465);
-		h[1][j]->GetYaxis()->SetLabelSize(.0465);
+		h[1][j]->GetXaxis()->SetLabelSize(.05);
+		h[1][j]->GetYaxis()->SetLabelSize(.05);
 		h[1][j]->GetXaxis()->SetTitleSize(.055);
 		h[1][j]->GetYaxis()->SetTitleSize(.055);
 		h[1][j]->SetAxisRange(0.001, 1000.,"Y");
 		h[1][j]->SetAxisRange(0., 500.,"X");
+		h[1][j]->GetXaxis()->SetNdivisions( 6,true);
+		h[1][j]->GetXaxis()->SetTickLength(0.02);
+		h[1][j]->GetYaxis()->SetTickLength(0.02);
 		h[1][j]->SetStats(kFALSE);
 
 		// Saving the histogram	
@@ -587,7 +607,7 @@ int histos(){
 
 
 	//->Range(-10,-1,10,1);
-	c1->SaveAs("PathLength.png");
+	c1->SaveAs("PathLength.eps");
 
 
 
@@ -609,15 +629,17 @@ int histos(){
 		// Histogram attributes
    		hm[j]->SetLineColor(colors[j+6]);
     		hm[j]->SetLineWidth(3);
-    		hm[j]->SetLineStyle(2);
+    		hm[j]->SetLineStyle(1);
 		hm[j]->GetXaxis()->SetTitle("Energy [GeV]");
 		hm[j]->GetYaxis()->SetTitle("dN/dlog_{10}E");
 		hm[j]->GetXaxis()->SetTitleOffset(1.25);
-		hm[j]->GetYaxis()->SetTitleOffset(1.1);
-		hm[j]->GetXaxis()->SetLabelSize(.0465);
-		hm[j]->GetYaxis()->SetLabelSize(.0465);
+		hm[j]->GetYaxis()->SetTitleOffset(1.4);
+		hm[j]->GetXaxis()->SetLabelSize(.05);
+		hm[j]->GetYaxis()->SetLabelSize(.05);
 		hm[j]->GetXaxis()->SetTitleSize(.055);
 		hm[j]->GetYaxis()->SetTitleSize(.055);
+		hm[j]->GetXaxis()->SetTickLength(0.02);
+		hm[j]->GetYaxis()->SetTickLength(0.02);
 		hm[j]->SetAxisRange(0.00001, 1.,"Y");
 		hm[j]->SetAxisRange(0.1, 100.,"X");
 		hm[j]->SetStats(kFALSE);
@@ -648,7 +670,7 @@ int histos(){
 
 
 	//->Range(-10,-1,10,1);
-	c1->SaveAs("MuonDaugthersSpec.png");
+	c1->SaveAs("MuonDaugthersSpec.eps");
 
 
 
@@ -672,40 +694,58 @@ int histos(){
 	meanSpec = meanSpec/( nentries ); // dividing by the n of muons
 	meanLost = meanLost/( nentries ); // dividing by the n of muons
 
+	// calculation std dev
+	for(int i=0; i < ESpec.size(); i++){
+ 		  sumEspec = (ESpec[i]-meanSpec)*(ESpec[i]-meanSpec) + sumEspec;
+ 		  sumElost = (ELost[i]-meanLost)*(ELost[i]-meanLost) + sumElost;
+	}
+ 	stddevSpec = sqrt(sumEspec/(nentries-1));
+	stddevLost = sqrt(sumElost/(nentries-1));
+	
+
+
 
 	// printing the mean values
 	cout << "Mean energy of the spectrum : " << meanSpec << endl;
 	cout << "Mean energy loss : " << meanLost << endl;
+	cout << "Std dev energy of the spectrum : " << stddevSpec << endl;
+	cout << "Std dev energy loss : " << stddevLost << endl;
 				
 
 	// Histograms attributes 
    	hm1->SetLineColor(4);
-    	hm1->SetLineWidth(3);
+    	hm1->SetLineWidth(4);
     	hm1->SetLineStyle(1);
 	hm1->GetXaxis()->SetTitle("Energy [GeV]");
-	hm1->GetYaxis()->SetTitle("dN/dlog_{10}E_{#mu} per muon ");// [cm^{-2} s^{-1} ]");
-	hm1->GetYaxis()->SetTitleOffset(1.25);
+	hm1->GetYaxis()->SetTitle("N^{-1} dN/dlog_{10}E_{#mu} ");// [cm^{-2} s^{-1} ]");
+	hm1->GetYaxis()->SetTitleOffset(1.6);
 	hm1->GetXaxis()->SetTitleOffset(1.25);
-	hm1->GetXaxis()->SetLabelSize(.0465);
-	hm1->GetYaxis()->SetLabelSize(.0465);
+	hm1->GetXaxis()->SetLabelSize(.05);
+	hm1->GetYaxis()->SetLabelSize(.05);
 	hm1->GetXaxis()->SetTitleSize(.055);
 	hm1->GetYaxis()->SetTitleSize(.055);
+	hm1->GetXaxis()->SetTickLength(0.02);
+	hm1->GetYaxis()->SetTickLength(0.02);
 	hm1->SetAxisRange(0.00001, 0.01,"Y");
 	hm1->SetAxisRange(0.1, 10000.,"X");
 	hm1->SetStats(kFALSE);
 	
 	hm2->SetLineColor(4);
-    	hm2->SetLineWidth(3);
+    	hm2->SetLineWidth(4);
     	hm2->SetLineStyle(1);
 	hm2->GetXaxis()->SetTitle("Muon energy loss [GeV]");
 	hm2->GetYaxis()->SetTitle("Normalized probability");
-	hm2->GetYaxis()->SetTitleOffset(1.25);
+	hm2->GetYaxis()->SetTitleOffset(1.6);
 	hm2->GetXaxis()->SetTitleOffset(1.25);
-	hm2->GetXaxis()->SetLabelSize(.0465);
-	hm2->GetYaxis()->SetLabelSize(.0465);
+	hm2->GetXaxis()->SetLabelSize(.05);
+	hm2->GetYaxis()->SetLabelSize(.05);
 	hm2->GetXaxis()->SetTitleSize(.055);
 	hm2->GetYaxis()->SetTitleSize(.055);
-	hm2->SetAxisRange(6., 20.,"X");
+	hm2->GetXaxis()->SetNdivisions( 5,true);
+	hm2->GetYaxis()->SetNdivisions( 6,true);
+	hm2->GetXaxis()->SetTickLength(0.02);
+	hm2->GetYaxis()->SetTickLength(0.02);
+	hm2->SetAxisRange(5., 20.,"X");
 	//hm2->SetAxisRange(0., 0.2,"Y");
 	hm2->SetStats(kFALSE);
 
@@ -719,7 +759,7 @@ int histos(){
 	hm2->SetTitle("");
 	hm2->DrawNormalized("HIST 9");
 	// finilizing the figure and saving it
-	c1->SaveAs("MuonEnergyLost.png");
+	c1->SaveAs("MuonEnergyLost.eps");
 
 
 	c1->Clear();
@@ -730,7 +770,7 @@ int histos(){
 	// finilizing the figure and saving it
 	gPad->SetLogx();
 	gPad->SetLogy();
-	c1->SaveAs("MuonSpectra.png");
+	c1->SaveAs("MuonSpectra.eps");
 
 
 
@@ -753,15 +793,18 @@ int histos(){
 		// Histogram attributes
    		h[2][j]->SetLineColor(colors[j]);
     		h[2][j]->SetLineWidth(3);
-    		h[2][j]->SetLineStyle(2);
+    		h[2][j]->SetLineStyle(1);
 		h[2][j]->GetXaxis()->SetTitle("Energy [MeV]");
-		h[2][j]->GetYaxis()->SetTitle("Number of events per muon");
-		h[2][j]->GetYaxis()->SetTitleOffset(1.25);
+		h[2][j]->GetYaxis()->SetTitle("# of events");
+		h[2][j]->GetYaxis()->SetTitleOffset(1.6);
 		h[2][j]->GetXaxis()->SetTitleOffset(1.25);
-		h[2][j]->GetXaxis()->SetLabelSize(.0465);
-		h[2][j]->GetYaxis()->SetLabelSize(.0465);
+		h[2][j]->GetXaxis()->SetLabelSize(.05);
+		h[2][j]->GetYaxis()->SetLabelSize(.05);
 		h[2][j]->GetXaxis()->SetTitleSize(.055);
 		h[2][j]->GetYaxis()->SetTitleSize(.055);
+		h[2][j]->GetXaxis()->SetNdivisions( 6,true);
+		h[2][j]->GetXaxis()->SetTickLength(0.02);
+		h[2][j]->GetYaxis()->SetTickLength(0.02);
 		h[2][j]->SetAxisRange(0.00001, 100.,"Y");
 		h[2][j]->SetAxisRange(-25., 500.,"X");
 		h[2][j]->SetStats(kFALSE);
@@ -788,7 +831,7 @@ int histos(){
 
 	// finilizing the figure and saving it
 	gPad->SetLogy();
-	c1->SaveAs("ParentsSpectra.png");
+	c1->SaveAs("ParentsSpectra.eps");
 
 
 
@@ -896,7 +939,7 @@ int histos(){
 		}
 		outfile << '\t' << "$^{"  << unstables->at(location)->at(1) << "}$" << elements[(int)unstables->at(location)->at(0)]
              	<< '\t' << '&' // << '\t' << unstables->at(location)->at(4) * 1000000000. << '\t' << '&'
-		<< '\t' << max/(3200.* ( nentries )) * 10000000. << '\t' << '&' << '\t' << " \\pm " << unstables->at(location)->at(3)/(3200.) * 10000000.  << '\t' << "\\\\" <<'\n';  // dividing per the number of muons, the distance of the muon track and by the water density 1 * g * cm^{-3} and multiplyin by 10^{7} - time multiplied by e9 because in nanosecs
+		<< '\t' << max/(3200.* ( nentries )) * 10000000. << '\t' << '&' << '\t' << " \\pm " << unstables->at(location)->at(3)/(3200.) * 10000000.  << '\t' << "\\\\" <<'\n';  // dividing per the number of muons, the distance(length) of the muon track and by the water density 1 * g * cm^{-3} and multiplyin by 10^{7} - time multiplied by e9 because in nanosecs
 		unstables->erase (unstables->begin()+location); //removing the maximum from the vector
 		max = -1;
 	}

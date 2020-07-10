@@ -1,0 +1,5 @@
+Mean energy of the spectrum : 256.881
+Mean energy loss : 10.6276
+Std dev energy of the spectrum : 492.494
+Std dev energy loss : 21.5728
+
