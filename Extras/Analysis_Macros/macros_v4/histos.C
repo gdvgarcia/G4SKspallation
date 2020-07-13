@@ -200,6 +200,11 @@ int histos(){
    	c1->SetCanvasSize(750, 750);
    	c1->SetWindowSize(600, 600);
 
+	gPad->SetLogy(1);
+	gPad->SetMargin(0.20, 0.05, 0.20, 0.05); // (left, right, bottom, top)
+	gPad->SetTickx(1); 
+	gPad->SetTicky(1);
+
 
 	// Build the legends - x1,y1,x2,y2 
 	TLegend* leg[4] = {0,0,0,0};
@@ -238,7 +243,7 @@ int histos(){
 		//Creating the histogram
 		histtitle = "Path Length spectra for " + particles[j][2];
 		histname = "h" + particles[j][2]  + "1";
-		h[1][j] = new TH1D(histname.c_str(), histtitle.c_str(), 650, -50, 600.0);;
+		h[1][j] = new TH1D(histname.c_str(), histtitle.c_str(), 600, 2.5, 602.5);;
 			
 	}
 
@@ -395,10 +400,10 @@ int histos(){
 	inputFile->Close();
 
 	// finilizing the figure style
-	gPad->SetLogy(1);
-	gPad->SetMargin(0.20, 0.05, 0.20, 0.05); // (left, right, bottom, top)
-	gPad->SetTickx(1); 
-	gPad->SetTicky(1);
+	//gPad->SetLogy(1);
+	//gPad->SetMargin(0.20, 0.05, 0.20, 0.05); // (left, right, bottom, top)
+	//gPad->SetTickx(1); 
+	//gPad->SetTicky(1);
 
 	//
 	// MAKING THE TRANS DISTANCE FIGURE
@@ -943,6 +948,11 @@ int histos(){
 		unstables->erase (unstables->begin()+location); //removing the maximum from the vector
 		max = -1;
 	}
+
+	// printing what is a one event in yield
+	outfile << "\n \n\n \n"; 
+    	outfile << " A single event in isotope yield  mu^{-1} g^{-1} cm^{2} x 10^{-7} = " << 1./(3200.* ( nentries )) * 10000000. << "\n";
+	
 
 
 	// Closing hist file
