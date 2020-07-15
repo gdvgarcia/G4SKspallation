@@ -37,7 +37,7 @@ int merging(){
 
 
 	// Opening the file2 with the tree
-	TFile* inputFile2 = new TFile("SK2.root");
+	TFile* inputFile2 = new TFile("SK.root");
 	// checking if the file is open correctly
 	if (inputFile2->IsOpen()) {
     		cout << "Reading file: " << inputFile2->GetName() << endl;
