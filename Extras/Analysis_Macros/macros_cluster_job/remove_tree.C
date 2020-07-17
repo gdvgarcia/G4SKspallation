@@ -1,7 +1,7 @@
 // Create a file for the muon and isotope tree and remove the tree so we have only histograms
 
 // how to call 
-// root -l -q "histos_tree.C(\"/home/user/path_to_file/filename.root\")"
+// root -l -q "remove_tree.C(\"/home/user/path_to_file/filename.root\")"
 
 #include "TROOT.h"
 #include "TH1.h"
@@ -64,19 +64,16 @@ int remove_tree(char argv  []){ // the argument should be the full_path_to_the_r
 	DataTree->SetBranchAddress("Edep",&Edep);
 
 
-/DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-think what to do with the isotopes
-
 
 	//Declaring the histograms for the muon
 	TH1* hm1;
-	int nbinhm2 = 100; // number of bins for the energy loss
-	TH1* hm2 = new TH1D("hdep", "Muon energy loss", nbinhm2, 0, 50);
+	int nbinhm2 = 10000; // number of bins for the energy loss
+	TH1* hm2 = new TH1D("hdep", "Muon energy loss", nbinhm2, 0, 5000);
 
 	// Building log binning for the muon spec
 	const Int_t nbins2= 1000;
-   	Double_t xmin2 = 1.5e-2;
-   	Double_t xmax2 = 1.5e4;
+   	Double_t xmin2 = 1.5e-3;
+   	Double_t xmax2 = 1.5e6;
    	Double_t logxmin2 = TMath::Log10(xmin2);
    	Double_t logxmax2 = TMath::Log10(xmax2);
    	Double_t binwidth2 = (logxmax2-logxmin2)/nbins2;
@@ -138,6 +135,41 @@ think what to do with the isotopes
 	std::map<int, int>::iterator itr2;
 
 
+
+	// Running through the tree and filling the histograms
+	for( int i =0; i < nentries; ++i){
+		DataTree->GetEntry(i);
+
+
+		for( int j =0; j < A->size(); j++){//running through the vetors for the isotopes distance
+			// running for the iso list
+			if(A->at(j) > 7){
+				multiplicity[Z->at(j)-1][A->at(j)] 	+= 1; // the defult initializition is 0
+				Isstable[Z->at(j)-1][A->at(j)] 		= stable->at(j);
+			}
+		}
+	
+	
+		hm1->Fill(Energy); //  normalized by the size of the simulation
+		meanSpec = Energy + meanSpec; // somming up for the mean
+		if (Energy < 0.){ 
+			cerr << "Negative Kinetic Energy Value found : " << Energy/1000. << "GeV" << endl; 
+    			return 0;
+		}
+		hm2->Fill((Edep));//, 15./(1.*nbinhm2)); // normalize by the bin size- normalized by the size of the simulation
+		meanLost = Edep + meanLost; // somming up for the mean
+
+		
+		cout << "Event " << i << " has been processed." << endl;
+ 	}
+
+	// saving histos
+	//hm1->Write();
+	//hm1->Write();
+	inputFile->Write();
+	// Closing initial tree file
+	inputFile->Close();
+
 	std::cout << "Out file name = " << words.at(0) << "_isotree.root" << std::endl;
 	
 	// Create a new file for the output
@@ -170,34 +202,6 @@ think what to do with the isotopes
 	MuonT->Branch("meanEdep", &mEdep, "meanEdep/D");
 
 
-	// Running through the tree and filling the histograms
-	for( int i =0; i < nentries; ++i){
-		DataTree->GetEntry(i);
-
-
-		for( int j =0; j < A->size(); j++){//running through the vetors for the isotopes distance
-			// running for the iso list
-			if(A->at(j) > 7){
-				multiplicity[Z->at(j)-1][A->at(j)] 	+= 1; // the defult initializition is 0
-				Isstable[Z->at(j)-1][A->at(j)] 		= stable->at(j);
-			}
-		}
-	
-	
-		hm1->Fill(Energy, 1./(1.*nentries)); //  normalized by the size of the simulation
-		meanSpec = Energy + meanSpec; // somming up for the mean
-		if (Energy < 0.){ 
-			cerr << "Negative Kinetic Energy Value found : " << Energy/1000. << "GeV" << endl; 
-    			return 0;
-		}
-		hm2->Fill((Edep));//, 15./(1.*nbinhm2)); // normalize by the bin size- normalized by the size of the simulation
-		meanLost = Edep + meanLost; // somming up for the mean
-
-		
-		cout << "Event " << i << " has been processed." << endl;
- 	}
-
-
 	// making iso tree
 	map<int, int>::iterator itr;
 	for( int i = 0; i < 118; i++){
@@ -216,8 +220,8 @@ think what to do with the isotopes
 	MuonT->Fill();
 
 	// printing the mean values
-	cout << "Mean energy of the spectrum : " << meanSpec << endl;
-	cout << "Std dev energy of the spectrum : " << stddevSpec << endl;
+	cout << "Mean energy of the spectrum : " << mEnergy << endl;
+	cout << "Mean energy loss : " << mEdep << endl;
 
 
 
@@ -227,6 +231,20 @@ think what to do with the isotopes
 	IsoT->Write();
 	outputFile->Close();
 
+
+
+
+	// Opening the file to delete the tree
+	TFile* deletingFile = new TFile(inputName.c_str(),"update");
+	// checking if the file is open correctly
+	if (deletingFile->IsOpen()) {
+    		cout << "Deleting tree from the file: " << deletingFile->GetName() << endl;
+  	}
+  	else {
+    		cerr << "Error opening deleting file!" << endl;
+    		return 0;
+  	}
+
 	// deleting tree
   	//if your object is not at the top directory, but in a directory in the .root file, called foo
   	// you do first
@@ -234,12 +252,7 @@ think what to do with the isotopes
   	//then continue with the Delete command which is only applied to the current gDirectory
   	gDirectory->Delete(object_to_remove.c_str());
 
-	// saving histos
-	hm1->Write();
-	hm1->Write();
-	// Closing initial tree file
-	inputFile->Close();
-
+	deletingFile->Close();
 
 
 	return 1;

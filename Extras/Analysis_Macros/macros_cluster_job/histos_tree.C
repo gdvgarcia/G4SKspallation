@@ -216,7 +216,7 @@ int histos_tree(char argv  []){ // the argument should be the full_path_to_the_r
 
 
 	// Building log binning for muon daug hists
-	const Int_t nbins = 1000000;
+	const Int_t nbins = 500;
    	Double_t xmin = 1.5e-3;
    	Double_t xmax = 1.5e4;
    	Double_t logxmin = TMath::Log10(xmin);
