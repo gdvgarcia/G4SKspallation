@@ -5,7 +5,7 @@
 # Use these open statements to open selected visualization
 #
 # Use this open statement to create an OpenGL view:
-/vis/open OGL 600x600-0+0
+/vis/open OGL 800x800-0+0
 #
 # Use this open statement to create an OpenInventor view:
 #/vis/open OI
@@ -45,9 +45,9 @@
 # as markers 2 pixels wide:
 /vis/scene/add/trajectories smooth
 #visualize by charge
-/vis/modeling/trajectories/create/drawByCharge
-/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
-/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
+#/vis/modeling/trajectories/create/drawByCharge
+#/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
+#/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
 #visualize by particle ID
 #/vis/modeling/trajectories/create/drawByParticleID
 #/vis/modeling/trajectories/drawByParticleID-0/default/setDrawStepPts true
@@ -59,7 +59,7 @@
 #To draw only very energetic particles:
 /vis/filtering/trajectories/create/attributeFilter
 /vis/filtering/trajectories/attributeFilter-0/setAttribute IKE
-/vis/filtering/trajectories/attributeFilter-0/addInterval 0.5 MeV 100 GeV
+/vis/filtering/trajectories/attributeFilter-0/addInterval 1. MeV 100000 GeV
 # To draw only gammas:
 #/vis/filtering/trajectories/create/particleFilter
 #/vis/filtering/trajectories/particleFilter-0/add gamma
@@ -70,17 +70,18 @@
 #
 # Many other options are available with /vis/modeling and /vis/filtering.
 # For example, to select colour by particle ID:
-#/vis/modeling/trajectories/create/drawByParticleID
-#/vis/modeling/trajectories/drawByParticleID-0/default/setDrawStepPts true
+/vis/modeling/trajectories/create/drawByParticleID
+/vis/modeling/trajectories/drawByParticleID-0/default/setDrawStepPts true
+/vis/modeling/trajectories/drawByParticleID-0/default/setStepPtsSize 2
 # To select or override default colours (note: e+ is blue by default):
 #/vis/modeling/trajectories/list
-#/vis/modeling/trajectories/drawByParticleID-0/set e+ yellow
-#/vis/modeling/trajectories/drawByParticleID-0/set e- yellow
-#/vis/modeling/trajectories/drawByParticleID-0/set mu- blue
-#/vis/modeling/trajectories/drawByParticleID-0/set neutron red
-#/vis/modeling/trajectories/drawByParticleID-0/set pi0 red
-#/vis/modeling/trajectories/drawByParticleID-0/set pi+ red
-#/vis/modeling/trajectories/drawByParticleID-0/set pi- red
+/vis/modeling/trajectories/drawByParticleID-0/set e+ blue
+/vis/modeling/trajectories/drawByParticleID-0/set e- blue
+/vis/modeling/trajectories/drawByParticleID-0/set mu- magenta
+/vis/modeling/trajectories/drawByParticleID-0/set neutron red
+/vis/modeling/trajectories/drawByParticleID-0/set proton cyan
+/vis/modeling/trajectories/drawByParticleID-0/set pi+ cyan
+/vis/modeling/trajectories/drawByParticleID-0/set pi- cyan
 #
 # To superimpose all of the events from a given run:
 /vis/scene/endOfEventAction accumulate
@@ -96,7 +97,7 @@
 /vis/set/textColour    # Revert to default text colour (blue)
 #
 # Axes, scale, etc.
-#/vis/scene/add/axes    # Simple axes: x=red, y=green, z=blue.
+/vis/scene/add/axes    # Simple axes: x=red, y=green, z=blue.
 /vis/scene/add/scale   # Simple scale line
 #/vis/scene/add/eventID # Drawn at end of event
 /vis/scene/add/date    # Date stamp
@@ -105,7 +106,9 @@
 # To get nice view
 /vis/viewer/set/style surface
 /vis/viewer/set/hiddenMarker true
-/vis/viewer/set/viewpointThetaPhi 120 150
+/vis/viewer/set/viewpointThetaPhi 120 90
+/vis/viewer/set/projection p
+/vis/viewer/centreAndZoomInOn Tank
 #
 # Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true
