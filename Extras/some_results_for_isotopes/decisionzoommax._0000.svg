@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="300px" height="304px" viewBox="0 0 300 304">
+<title>Geant4 output</title>
+<desc>
+Creator: GL2PS 1.4.0, (C) 1999-2017 C. Geuzaine
+For: Geant4
+CreationDate: Sat Jul 18 15:03:12 2020
+
+</desc>
+<defs>
+</defs>
+<polygon fill="#888a85" points="0,0 300,0 300,304 0,304"/>
+<g>
+<polyline fill="none" stroke="#00ff00" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="7.16425,56.2632 1.52588e-05,55.2748"/>
+<polyline fill="none" stroke="#00ff00" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="101.141,133.862 -0.000915527,50.3468"/>
+<polyline fill="none" stroke="#00ff00" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="7.16425,56.2632 118.927,71.6829"/>
+<polyline fill="none" stroke="#00ff00" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="57.5275,286.337 47.0203,304"/>
+<polyline fill="none" stroke="#0000ff" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="111.573,97.3943 118.927,71.6829"/>
+<polyline fill="none" stroke="#00ff00" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="132.697,159.968 57.5275,286.337"/>
+<polyline fill="none" stroke="#0000ff" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="132.673,159.898 132.712,160.011"/>
+<polyline fill="none" stroke="#00ff00" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="132.697,159.968 132.717,159.934"/>
+<polyline fill="none" stroke="#00ff00" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="101.141,133.862 132.717,159.934"/>
+<polyline fill="none" stroke="#0000ff" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="132.673,159.898 111.573,97.3943"/>
+<polyline fill="none" stroke="#00ff00" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="132.717,159.934 122.872,304"/>
+<polyline fill="none" stroke="#0000ff" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="132.712,160.011 132.717,160.027"/>
+<polyline fill="none" stroke="#ffff00" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="224.033,86.1847 132.717,160.027"/>
+<polyline fill="none" stroke="#00ff00" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="118.927,71.6829 300,96.666"/>
+<polyline fill="none" stroke="#ffff00" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="224.033,86.1847 299.969,24.7795"/>
+<polyline fill="none" stroke="#7f7f7f" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="132.717,159.934 132.717,160.027"/>
+<polyline fill="none" stroke="#00ff00" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="132.717,159.934 175.846,304"/>
+<polyline fill="none" stroke="#ff0000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="132.717,159.934 101.912,-3.05176e-05"/>
+<polyline fill="none" stroke="#00ff00" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" points="132.717,159.934 152.101,-6.10352e-05"/>
+</g>
+</svg>

@@ -46,11 +46,13 @@
 /vis/scene/add/trajectories smooth
 #visualize by charge
 #/vis/modeling/trajectories/create/drawByCharge
-#/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
+# see the points if true
+#/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts false
 #/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
 #visualize by particle ID
-#/vis/modeling/trajectories/create/drawByParticleID
-#/vis/modeling/trajectories/drawByParticleID-0/default/setDrawStepPts true
+/vis/modeling/trajectories/create/drawByParticleID
+# see the points if true
+/vis/modeling/trajectories/drawByParticleID-0/default/setDrawStepPts false
 #/vis/modeling/trajectories/drawByParticleID-0/default/setStepPtsSize 2
 # (if too many tracks cause core dump => /tracking/storeTrajectory 0)
 #
@@ -59,7 +61,7 @@
 #To draw only very energetic particles:
 /vis/filtering/trajectories/create/attributeFilter
 /vis/filtering/trajectories/attributeFilter-0/setAttribute IKE
-/vis/filtering/trajectories/attributeFilter-0/addInterval 1. MeV 100000 GeV
+/vis/filtering/trajectories/attributeFilter-0/addInterval 0.5 MeV 100000 GeV
 # To draw only gammas:
 #/vis/filtering/trajectories/create/particleFilter
 #/vis/filtering/trajectories/particleFilter-0/add gamma
@@ -70,9 +72,6 @@
 #
 # Many other options are available with /vis/modeling and /vis/filtering.
 # For example, to select colour by particle ID:
-/vis/modeling/trajectories/create/drawByParticleID
-/vis/modeling/trajectories/drawByParticleID-0/default/setDrawStepPts true
-/vis/modeling/trajectories/drawByParticleID-0/default/setStepPtsSize 2
 # To select or override default colours (note: e+ is blue by default):
 #/vis/modeling/trajectories/list
 /vis/modeling/trajectories/drawByParticleID-0/set e+ blue
@@ -82,6 +81,12 @@
 /vis/modeling/trajectories/drawByParticleID-0/set proton cyan
 /vis/modeling/trajectories/drawByParticleID-0/set pi+ cyan
 /vis/modeling/trajectories/drawByParticleID-0/set pi- cyan
+/vis/modeling/trajectories/drawByParticleID-0/set anti_nu_e yellow
+/vis/modeling/trajectories/drawByParticleID-0/set anti_nu_mu yellow
+/vis/modeling/trajectories/drawByParticleID-0/set anti_nu_tau yellow
+/vis/modeling/trajectories/drawByParticleID-0/set nu_e yellow
+/vis/modeling/trajectories/drawByParticleID-0/set nu_mu yellow
+/vis/modeling/trajectories/drawByParticleID-0/set nu_tau yellow
 #
 # To superimpose all of the events from a given run:
 /vis/scene/endOfEventAction accumulate

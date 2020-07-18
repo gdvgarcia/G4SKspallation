@@ -131,9 +131,9 @@ G4VPhysicalVolume* SKDetectorConstruction::Construct()
 
   
   // Visualization attributes
-  G4VisAttributes* worldVisAtt = new G4VisAttributes(G4Colour(0.5451,0.2706,0.0745,0.35));
-  G4VisAttributes* tankVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0,0.36));
-  //G4VisAttributes* fiduVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0,0.365));
+  G4VisAttributes* worldVisAtt = new G4VisAttributes(G4Colour(0.5451,0.2706,0.0745,0.2));
+  G4VisAttributes* tankVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0,0.21));
+  //G4VisAttributes* fiduVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0,0.2125));
   worldLV        ->SetVisAttributes(worldVisAtt);
   logicTank      ->SetVisAttributes(tankVisAtt);
   //logicFidu      ->SetVisAttributes(fiduVisAtt);
