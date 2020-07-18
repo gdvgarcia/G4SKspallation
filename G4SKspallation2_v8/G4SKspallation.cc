@@ -46,6 +46,8 @@
 #include "QGSP_BIC_HP.hh"   	// ID 1
 #include "FTFP_BERT_HP.hh"  	// ID 2
 #include "QGSP_INCLXX_HP.hh"  	// ID 3
+#include "FTFP_INCLXX_HP.hh"  	// ID 4
+
 #include "G4PhysListFactory.hh"
 #include "G4VUserPhysicsList.hh"
 
@@ -131,19 +133,22 @@ int main(int argc,char** argv)
 			// taking the phys list by its ID
   			switch(ID) {
       			case 0:
-         			PhysListName = "QGSP_BERT";
+         			PhysListName = 	"QGSP_BERT";
       	        		break;
       			case 1:
-          			PhysListName =  "QGSP_BIC_HP";
+          			PhysListName =	"QGSP_BIC_HP";
           			break;
       			case 2:
-          			PhysListName =  "FTFP_BERT_HP";
+          			PhysListName =	"FTFP_BERT_HP";
           			break;
       			case 3:
-          			PhysListName =  "QGSP_INCLXX_HP"; 	// it says that this phys List is still under validation and improvements
+          			PhysListName = 	"QGSP_INCLXX_HP"; 	// it says that this phys List is still under validation and improvements but this is not a real problem
+          			break;
+      			case 4:
+          			PhysListName =  "FTFP_INCLXX_HP"; 	// it says that this phys List is still under validation and improvements but this is not a real problem
           			break;
       			default:
-          			PhysListName = "QGSP_BERT_HP"; 		//default
+          			PhysListName = 	"QGSP_BERT_HP"; 		//default
           			break;
 			}
     		}
