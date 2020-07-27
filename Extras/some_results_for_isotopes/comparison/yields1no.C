@@ -11,7 +11,7 @@
 #include <iostream> 
 #include <vector> 
 
-int yields1(){
+int yields1no(){
 
 
 
@@ -118,44 +118,29 @@ int yields1(){
 	// The values and the errors on the Y axis
 	const int n_points=30;
 	double x_vals[n_points]= {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30};
-	double FTFP_BERT_HP_vals[n_points]={0.12,0.01,1.14,0.44,0.10,0.01,0.01,263.11,8.86,11.92,0.09,0.40,0.29,0,0.13,2.28,37.54,59.66,
-	4.13,2.38,1.30,0,0,0.05,3.07,28.07,1264.56,341.46,174.60,3.36};
-	double FTFP_BERT_HP_errs[n_points]={0.02,0.01,0.06,0.04,0.02,0.01,0.01,0.95,0.17,0.2,0.02,0.04,0.03,0.003,0.02,0.09,0.36,0.45,
-	0.12,0.09,0.07,0.003,0.003,0.01,0.1,0.31,02.09,01.08,0.77,0.11};
-	double FTFP_INCL_HP_errs[n_points]={0.02,0.01,0.12,0.04,0.03,0.01,0.01,0.64,0.26,0.19,0.02,0.03,0.04,0.003,0.03,0.04,0.44,0.67,
-	0.21,0.07,0.07,0.01,0.02,0.04,0.06,0.4,1.77,0.99,0.64,0.12};
-	double FTFP_INCL_HP_vals[n_points]={0.16,0.02,4.49,0.4,0.27,0.02,0.01,120.63,19.35,10.09,0.13,0.34,0.36,0,0.34,0.49,57.54,130.39,
-	13.44,1.31,1.62,0.01,0.08,0.37,0.93,47.46,915.33,285.31,120.59,3.99};
+	double QGSP_BERT_errs[n_points]={0.02,0,0.06,0.04,0.02,0.01,0.01,0.94,0.16,0.2,0.02,0.03,0.03,0,	
+	0.02,0.09,0.35,0.44,0.11,0.09,0.06,0.01,0.01,0.01,0.1,0.31,02.07,0.86,0.77,0.04};
+	double QGSP_BERT_vals[n_points] = {0.09,-1.16,1.14,0.35,0.13,0.02,0.01,252.16,7.70,11.19,0.12,0.30,0.34,-1.16,0.13,2.08,
+	34.63,55.64,3.21,1.95,0.94,0.01,0.01,0.04,2.58,22.9,1049.63,179.78,143.9,0.46};
 	double QGSP_BERT_HP_errs[n_points]={0.02,0,0.06,0.04,0.02,0.01,0.01,0.96,0.17,0.2,0.02,0.03,0.03,0.004,0.02,0.09,0.35,0.45,
 	0.12,0.09,0.07,0.01,0.01,0.01,0.1,0.31,02.09,01.08,0.78,0.11};
 	double QGSP_BERT_HP_vals[n_points]={0.09,0.00,1.15,0.38,0.1,0.01,0.01,258.66,8.56,11.42,0.09,0.34,0.29,0,0.12,2.24,35.32,57.69,
 	04.01,2.35,1.31,0.01,0.01,0.06,2.85,27.24,1225.69,329.71,169.6,3.16};
-	double QGSP_BIC_HP_errs[n_points]={0.02,0.01,0.13,0.05,0.03,0.01,0.01,0.77,0.3,0.21,0.03,0.04,0.03,0.003,0.04,0.08,0.51,0.76,
-	0.22,0.08,0.07,1,0.01,0.03,0.09,0.38,1.87,01.09,0.71,0.11};
-	double QGSP_BIC_HP_vals[n_points]={0.12,0.01,4.72,0.77,0.23,0.02,0.01,171.4,26.42,12.86,0.19,0.48,0.3,0,0.36,1.7,74.15,167.13,
-	14.48,02.01,1.42,0,0.06,0.26,2.45,41.06,1003.19,341.69,143.18,3.57};
-	double QGSP_INCLXX_HP_errs[n_points]={0.04,0,0.09,0.04,0.02,0.01,0,0.64,0.26,0.17,0.02,0.04,0.03,0.01,0.03,0.04,0.46,0.45,
-	0.14,0.07,0.06,0.01,0.01,0.01,0.08,0.28,1.8,0.95,0.63,0.12};
-	double QGSP_INCLXX_HP_vals[n_points]={0.37,0.00,2.42,0.51,0.08,0.01,0,119.4,19.32,8.67,0.15,0.4,0.3,0.01,0.28,0.41,61.1,59.42,
-	5.52,1.63,1.15,0.01,0.01,0.06,1.74,23.04,942.37,260.99,116.91,3.87};
+	double LiBeacom[n_points]={0.23,-1,13,1.9,-1,0.01,-1,-1,38,24,0.81,0.1,-1,-1,5.8,-1,77,174,12,1.9,0.02,-1,-1,0.89,7.6,105,792,225,64,0.82};
 
 	// colors for the curves
-	int colors [5] = {12,2,4,6,8};
+	int colors [5] = {1,2,4,6,8};
 
 
 	gStyle->SetEndErrorSize(5);
 
 	// Instance of the graph
-	TGraphErrors graph1(n_points,x_vals,FTFP_BERT_HP_vals,nullptr,FTFP_BERT_HP_errs);
-	TGraphErrors graph12(n_points,x_vals,FTFP_BERT_HP_vals,nullptr,FTFP_BERT_HP_errs);
-	TGraphErrors graph2(n_points,x_vals,FTFP_INCL_HP_vals,nullptr,FTFP_INCL_HP_errs);
-	TGraphErrors graph22(n_points,x_vals,FTFP_INCL_HP_vals,nullptr,FTFP_INCL_HP_errs);
+	TGraphErrors graph1(n_points,x_vals,QGSP_BERT_vals,nullptr,QGSP_BERT_errs);
+	TGraphErrors graph12(n_points,x_vals,QGSP_BERT_vals,nullptr,QGSP_BERT_errs);
 	TGraphErrors graph3(n_points,x_vals,QGSP_BERT_HP_vals,nullptr,QGSP_BERT_HP_errs);
 	TGraphErrors graph32(n_points,x_vals,QGSP_BERT_HP_vals,nullptr,QGSP_BERT_HP_errs);
-	TGraphErrors graph4(n_points,x_vals,QGSP_BIC_HP_vals,nullptr,QGSP_BIC_HP_errs);
-	TGraphErrors graph42(n_points,x_vals,QGSP_BIC_HP_vals,nullptr,QGSP_BIC_HP_errs);
-	TGraphErrors graph5(n_points,x_vals,QGSP_INCLXX_HP_vals,nullptr,QGSP_INCLXX_HP_errs);
-	TGraphErrors graph52(n_points,x_vals,QGSP_INCLXX_HP_vals,nullptr,QGSP_INCLXX_HP_errs);
+	TGraphErrors graph5(n_points,x_vals,LiBeacom,nullptr,nullptr);
+	TGraphErrors graph52(n_points,x_vals,LiBeacom,nullptr,nullptr);
 	//graph.SetTitle("Measurement XYZ;lenght [cm];Arb.Units");
 	
 	// Make the plot estetically better
@@ -165,58 +150,40 @@ int yields1(){
 	graph1.SetLineWidth(2);
 	graph1.SetFillColor(colors[0]);
 	graph1.DrawClone("P Same");
-	graph12.SetLineColorAlpha ( 	12, 0.05) ;
+	graph12.SetLineColorAlpha ( 	colors[0], 0.05) ;
 	graph12.SetLineWidth(1);
 	graph12.DrawClone("L Same");
-	graph2.SetMarkerStyle(21);
-	graph2.SetMarkerColor(colors[1]);
-	graph2.SetLineColorAlpha ( 	colors[1], 0.05) ;
-	graph2.SetLineWidth(2);
-	graph2.SetFillColor(colors[1]);
-	graph2.DrawClone("P Same");
-	graph22.SetLineColorAlpha ( 	colors[1], 0.05) ;
-	graph22.SetLineWidth(1);
-	graph22.DrawClone("L Same");
 	graph3.SetMarkerStyle(21);
-	graph3.SetMarkerColor(colors[2]);
-	graph3.SetLineColorAlpha ( 	colors[2], 0.05) ;
+	graph3.SetMarkerColor(colors[1]);
+	graph3.SetLineColorAlpha ( 	colors[1], 0.05) ;
 	graph3.SetLineWidth(2);
-	graph3.SetFillColor(colors[2]);
+	graph3.SetFillColor(colors[1]);
 	graph3.DrawClone("P Same");
-	graph32.SetLineColorAlpha ( 	colors[2], 0.05) ;
+	graph32.SetLineColorAlpha ( 	colors[1], 0.05) ;
 	graph32.SetLineWidth(1);
 	graph32.DrawClone("L Same");
-	graph4.SetMarkerStyle(21);
-	graph4.SetMarkerColor(colors[3]);
-	graph4.SetLineColorAlpha ( 	colors[3], 0.05) ;
-	graph4.SetLineWidth(2);
-	graph4.SetFillColor(colors[3]);
-	graph4.DrawClone("P Same");
-	graph42.SetLineColorAlpha ( 	colors[3], 0.05) ;
-	graph42.SetLineWidth(1);
-	graph42.DrawClone("L Same");
 	graph5.SetMarkerStyle(21);
-	graph5.SetMarkerColor(colors[4]);
-	graph5.SetLineColorAlpha ( 	colors[4], 0.05) ;
+	graph5.SetMarkerColor(colors[2]);
+	graph5.SetLineColorAlpha ( 	colors[2], 0.05) ;
 	graph5.SetLineWidth(2);
-	graph5.SetFillColor(colors[4]);
+	graph5.SetFillColor(colors[2]);
 	graph5.DrawClone("P Same");
-	graph52.SetLineColorAlpha ( 	colors[4], 0.05) ;
+	graph52.SetLineColorAlpha ( 	colors[2], 0.05) ;
 	graph52.SetLineWidth(1);
 	graph52.DrawClone("L Same");
 
 	// Adding the legend
-	leg->AddEntry(&graph1, "FTFP_BERT","lep");
-	leg->AddEntry(&graph2, "FTFP_INCL","lep");
+	leg->AddEntry(&graph1, "HP OFF","lep");
+	//leg->AddEntry(&graph2, "FTFP_INCL","lep");
 	leg->AddEntry(&graph3, "QGSP_BERT","lep");
-	leg->AddEntry(&graph4, "QGSP_BIC","lep");
-	leg->AddEntry(&graph5, "QGSP_INCL","lep");
+	//leg->AddEntry(&graph4, "QGSP_BIC","lep");
+	leg->AddEntry(&graph5, "Li&Beacom","lep");
 
 	// Draw a legend 
 	leg->DrawClone("Same");
 
 
-	c1->SaveAs("Yield1.eps");
+	c1->SaveAs("Yield1no.eps");
 
 	
 
