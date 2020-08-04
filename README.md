@@ -30,7 +30,11 @@ G4SKspallation2_v4OutPart was developped to verify that the outside conditions f
 
 
 ## The third simulation consists of :
-the photomultipliers to the tank...
+the integrtion of a correct physics list choice and muon generation (the same as for G4SKspallation2) whitin the simulation developed by the WCSim group. It contains then the right full geometry of SK and also the reconstruction of events in the PMTs. This new simulation is named G4SKspallationWCSim.
+
+G4SKspallationWCSim_v1 ...
+
+Note : The directory WCSim-master is the master branch of WCSim taken on July 31 2020.
 
 
 ## References:
