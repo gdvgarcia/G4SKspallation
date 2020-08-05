@@ -163,13 +163,13 @@ public:
   bool GetIsODConstructed(){return isODConstructed;}
 
   // SPALLATION ADDITION : volume for data
-  const G4VPhysicalVolume* GetTankPV() 	const 	{ return fTankPV; 	};
+  const G4VPhysicalVolume* GetFiduPV() 	const 	{ return fFiduPV; 	};
 
  
 private:
 
   // SPALLATION ADDITION : volume where we mesure things
-  G4VPhysicalVolume*   	fTankPV; 		// the tank physical volume
+  G4VPhysicalVolume*   	fFiduPV; 		// the tank physical volume
   
 
   // Tuning parameters

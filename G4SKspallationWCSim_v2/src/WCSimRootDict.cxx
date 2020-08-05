@@ -62,7 +62,7 @@ namespace ROOT {
       pair<string,WCSimDarkNoiseOptions> *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(pair<string,WCSimDarkNoiseOptions>));
       static ::ROOT::TGenericClassInfo 
-         instance("pair<string,WCSimDarkNoiseOptions>", "string", 198,
+         instance("pair<string,WCSimDarkNoiseOptions>", "string", 96,
                   typeid(pair<string,WCSimDarkNoiseOptions>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &pairlEstringcOWCSimDarkNoiseOptionsgR_Dictionary, isa_proxy, 4,
                   sizeof(pair<string,WCSimDarkNoiseOptions>) );
@@ -1458,7 +1458,7 @@ namespace ROOT {
       vector<int> *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<int>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<int>", -2, "vector", 216,
+         instance("vector<int>", -2, "vector", 210,
                   typeid(vector<int>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlEintgR_Dictionary, isa_proxy, 0,
                   sizeof(vector<int>) );
@@ -1521,7 +1521,7 @@ namespace ROOT {
       vector<float> *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<float>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<float>", -2, "vector", 216,
+         instance("vector<float>", -2, "vector", 210,
                   typeid(vector<float>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlEfloatgR_Dictionary, isa_proxy, 0,
                   sizeof(vector<float>) );
@@ -1584,7 +1584,7 @@ namespace ROOT {
       map<string,WCSimDarkNoiseOptions> *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(map<string,WCSimDarkNoiseOptions>));
       static ::ROOT::TGenericClassInfo 
-         instance("map<string,WCSimDarkNoiseOptions>", -2, "map", 99,
+         instance("map<string,WCSimDarkNoiseOptions>", -2, "map", 96,
                   typeid(map<string,WCSimDarkNoiseOptions>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &maplEstringcOWCSimDarkNoiseOptionsgR_Dictionary, isa_proxy, 4,
                   sizeof(map<string,WCSimDarkNoiseOptions>) );

@@ -136,13 +136,15 @@ To test that WCSim is working, try running the test macro `WCSim.mac`, which run
 WCSim development is supported by the United States National Science Foundation.
 ```
 
-### SPALLATION ADDTION
+# SPALLATION ADDTION
 
 Some changes were necessary due the geant4 version, like removing all #ifdef with the old variables (G4UI_USE, G4VIS_USE, etc.). 
+ 	- they were usualy in the main program WCSim.cc and in WCSimVisManager.cc and WCSimVisManager.hh
 Addition of ini_cond.txt file for the muons generation.
 Choice of the G4VisExecutive over the WCSimVisManager for the visual manager.
+And some changes in the macros : jobOptions.mac and WCSim.mac
 
-# Alterations in : 
+### Changes in : 
 
 * WCSim.cc
 * WCSimRunAction.cc
@@ -150,13 +152,21 @@ Choice of the G4VisExecutive over the WCSimVisManager for the visual manager.
 * WCSimPrimaryGeneratorAction.hh
 * WCSimPrimaryGeneratorAction.cc
 * WCSimDetectorConstruction.hh
+* WCSimDetectorConstruction.cc
 * WCSimPrimaryGeneratorMessenger.hh
 * WCSimPrimaryGeneratorMessenger.cc
+* WCSimSteppingAction.hh
+* WCSimSteppingAction.cc
+* WCSimEventAction.cc
+* WCSimPhysicsListFactory.hh
 
 * CMakeLists.txt
 
-# Objective :
+* Also our SKFileReader was simplified
+
+### Objective :
 
 * Accept a file for generating muons
 * Seed with time
 * Be able to couple the ABLA model
+* Retrieve the spectra of the isotopes parents retriving method

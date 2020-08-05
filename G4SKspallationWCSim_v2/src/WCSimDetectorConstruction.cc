@@ -20,6 +20,9 @@
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
+
+#include "G4Tubs.hh" // SPALLATION ADDITION
+
 std::map<int, G4Transform3D> WCSimDetectorConstruction::tubeIDMap;
 std::map<int, G4Transform3D> WCSimDetectorConstruction::ODtubeIDMap;
 //std::map<int, cyl_location>  WCSimDetectorConstruction::tubeCylLocation;
@@ -188,6 +191,35 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 	  //rotationMatrix->rotateX(90.*deg);
 	  //rotationMatrix->rotateZ(90.*deg);
 
+  // SPALLATION ADDITION : fiducial volume :
+
+  //-----------------------------------------------------
+  // Adding a fiducial volume
+  //-----------------------------------------------------
+  G4Tubs* solidWCFidu = new G4Tubs("Fiducial",
+				     0.0*m,
+				     .5*WCIDDiameter-2.*m, // the SK fiducial volume radius is 2 m smaller than the ID
+				     .5*WCIDHeight - 2.*m,  // and its height is 4 m smaller
+				     0.*deg,
+				     360.*deg);
+  
+  G4LogicalVolume* logicWCFidu = 
+    new G4LogicalVolume(solidWCFidu,
+			G4Material::GetMaterial(water),
+			"Fiducial",
+			0,0,0);
+
+  G4VPhysicalVolume* physiWCFidu = 
+    new G4PVPlacement(0,
+		      G4ThreeVector(0.,0.,0.),
+		      logicWCFidu,
+		      "Fiducial",
+		      logicWCBox,
+		      false,
+	 	      0);
+
+  // SPALLATION END
+
   G4ThreeVector genPosition = G4ThreeVector(0., 0., WCPosition);
   G4VPhysicalVolume* physiWCBox = 
     new G4PVPlacement(0,
@@ -199,7 +231,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
 		      0);
 
   // SPALLATION ADDITION : saving volume 
-  fTankPV = physiWCBox;
+  fFiduPV = physiWCFidu;
 
   // Reset the tubeID and tubeLocation maps before refiling them
   tubeIDMap.clear();

@@ -715,7 +715,7 @@ G4int WCSimEventAction::WCSimEventFindStartingVolume(G4ThreeVector vtx)
   else if ( vtxVolumeName.contains("WC") && !vtxVolumeName.contains("FV") )
   {
 // aah original line  ->if (vtxVolumeName.contains("WCBarrel"))
-	  if ((vtxVolumeName.contains("WCBarrel"))|| (vtxVolumeName.contains("Tank")))	//aah I added "Tank" as MB equivalent of Barrel
+	  if ((vtxVolumeName.contains("WCBarrel"))|| (vtxVolumeName.contains("Tank")) || (vtxVolumeName.contains("Fiducial")))//aah I added "Tank" as MB equivalent of Barrel - SPALLATION ADDITION : we added the FIducial
       vtxvol = 10;
     else if (vtxVolumeName == "WCBox")
       vtxvol = -2;
@@ -747,7 +747,7 @@ G4int WCSimEventAction::WCSimEventFindStoppingVolume(G4String stopVolumeName)
   if ( stopVolumeName.contains("WC") && !stopVolumeName.contains("FV") )
   {
 //aah Original line->    if (stopVolumeName.contains("WCBarrel"))
-	  if ((stopVolumeName.contains("WCBarrel"))|| (stopVolumeName.contains("Tank")))	// aah I added "Tank" as MB equivalent of Barrel
+	  if ((stopVolumeName.contains("WCBarrel"))|| (stopVolumeName.contains("Tank"))|| (stopVolumeName.contains("Fiducial")))//aah I added "Tank" as MB equivalent of Barrel - SPALLATION ADDITION : we added the FIducial
       stopvol = 10;
     else if (stopVolumeName == "WCBox")
       stopvol = -2;

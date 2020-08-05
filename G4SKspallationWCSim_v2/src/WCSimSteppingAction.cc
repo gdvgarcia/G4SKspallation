@@ -47,7 +47,7 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
   // get volume of the current step
   auto volumeIn = aStep->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
   // get desired volume
-  auto volumeDesired = fdetectorConstruction->GetTankPV();
+  auto volumeDesired = fdetectorConstruction->GetFiduPV();
 
   if( volumeIn == volumeDesired ){ 	// just process if it is inside the desired volume
 
@@ -63,7 +63,7 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
   G4double CurrentE = aStep->GetPreStepPoint()->GetKineticEnergy(); // current energy of the particle - before the interaction step
   //-------------------------------------------------------------------------------------------- END TRACK
 
-   //----------------------------------------------
+  //----------------------------------------------
   //  Collect energies for isotopes' parents
   //----------------------------------------------
   // first take all the secondaries in a vector and its size
@@ -89,19 +89,21 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
   		//
   		// get analysis manager
   		auto analysisManager = G4AnalysisManager::Instance();
-  		// fill histograms
+  		// fill histogram
   		analysisManager->FillH1(0, mudE);
 
  		G4cout << " Energy deposited of the muon is " << mudE << G4endl;
   	}
 
-  	if( ( Track->GetCurrentStepNumber() == 1 ) || 
-	( aStep->IsFirstStepInVolume() ) ){ 			// CHECK if it is entering the tank or is the first step
+  	if( ( Track->GetCurrentStepNumber() == 1 ) // || ( aStep->IsFirstStepInVolume() ) PROBLEM WITH GEOMETRY, SAYING FIRST STEP FOR TOO MANY
+	){ 			// CHECK if it is entering the tank or is the first step
   		// Fill the histograms and the ntuple
   		//
   		// get analysis manager
   		auto analysisManager = G4AnalysisManager::Instance();
+  		// fill histogram
   		analysisManager->FillH1(1, CurrentE);
+
  		G4cout << " Initial muon energy is " << CurrentE << G4endl;
 	}
   } //-------------------------------------------------------------------------------------------- END MUON 
@@ -264,10 +266,11 @@ void WCSimSteppingAction::loopForSecondariesEnergies(const std::vector<const G4T
   const G4Track* secondary = Secondaries->at(n);
   G4ParticleDefinition* secPartDef = secondary->GetDefinition();
   G4String secpartType = secPartDef->GetParticleType();
+  G4String Secname = secPartDef->GetParticleName();
+
 
   // if we find a ion we save the parent information
-  if ( secpartType == "nucleus"){
-
+  if ( secpartType == "nucleus" ){
   	// Fill the histograms and the ntuple
   	//
   	// get analysis manager

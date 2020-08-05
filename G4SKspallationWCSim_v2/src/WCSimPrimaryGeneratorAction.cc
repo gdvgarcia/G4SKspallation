@@ -133,8 +133,8 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   // In order to avoid dependence of PrimaryGeneratorAction
   // on DetectorConstruction class we get cylinder parameters
   // from the detector construction class.
-  fTouterRadius = myDetector->GetWCIDDiameter()/2.;
-  fThzHalf 	= myDetector->GetWCIDHeight()/2.;
+  fTouterRadius = myDetector->GetWCIDDiameter()/2. - 2. *m; // - 2 m for the Fiducial volume
+  fThzHalf 	= myDetector->GetWCIDHeight()/2. - 2. *m;  // - 2 m for the Fiducial volume
 
   //setting default vertex position
   G4double x0 = 0. *m;

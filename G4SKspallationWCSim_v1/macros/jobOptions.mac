@@ -14,4 +14,11 @@
 #/WCSim/physics/list LBE # preferred for low-background experiments.  
 /WCSim/physics/list FTFP_BERT # recommended for high energy physics and hadron production up to beam momentum of several tens of GeV/c.
 
+### SPALLATION ADDITION : our physics lists
+#/WCSim/physics/list QGSP_BERT_HP
+#/WCSim/physics/list QGSP_BIC_HP
+#/WCSim/physics/list FTFP_BERT_HP
+#/WCSim/physics/list FTFP_INCLXX_HP
+#/WCSim/physics/list QGSP_INCLXX_HP # this will be automatically coupled to the ABLA model
+
 
