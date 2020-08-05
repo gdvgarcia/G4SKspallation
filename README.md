@@ -32,9 +32,42 @@ G4SKspallation2_v4OutPart was developped to verify that the outside conditions f
 ## The third simulation consists of :
 the integrtion of a correct physics list choice and muon generation (the same as for G4SKspallation2) whitin the simulation developed by the WCSim group. It contains then the right full geometry of SK and also the reconstruction of events in the PMTs. This new simulation is named G4SKspallationWCSim.
 
-G4SKspallationWCSim_v1 ...
+G4SKspallationWCSim_v0 was the minimal changes in the master branch of the WCSim simulation for it to run in the current version of Geant4 (v10.06.p01). G4SKspallationWCSim_v1 has the changes necessary for the muon generation from our initial conditions file, for the right physics list choice (even the ABLA coupling) and for a random seeding depending on the starting time of opening of the simulation application. G4SKspallationWCSim_v2 has adds our root file data retriving method (a bit different from our second simulation - more simple than that one, because we did not have access to the EventAction in the RunAction). The data taken in v2 is the isotopes parent particles spectra and the histogram of the mon initial energy and the muon energy loss.
 
-Note : The directory WCSim-master is the master branch of WCSim taken on July 31 2020.
+# For v1, alterations in : 
+
+* WCSim.cc
+* WCSimPhysicsListFactory.hh
+* WCSimRunAction.hh
+* WCSimRunAction.cc
+* WCSimPrimaryGeneratorAction.hh
+* WCSimPrimaryGeneratorAction.cc
+* WCSimPrimaryGeneratorMessenger.hh
+* WCSimPrimaryGeneratorMessenger.cc
+* WCSimDetectorConstruction.hh
+
+* CMakeLists.txt
+
+
+# For v2, alterations in : 
+
+* WCSim.cc
+* WCSimPhysicsListFactory.hh
+* WCSimRunAction.hh
+* WCSimRunAction.cc
+* WCSimPrimaryGeneratorAction.hh
+* WCSimPrimaryGeneratorAction.cc
+* WCSimPrimaryGeneratorMessenger.hh
+* WCSimPrimaryGeneratorMessenger.cc
+* WCSimDetectorConstruction.hh
+* WCSimDetectorConstruction.cc
+* WCSimSteppingAction.hh
+* WCSimSteppingAction.cc
+* WCSimEventAction.cc
+
+* CMakeLists.txt
+
+**Note :** The directory WCSim-master is the master branch of WCSim taken on July 31 2020.
 
 
 ## References:
