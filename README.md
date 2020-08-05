@@ -34,7 +34,7 @@ the integrtion of a correct physics list choice and muon generation (the same as
 
 G4SKspallationWCSim_v0 was the minimal changes in the master branch of the WCSim simulation for it to run in the current version of Geant4 (v10.06.p01). G4SKspallationWCSim_v1 has the changes necessary for the muon generation from our initial conditions file, for the right physics list choice (even the ABLA coupling) and for a random seeding depending on the starting time of opening of the simulation application. G4SKspallationWCSim_v2 has adds our root file data retriving method (a bit different from our second simulation - more simple than that one, because we did not have access to the EventAction in the RunAction). The data taken in v2 is the isotopes parent particles spectra and the histogram of the mon initial energy and the muon energy loss.
 
-# For v1, alterations in : 
+### For v1, alterations in : 
 
 * WCSim.cc
 * WCSimPhysicsListFactory.hh
@@ -49,7 +49,7 @@ G4SKspallationWCSim_v0 was the minimal changes in the master branch of the WCSim
 * CMakeLists.txt
 
 
-# For v2, alterations in : 
+### For v2, alterations in : 
 
 * WCSim.cc
 * WCSimPhysicsListFactory.hh
