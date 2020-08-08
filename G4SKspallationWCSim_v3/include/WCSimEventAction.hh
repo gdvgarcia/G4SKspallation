@@ -1,0 +1,67 @@
+#ifndef WCSimEventAction_h
+#define WCSimEventAction_h 1
+
+
+#include "G4UserEventAction.hh"
+#include "G4ThreeVector.hh"
+#include "G4Types.hh"
+#include "G4ios.hh"
+
+#include "WCSimDetectorConstruction.hh"
+#include "G4TrajectoryContainer.hh"
+#include "WCSimWCHit.hh"
+#include "WCSimWCDigi.hh"
+#include "WCSimWCTrigger.hh"
+#include "WCSimWCDAQMessenger.hh"
+
+#include "SKIntermediateAccumulator.hh" // ADDED SPALLATION
+
+class WCSimRunAction;
+class WCSimPrimaryGeneratorAction;
+class G4Event;
+class SKIntermediateAccumulator;
+
+class WCSimEventAction : public G4UserEventAction
+{
+private:
+  WCSimRunAction* runAction;
+  WCSimPrimaryGeneratorAction* generatorAction;
+  WCSimDetectorConstruction*   detectorConstructor;
+  WCSimWCDAQMessenger* DAQMessenger;
+  SKIntermediateAccumulator* fAccumulator; // SPALLATION ADDITION
+  
+public:
+  WCSimEventAction(WCSimRunAction*, WCSimDetectorConstruction*,
+		   WCSimPrimaryGeneratorAction*, SKIntermediateAccumulator*); // SPALLATION ADDITION : accumulator
+  ~WCSimEventAction();
+  
+public:
+  void BeginOfEventAction(const G4Event*);
+  void EndOfEventAction(const G4Event*);
+  void FillRootEvent(G4int,
+					 const struct ntupleStruct&,
+					 G4TrajectoryContainer*,
+					 WCSimWCDigitsCollection*,
+					 WCSimWCTriggeredDigitsCollection*,
+					 G4String detectorElement="tank");
+  WCSimRunAction* GetRunAction(){return runAction;}
+  void SetDigitizerChoice(G4String digitizer) { DigitizerChoice = digitizer; }
+  void SetTriggerChoice  (G4String trigger)   { TriggerChoice   = trigger;   }
+
+private:
+  G4int WCSimEventFindStartingVolume( G4ThreeVector vtx);
+  G4int WCSimEventFindStoppingVolume( G4String stopVolumeName);
+
+  ///Create instances of the user-chosen digitizer and trigger classes
+  void  CreateDAQInstances();
+
+  G4String DigitizerChoice;
+  G4String TriggerChoice;
+  bool     ConstructedDAQClasses;
+  bool     SavedOptions;
+};
+
+
+#endif
+
+    

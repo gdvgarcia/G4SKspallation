@@ -125,6 +125,8 @@ int main(int argc,char** argv)
 
   runManager->SetUserAction(new WCSimStackingAction(WCSimdetector));
 
+  // SPALLATION ADDITION : SteppingAction detector so we can check if the particle is inside 
+  // the tracking volume 
   runManager->SetUserAction(new WCSimSteppingAction(WCSimdetector));
 
 

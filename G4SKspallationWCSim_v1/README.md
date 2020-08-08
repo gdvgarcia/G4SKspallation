@@ -139,7 +139,8 @@ WCSim development is supported by the United States National Science Foundation.
 # SPALLATION ADDTION
 
 Some changes were necessary due the geant4 version, like removing all #ifdef with the old variables (G4UI_USE, G4VIS_USE, etc.). 
-Addition of ini_cond.txt file for the muons generation.
+ 	- they were usualy in the main program WCSim.cc and in WCSimVisManager.cc and WCSimVisManager.hh
+Addition of ini_cond.txt file for the muons generation and the File Reader class for reading this file.
 Choice of the G4VisExecutive over the WCSimVisManager for the visual manager.
 
 ### Changes in : 
