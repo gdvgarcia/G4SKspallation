@@ -183,7 +183,8 @@
 
 ## change the name of the output root file, default = wcsim.root
 
-/WCSimIO/RootFile wcsim.root
+### SPALLATION REMOVED THIS AND MAKE THE FILE HARDCODED
+#/WCSimIO/RootFile wcsim.root
 
 ## set a timer running on WCSimRunAction
 #/WCSimIO/Timer false
