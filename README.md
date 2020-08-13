@@ -73,6 +73,8 @@ G4SKspallationWCSim_v0 was the minimal changes in the master branch of the WCSim
 * CMakeLists.txt
 
 * Also our SKFileReader was simplified
+* Also addition of SKIntermediateAccumulator class for being able to retrieve data in a single tree.
+
 
 #### Special for v3, v4 are changes in the macros : 
 
