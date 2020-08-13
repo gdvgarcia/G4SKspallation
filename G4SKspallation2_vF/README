@@ -1,0 +1,335 @@
+-------------------------------------------------------------------
+
+     =========================================================
+     Geant4 - an Object-Oriented Toolkit for Simulation in HEP
+     =========================================================
+
+                            G4SKspallation
+                            --------------
+
+   This simulation demonstrates muon spallation process in the SK Chrenkov water tank detector 
+   with simple conditions for the geometry.
+
+	
+ 1- GEOMETRY DEFINITION
+	
+   The geometry is constructed in the G4SKDetectorConstruction class.
+   The setup consists of a an envelope(world) of box shape containing two volumes: 
+   the water tank cylinder and the fiducial volume of the tank which is also a cylinder.
+   ***Fiducial volume is commented - if you want to measure things only for the fiducial volume 
+   you have to uncomment lines in the detector construction class.***
+
+   
+        |<---------- 42 m------------->|
+        |                              |                       
+        ================================ _ _
+        ||water tank       	      ||   ^
+        ||                   	      ||   |  
+        ||  ========================  ||   |
+        ||  |fiducial volume       |  ||   |
+ muon   ||  |       	  	   |  ||   | 39 m
+=======>||  |                      |  ||   |
+        ||  |                	   |  ||   |
+	||  ========================  ||   |
+	||                     	      ||   v
+	||                            || _ _
+        ================================
+    
+
+
+   The envelope(world) is made of water (2.7 m water ~ 1 m rock) and the two inner volumes
+   are also made of water.  
+
+   The materials are created with the help of the G4NistManager class,
+   which allows to build a material from the NIST database using their
+   names. All available materials can be found in the Geant4 User's Guide
+   for Application Developers, Appendix 10: Geant4 Materials Database.
+		
+ 2- PHYSICS LIST
+ 
+   The particle's type and the physics processes which will be available
+   in this simulation are set in the QGSP_BERT_HP physics list, or in the QGSP_BERT, or in 
+   the QGSP_BIC_HP or in the FTFP_BERT_HP or in the QGSP_INCLXX_HP (for later comparison of 
+   results of these different lists). These physics lists require data files for electromagnetic 
+   and hadronic processes.
+   See more on installation of the datasets in Geant4 Installation Guide,
+   Chapter 3.3: Note On Geant4 Datasets:
+   http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides
+                                           /InstallationGuide/html/ch03s03.html
+   The following datasets: G4LEDATA, G4NDL4.5, G4INCL1.0, G4LEVELGAMMADATA, G4NEUTRONXSDATA,
+   G4SAIDXSDATA and G4ENSDFSTATEDATA are mandatory for this simulation.
+
+   In addition the build-in interactive command:
+               /process/(in)activate processName
+   allows to activate/inactivate the processes one by one.
+
+   The physics list can be chosen by adding an extra argument when opening the application
+   in batch mode. The second argument corresponds to the physics list choice. By default we 
+   use the QGSP_BERT_HP. If the second argument is "0", we keep the QGSP_BERT_HP but without the 
+   neutrons precision package, so actually we have the QGSP_BERT physics list. If it is "1", we 
+   get the QGSP_BIC_HP. "2" brings the FTFP_BERT_HP and "3" the QGSP_INCLXX_HP. Any other number or
+   value for the second argument will bring the default physics list. If the argument is "!", it just
+   keep the default list and you can add a third argument. Meaning that "!" is just a place holder. 
+   
+ 3- ACTION INITALIZATION
+
+   The newly introduced class, SKActionInitialization, 
+   instantiates and registers to Geant4 kernel all user action classes.
+
+   While in sequential mode the action classes are instatiated just once,
+   via invoking the method:
+      SKActionInitialization::Build() 
+   in multi-threading mode the same method is invoked for each thread worker
+   and so all user action classes are defined thread-local.
+
+   A run action class is instantiated both thread-local 
+   and global that's why its instance is created also in the method
+      SKActionInitialization::BuildForMaster() 
+   which is invoked only in multi-threading mode.
+  	 
+ 4- PRIMARY GENERATOR
+  
+   The SKPrimaryGeneratorAction class introduces two different possibilities of primary particle generation.
+
+   One possibility is the fixed energy and position generator.
+   Its default kinematics is a 271 GeV muon(which is the average muon energy for Super-Kamiokande) 
+   with downward momentum along the cylinder axis located on top of the tank's water in the center
+   of the tank surface. If the fiducial volume is activated, then its generated on top of the fiducial volume.
+
+   This fixed primary generator is called by the 'batch' mode if we have no fourth argument.
+   
+
+   One may choose to read the initial conditions for the muons from an ASCII file. For this to be done,
+   one have to keep the text file ini_cond.txt or add the initial condition file path in the third argument. 
+   Then when lauching the application, if the command has a third argument the initial conditions will be 
+   read from the given file with the help of the SKFileReader class. The muon will be generated
+   with the energy and momentum direction given in the text file with a random position on the tank/fiducial 
+   volume walls.
+   The random position is generted by the projection of a uniformly random point inside the tank/fiducial volume
+   on the walls of the volume in the direction of the initial muon momentum.
+   
+   For example, I want to keep the default physics list, read the run2.mac macro and use the initial conditions
+   from the ini_cond.txt file. So I use the following command :
+   % ./G4SKspallation run2.mac ! yes
+   	***The last argument "yes"(case insensitive) make the application use the defult input file.***
+
+   If the user wants to provide its own initial condtion file, just need to change the "yes" to "full_path_to_file".
+
+   For example , I want to choose the QGSP_INCLXX_HP physics list, read the run3.mac macro and give my own initial
+   conditions from the /home/user/SKsimu/my_ini_cond.txt file. So I use the following command :
+   % ./G4SKspallation run3.mac 3 /home/user/SKsimu/my_ini_cond.txt
+
+   Sometimes one may only want to set up the energy spectrum for the primary muons and not the full angular 
+   distribution. In this case, one can add a fourth argument to the run command. This will make the particle 
+   gun read only the energies from the input file and set the muon direction along the cylinder axis and its 
+   initial position also at the axis on top of the tank/fiducial volume. A place holder for this argument is 
+   "yes"(case insensitive).
+
+   For example , I want to choose the QGSP_INCLXX_HP physics list, read the run1.mac macro, give my own initial
+   conditions from the /home/user/SKsimu/my_ini_cond.txt file and deactivate the angular distribution. So I use 
+   the following command :
+   % ./G4SKspallation run3.mac 3 /home/user/SKsimu/my_ini_cond.txt no
+   	***The last argument "no" could be anything excep "yes"(case insensitive).***
+
+   The initial condition file ini_cond.txt is the default initial condition file for the interactive mode.
+   Also for the interactive mode, the initial particles are muon minus with angular distribution activated 
+   and default physics list.
+
+   The FileReader class, in multi-threading mode, reads the number of threads times the events required per run, 
+   because each thread gets an initial condition when it starts a new event and the speed that each thread ends a 
+   work is not always equal to the other threads, mainly because they have different initial conditions, so one 
+   thread can read much more initial conditions than others. So as the filereader is thread local, each working 
+   thread must have enough conditions for the entire run.
+
+   By default, the muon generated is a muon minus. To generate muons plus, add a fifth argument when running the
+   simulation in batch mode(the interactive mode has its commands to change the initial particle in the gun). 
+   Any fifth argument will activate muons plus. A place holder for the file reader is "no"(case insensitive).
+  
+   For example , I want to keep the use the default physics list, read the run1.mac macro and generate constant
+   energies and initial positions muons plus. So I use the following command :
+   % ./G4SKspallation run1.mac ! no anything +
+   	***The last argument "+" could be anything.***
+   Or maybe read the initial conditions file for the muons plus :
+   % ./G4SKspallation run1.mac ! yes yes +
+   	***The last argument "+" could be anything. And the fourth argument "yes"(case insensitive) is just a 
+           place holder.***
+
+
+   This default settings can be changed via the Geant4 built-in commands of the G4ParticleGun class.
+     
+ 5- DETECTOR RESPONSE
+
+   This simulation contains two scoring methods. 
+
+   One is the command-based method implemented in the main function with the line : 
+   G4ScoringManager * scManager = G4ScoringManager::GetScoringManager();  
+   And then with scoring macros. You would have to build your own macro, but this is quite simple.
+   The scoring macro available already have most of the examples needed for you to construct your
+   own personal macro. - This method is recommended for fast checks as it is the most straight forward.
+	***This method is desactivated(commented for now) in the main function - to activate only
+	   uncomment two lines in the G4SKspallation.cc
+
+   The other method is introduced with a sensitive detector construction. This is more complex
+   and , for this specific simulation , it requires the definition of some classes :
+   SKRunAction, SKEventAction, SKHits, SKSD, SKAnalysis.
+   And also some changes in the action initialization and in the detector geometry classes.
+   
+   The energy deposited in the detector volume is collected step by step in the SKSD and accumulated for a 
+   event in a SKHit class object. The tank being the sensitive detector defined (one can change the 
+   sensitive detector to be only the fiducial volume by changing a few lines in the SKDetectorConstruction 
+   class). The muon initial kinetic energy is also kept in a SKHit class object as well as its total
+   path length inside the detector. Some vectors for secondary particles information are also kept in the 
+   SKHit class object.
+
+   At end of an event, the values acummulated in a SKHit class object are added to histograms and to the ntuple
+   row corresponding this event in the SKEventAction. These histograms and the ntuple are created in the SKRunAction.
+
+   Some data may also be added to histograms already whithin the SKSD::ProcessHits(G4Step* step,    	
+   G4TouchableHistory* history) virtual function. This is done for the 2D histogram of atomic mass A
+   and atomic number Z of ions produced. 
+
+   These histograms and the ntuple are all saved in a root file named "SK.root"(it can be changed to a csv or 
+   a xml file in the SKAnalysis) in the SKRunAction class at the end of a run.
+
+   To change the information collected, you can change or add ntuple rows and histograms in the SKRunAction 
+   class. Then you have to fill this data structures in the SKSD or SKEventAction classes. Usually you will 
+   collect the information from the Step or Track object in the SKSD::ProcessHits virtual function. Then you 
+   will either save it directly in the data structures or accumulate it per event in the SKHit class object 
+   and save it in the data structures within the EventAction class at the end of each event. 
+
+   If you read a bit these four classes mentioned in the previous paragraph you will understand the logic 
+   behind this data retrieving method and you will be able to collect the information you want. 
+
+   More information about the kind of information you can collect from the Track or the Step objet can be
+   found in the following source code websites :
+
+   Track object : https://geant4.kek.jp/lxr/source/track/include/G4Track.hh 
+   Step object  : https://geant4.kek.jp/lxr/source/track/include/G4Step.hh 
+
+   Alternative ways of scoring via Geant4 classes can be found in many Geant4 official examples.
+
+ A- VISUALISATION
+
+   The visualization manager is set via the G4VisExecutive class
+   in the main() function in G4SKspallation.cc.    
+   The initialisation of the drawing is done via a set of /vis/ commands
+   in the macro vis.mac. This macro is automatically read from
+   the main function when the simulation is used in interactive running mode.
+
+   By default, vis.mac opens an OpenGL viewer (/vis/open OGL).
+   The user can change the initial viewer by commenting out this line
+   and instead uncommenting one of the other /vis/open statements, such as
+   HepRepFile or DAWNFILE (which produce files that can be viewed with the
+   HepRApp and DAWN viewers, respectively).  Note that one can always
+   open new viewers at any time from the command line.  For example, if
+   you already have a view in, say, an OpenGL window with a name
+   "viewer-0", then
+      /vis/open DAWNFILE
+   then to get the same view
+      /vis/viewer/copyView viewer-0
+   or to get the same view *plus* scene-modifications
+      /vis/viewer/set/all viewer-0
+   then to see the result
+      /vis/viewer/flush
+
+   The DAWNFILE, HepRepFile drivers are always available
+   (since they require no external libraries), but the OGL driver requires
+   that the Geant4 libraries have been built with the OpenGL option.
+
+   The vis.mac macro in G4SKspallation has additional commands
+   that demonstrate additional functionality of the vis system, such as
+   displaying text, axes, scales, date, logo and shows how to change
+   viewpoint and style.  To see even more commands use help or
+   ls or browse the available UI commands in the Application
+   Developers Guide, Section 7.1.
+
+   For more information on visualization, including information on how to
+   install and run DAWN, OpenGL and HepRApp, see the visualization tutorials,
+   for example,
+   http://geant4.slac.stanford.edu/Presentations/vis/G4[VIS]Tutorial/G4[VIS]Tutorial.html
+   (where [VIS] can be replaced by DAWN, OpenGL and HepRApp)
+
+   The tracks are automatically drawn at the end of each event, accumulated
+   for all events and erased at the beginning of the next run.
+
+ B- USER INTERFACES
+ 
+   The user command interface is set via the G4UIExecutive class
+   in the main() function in G4SKspallation.cc 
+   The selection of the user command interface is then done automatically 
+   according to the Geant4 configuration or it can be done explicitly via 
+   the third argument of the G4UIExecutive constructor (see exampleB4a.cc of the Geant4-10.06.p01 examples 
+   distributed with the Geant4 source). 
+ 
+ C- HOW TO RUN
+
+    - Execute G4SKspallation in the 'interactive mode' with visualization:
+        % ./G4SKspallation
+      and type in the commands line by line:  
+        Idle> /control/verbose 2
+        Idle> /tracking/verbose 1
+        Idle> /run/beamOn 1
+        Idle> ...
+        Idle> exit
+      or
+        Idle> /control/execute run1.mac
+        ....
+        Idle> exit
+
+    - Execute G4SKspallation in the 'batch' mode from macro files 
+      (without visualization)
+        % ./G4SKspallation run2.mac
+
+    - Change the physics list in the 'batch' mode with a second argument : 0 for QGSP_BERT,
+    1 for QGSP_BIC_HP , 2 for FTFP_BERT_HP and 3 for QGSP_INCLXX_HP.
+
+    - Choose to read your initial conditions by adding any third argument if different than 
+    "no"(case insensitive). 
+    If this argument is "yes" we read the conditions from default ini_cond.txt file. 
+    Another possibility is adding the path to you own file in this argument. So you will read the 
+    conditions from that file.
+	 ***Only energy spectrum if there is a fourth argument(except if it is "yes"
+		(case insensitive).***
+
+    - Choose to use muon plus and not muon minus for initial particles with any fifth argument.
+
+    Example of a run in batch mode using a given initial conditions file, the FTFP_BERT_HP physics list
+    , reading the angular distribution for muons plus and running the run2.mac :
+
+    % ./G4SKspallation run2.mac 2 /home/user/file.txt yes +
+
+    *** we are using the /home/user/file.txt as initial condition file. The last argument "+" could be 
+ 		anything. The "yes"(case insensitive) for the fourth argument is a place holder 
+			to keep the angles.***
+
+ D - RUN MACROS
+
+    - run1.mac : This is made for the interactive mode because it is a very small run, 4 events. These 4 muons
+    have energies and angles given by the ini_cond.txt and their trajectories will be drawn if you are using
+    a visualization and interactive mode.
+
+    - run2.mac : This is made for the batch mode because it is a bit bigger, 2 runs of 10 events. These 20 muons 
+    will have the conditions you want by choosing the arguments you give when calling the batch mode. This macro 
+    is generally used for testing the simulation in a fast way after building it.
+
+    - run3.mac : This is made for the batch mode with no doubt, because this one is big, 10000 events.
+    These 10k muons will have the conditions you want by choosing the arguments you give when calling the 
+    batch mode. This is generally used for having the first figures tests.
+    
+ E - MuLTI-THREADING
+ 
+     - Please note that the pre-processor flag G4MULTITHREADED is set when the Geant4 library is built with the 
+     CMAKE option GEANT4_BUILD_MULTITHREADED=ON. So to activate the multi-threading mode you have to build your 
+     Geant4 with this cmake option ON : 
+     
+     $ -DGEANT4_BUILD_MULTITHREADED=ON .
+     
+     - With the multi-threading option ON, you can still build the simulation in sequential mode with small changes
+     in the G4SKspallation.cc code(and in the class where the G4MULTITHREADED flag appears). For this, you may use 
+     the G4RunManager as run manager and not the G4MTRunManager.
+     
+     - If you do not activate the cmake option when building the Geant4, the simulation will run normally in sequential
+     mode with no need of further changes.
+     
+     
+End.

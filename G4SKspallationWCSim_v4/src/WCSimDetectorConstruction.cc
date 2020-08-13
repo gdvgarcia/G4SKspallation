@@ -198,7 +198,7 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   //-----------------------------------------------------
   G4Tubs* solidWCFidu = new G4Tubs("Fiducial",
 				     0.0*m,
-				     .5*WCIDDiameter-2.*m, // the SK fiducial volume radius is 2 m smaller than the ID
+				     .5*WCIDDiameter - 2.*m, // the SK fiducial volume radius is 2 m smaller than the ID
 				     .5*WCIDHeight - 2.*m,  // and its height is 4 m smaller
 				     0.*deg,
 				     360.*deg);

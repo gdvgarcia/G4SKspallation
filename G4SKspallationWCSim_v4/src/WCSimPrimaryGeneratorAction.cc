@@ -133,12 +133,16 @@ void WCSimPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   // In order to avoid dependence of PrimaryGeneratorAction
   // on DetectorConstruction class we get cylinder parameters
   // from the detector construction class.
-  fTouterRadius = myDetector->GetWCIDDiameter()/2. - myDetector->GetcapAssemblyHeight() - myDetector->GetWCPMTExposeHeight() - 0.001 *m; // minus the pmt expose height, cap height and a bit more  
-  fThzHalf 	= myDetector->GetWCIDHeight()/2. - myDetector->GetcapAssemblyHeight() - myDetector->GetWCPMTExposeHeight() - 0.001 *m; // minus the pmt expose height, cap height and a bit more  
+  //fTouterRadius = myDetector->GetWCIDDiameter()/2. - myDetector->GetcapAssemblyHeight() - myDetector->GetWCPMTExposeHeight() - 0.001 *m; // minus the pmt expose height, cap height and a bit more  
+  //fThzHalf 	= myDetector->GetWCIDHeight()/2. - myDetector->GetcapAssemblyHeight() - myDetector->GetWCPMTExposeHeight() - 0.001 *m; // minus the pmt expose height, cap height and a bit more to avoid geometric issues
   // this should be minus the offset so it does not touches the PMTs - but offset in SK is smaller than pmt radius and expse height
   // 
   //fTouterRadius = myDetector->GetWCIDDiameter()/2. - myDetector->GetWCBarrelPMTOffset(); // minus the offset so it does not touches the PMTs
   //fThzHalf 	= myDetector->GetWCIDHeight()/2. - myDetector->GetWCBarrelPMTOffset();  
+
+  // due problems with the calling function for the step IsFirstStepInTheVolume(), we have to create muons in the fiducial volume surface
+  TouterRadius  = myDetector->GetWCIDDiameter()/2. 	- 2. *m; // minus 2 , so we have the fiducial volume
+  fThzHalf 	= myDetector->GetWCIDHeight()/2. 	- 2. *m; // minus 2 , so we have the fiducial volume
 
   //setting default vertex position
   G4double x0 = 0. *m;

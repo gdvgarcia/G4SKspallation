@@ -68,7 +68,7 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
 
   // SPALLATION ADDITION TO KILL THE PARTICLE BEFORE TRANSPORTING INSIDE COMPLEX GEOMETRY
   // Making an exception for optical photons
-  if( name != "opticalphoton"){
+  //if( name != "opticalphoton"){
 
   // get also volume of post step, because some borders are very complex and generate some small issues and this little change wont be 
   // a problem - I guess
@@ -93,7 +93,7 @@ void WCSimSteppingAction::UserSteppingAction(const G4Step* aStep)
   if ( (materialIn != G4Material::GetMaterial("Water")) || (materialOUT != G4Material::GetMaterial("Water") ))
       aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 
-  }
+  //}
 
 
   // SPALLATION ADDITION : retrieving some data ------------------------------------------------------------------------------------
