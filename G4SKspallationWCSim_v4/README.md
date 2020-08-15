@@ -167,6 +167,7 @@ And some changes in the macros : jobOptions.mac and WCSim.mac
 * WCSim.mac
 
 * Also our SKFileReader was simplified
+* Also addition of SKIntermediateAccumulator class for being able to retrieve data in a single tree
 
 ### Objective :
 
