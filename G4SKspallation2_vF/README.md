@@ -4,14 +4,14 @@
    ##  Geant4 - an Object-Oriented Toolkit for Simulation in HEP
    ##  =========================================================
 
-                            #G4SKspallation
-                            #--------------
+                            # G4SKspallation
+                            # --------------
 
    This simulation demonstrates muon spallation process in the SK Chrenkov water tank detector 
    with simple conditions for the geometry.
 
 	
- ##1- GEOMETRY DEFINITION
+ ## 1- GEOMETRY DEFINITION
 	
    The geometry is constructed in the G4SKDetectorConstruction class.
    The setup consists of a an envelope(world) of box shape containing two volumes: 
@@ -45,7 +45,7 @@
    names. All available materials can be found in the Geant4 User's Guide
    for Application Developers, Appendix 10: Geant4 Materials Database.
 		
- ##2- PHYSICS LIST
+ ## 2- PHYSICS LIST
  
    The particle's type and the physics processes which will be available
    in this simulation are set in the QGSP_BERT_HP physics list, or in the QGSP_BERT, or in 
@@ -71,7 +71,7 @@
    value for the second argument will bring the default physics list. If the argument is "!", it just
    keep the default list and you can add a third argument. Meaning that "!" is just a place holder. 
    
- ##3- ACTION INITALIZATION
+ ## 3- ACTION INITALIZATION
 
    The newly introduced class, SKActionInitialization, 
    instantiates and registers to Geant4 kernel all user action classes.
@@ -87,7 +87,7 @@
       SKActionInitialization::BuildForMaster() 
    which is invoked only in multi-threading mode.
   	 
- ##4- PRIMARY GENERATOR
+ ## 4- PRIMARY GENERATOR
   
    The SKPrimaryGeneratorAction class introduces two different possibilities of primary particle generation.
 
@@ -157,7 +157,7 @@
 
    This default settings can be changed via the Geant4 built-in commands of the G4ParticleGun class.
      
- ##5- DETECTOR RESPONSE
+ ## 5- DETECTOR RESPONSE
 
    This simulation contains two scoring methods. 
 
@@ -208,7 +208,7 @@
 
    Alternative ways of scoring via Geant4 classes can be found in many Geant4 official examples.
 
- ###A- VISUALISATION
+ ### A- VISUALISATION
 
    The visualization manager is set via the G4VisExecutive class
    in the main() function in G4SKspallation.cc.    
@@ -252,7 +252,7 @@
    The tracks are automatically drawn at the end of each event, accumulated
    for all events and erased at the beginning of the next run.
 
-###B- USER INTERFACES
+### B- USER INTERFACES
  
    The user command interface is set via the G4UIExecutive class
    in the main() function in G4SKspallation.cc 
@@ -302,7 +302,7 @@
  		anything. The "yes"(case insensitive) for the fourth argument is a place holder 
 			to keep the angles.***
 
- ###D - RUN MACROS
+ ### D - RUN MACROS
 
     - run1.mac : This is made for the interactive mode because it is a very small run, 4 events. These 4 muons
     have energies and angles given by the ini_cond.txt and their trajectories will be drawn if you are using
@@ -316,7 +316,7 @@
     These 10k muons will have the conditions you want by choosing the arguments you give when calling the 
     batch mode. This is generally used for having the first figures tests.
     
- ###E - MuLTI-THREADING
+ ### E - MuLTI-THREADING
  
      - Please note that the pre-processor flag G4MULTITHREADED is set when the Geant4 library is built with the 
      CMAKE option GEANT4_BUILD_MULTITHREADED=ON. So to activate the multi-threading mode you have to build your 
