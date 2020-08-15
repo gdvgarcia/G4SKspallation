@@ -3,9 +3,10 @@
    ##  =========================================================
    ##  Geant4 - an Object-Oriented Toolkit for Simulation in HEP
    ##  =========================================================
-
-                            # G4SKspallation
-                            # --------------
+   
+           
+#                           G4SKspallation
+#                           --------------
 
    This simulation demonstrates muon spallation process in the SK Chrenkov water tank detector 
    with simple conditions for the geometry.
@@ -20,21 +21,21 @@
    you have to uncomment lines in the detector construction class.***
 
    
-        |<---------- 42 m------------->|
-        |                              |                       
-        ================================ _ _
-        ||water tank       	      ||   ^
-        ||                   	      ||   |  
-        ||  ========================  ||   |
-        ||  |fiducial volume       |  ||   |
- muon   ||  |       	  	   |  ||   | 39 m
-=======>||  |                      |  ||   |
-        ||  |                	   |  ||   |
-	||  ========================  ||   |
-	||                     	      ||   v
-	||                            || _ _
-        ================================
-    
+#####        |<---------- 42 m------------->|
+#####        |                              |                       
+#####        ================================ _ _
+#####        ||water tank       	      ||   ^
+#####        ||                   	      ||   |  
+#####        ||  ========================  ||   |
+#####        ||  |fiducial volume       |  ||   |
+##### muon   ||  |       	  	   |  ||   | 39 m
+##### =======>||  |                      |  ||   |
+#####        ||  |                	   |  ||   |
+#####	||  ========================  ||   |
+#####	||                     	      ||   v
+#####	||                            || _ _
+#####        ================================
+#####
 
 
    The envelope(world) is made of water (2.7 m water ~ 1 m rock) and the two inner volumes
