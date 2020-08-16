@@ -181,12 +181,12 @@
    of some commands in the main function.
    
    If there is a sixth argument when calling the simulation in 'batch' mode, the data is only saved for events in 
-   which an isotope with atomic mass greater or equal 8 was produced (this condition can be changed in the 
+   which an isotope with atomic mass greater or equal to 8 was produced (this condition can be changed in the 
    SKSteppingAction class). 
    
    For example , I want to keep the default physics list, to read the run1.mac macro, to generate constant
    energies and initial positions muons minus and to save data only for events in which an isotope with 
-   atomic mass greater or equal 8 was produced. So I use the following command :
+   atomic mass greater or equal to 8 was produced. So I use the following command :
    % ./G4SKspallation run1.mac ! no anything - yes 
    	***The last argument "yes" could be anything.***
    
