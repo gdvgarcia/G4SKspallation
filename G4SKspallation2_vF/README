@@ -278,7 +278,7 @@
    the third argument of the G4UIExecutive constructor (see exampleB4a.cc 
    of the Geant4-10.06.p01 examples distributed with the Geant4 source). 
  
- ###C- HOW TO RUN
+ C- HOW TO RUN
 
     - Execute G4SKspallation in the 'interactive mode' with visualization:
         % ./G4SKspallation
