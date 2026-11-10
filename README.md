@@ -1,6 +1,6 @@
 # G4SKspallation
 
-##### Here you will find files related to simulations of muon induced spallation reactions in the Super-Kamiokande water Cherenkov detector with the simulation toolkit Geant4 (version 10.06.p01). Please cite https://inspirehep.net/literature/1866078
+##### Here you will find files related to simulations of muon induced spallation reactions in the Super-Kamiokande water Cherenkov detector with the simulation toolkit Geant4 (version 10.06.p01).
 
 
 ## The first simulation consists of :
@@ -89,3 +89,5 @@ https://cds.cern.ch/record/357153/files/CMS_HCAL_TDR.pdf
 #### Geant4 Particle Data Group Integer Identifier : https://home.fnal.gov/~mrenna/lutp0613man2/node44.html or http://pdg.lbl.gov/2019/reviews/rpp2019-rev-monte-carlo-numbering.pdf - at the end of the document
 
 #### Installing Geant4 : https://github.com/gdvgarcia/Geant4.6-4.5installation/wiki/GEANT4installation-wiki-everything-here
+
+ Please cite https://inspirehep.net/literature/1866078
